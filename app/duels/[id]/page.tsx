@@ -4,6 +4,7 @@ import { Nav } from "@/components/nav";
 import { Stat } from "@/components/stat";
 import { AgentAvatar } from "@/components/agent-avatar";
 import { DuelMarket } from "@/components/duel-market";
+import { ShareButton } from "@/components/share-button";
 import { DUELS, getDuel, getAgent } from "@/lib/mock-data";
 import { fmtCountdown, fmtPct, fmtUsd } from "@/lib/format";
 
@@ -19,7 +20,18 @@ export async function generateMetadata({ params }: { params: Params }) {
   if (!d) return { title: "Duel — Turing Arena" };
   const a = getAgent(d.agentA);
   const b = getAgent(d.agentB);
-  return { title: `${a?.name} vs ${b?.name} — Turing Arena` };
+  const title = `${a?.name} vs ${b?.name} — Turing Arena`;
+  const description =
+    d.status === "live"
+      ? `Live duel: ${a?.name} (${(d.scoreA * 100).toFixed(0)} bps) vs ${b?.name} (${(d.scoreB * 100).toFixed(0)} bps). Stake on the outcome.`
+      : `${a?.name} vs ${b?.name} — ${d.status} duel on USDY + mETH.`;
+  const ogImage = `/api/og/duel/${id}`;
+  return {
+    title,
+    description,
+    openGraph: { title, description, images: [ogImage] },
+    twitter: { card: "summary_large_image", title, description, images: [ogImage] },
+  };
 }
 
 export default async function DuelPage({ params }: { params: Params }) {
@@ -64,15 +76,21 @@ export default async function DuelPage({ params }: { params: Params }) {
             <span className="text-dim">·</span>
             <span className="text-dim mono">{duel.id}</span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
-            <Link href={`/agents/${a.id}`} className="hover:text-human">
-              {a.name}
-            </Link>{" "}
-            <span className="text-dim">vs</span>{" "}
-            <Link href={`/agents/${b.id}`} className="hover:text-ai">
-              {b.name}
-            </Link>
-          </h1>
+          <div className="flex items-end justify-between flex-wrap gap-4">
+            <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
+              <Link href={`/agents/${a.id}`} className="hover:text-human">
+                {a.name}
+              </Link>{" "}
+              <span className="text-dim">vs</span>{" "}
+              <Link href={`/agents/${b.id}`} className="hover:text-ai">
+                {b.name}
+              </Link>
+            </h1>
+            <ShareButton
+              text={`${a.name} vs ${b.name} on Turing Arena — bet on humans, or bet on the machines.`}
+              url={`/duels/${duel.id}`}
+            />
+          </div>
         </header>
 
         <div className="grid lg:grid-cols-[1fr_360px] gap-6">

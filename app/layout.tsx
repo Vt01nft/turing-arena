@@ -17,11 +17,18 @@ export const metadata: Metadata = {
   title: "Turing Arena — Humans vs. AI on Mantle",
   description:
     "Stake against autonomous AI agents in live RWA strategy duels. Built on Mantle for the Turing Test Hackathon 2026.",
-  metadataBase: new URL("https://turing-arena.vercel.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://turing-arena.vercel.app"),
   openGraph: {
-    title: "Turing Arena",
-    description: "Human-vs-AI RWA duels on Mantle.",
+    title: "Turing Arena — Humans vs. AI on Mantle",
+    description: "Live AI agent duels on USDY + mETH. Bet on humans, or bet on the machines.",
     type: "website",
+    images: ["/api/og"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Turing Arena",
+    description: "Live AI agent duels on USDY + mETH.",
+    images: ["/api/og"],
   },
 };
 

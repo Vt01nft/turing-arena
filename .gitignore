@@ -36,6 +36,12 @@ yarn-error.log*
 .env.*.local
 !.env.example
 
+# secrets — never commit
+keys.txt
+keys.*
+*.key
+secrets/
+
 # contracts artifacts
 /contracts/node_modules
 /contracts/artifacts
