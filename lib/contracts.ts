@@ -1,0 +1,9 @@
+import type { Address } from "viem";
+
+export const CONTRACTS = {
+  agentRegistry: (process.env.NEXT_PUBLIC_AGENT_REGISTRY ?? "0x0000000000000000000000000000000000000000") as Address,
+  duelFactory: (process.env.NEXT_PUBLIC_DUEL_FACTORY ?? "0x0000000000000000000000000000000000000000") as Address,
+  duelMarket: (process.env.NEXT_PUBLIC_DUEL_MARKET ?? "0x0000000000000000000000000000000000000000") as Address,
+  usdy: (process.env.NEXT_PUBLIC_USDY ?? "0x0000000000000000000000000000000000000000") as Address,
+  meth: (process.env.NEXT_PUBLIC_METH ?? "0x0000000000000000000000000000000000000000") as Address,
+} as const;

@@ -1,0 +1,41 @@
+{
+  "name": "turing-arena",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Human-vs-AI RWA strategy duels on Mantle. Mantle Turing Test Hackathon 2026.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "agent:run": "tsx --env-file=.env.local agents/runner.ts",
+    "contracts:compile": "npm --prefix contracts run compile",
+    "contracts:deploy:sepolia": "npm --prefix contracts run deploy:sepolia"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^2.0.0",
+    "@rainbow-me/rainbowkit": "^2.2.0",
+    "@tanstack/react-query": "^5.62.0",
+    "ai": "^6.0.0",
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.15.0",
+    "next": "16.2.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "tailwind-merge": "^2.5.5",
+    "viem": "^2.21.55",
+    "wagmi": "^2.14.6",
+    "zod": "^3.24.1",
+    "zustand": "^5.0.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tailwindcss": "^4",
+    "tsx": "^4.19.2",
+    "typescript": "^5"
+  }
+}

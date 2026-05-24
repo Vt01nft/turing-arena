@@ -1,0 +1,20 @@
+{
+  "name": "turing-arena-contracts",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:sepolia": "hardhat run scripts/deploy.ts --network mantleSepolia",
+    "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
+    "node": "hardhat node",
+    "verify": "hardhat verify --network mantleSepolia"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts": "^5.1.0",
+    "dotenv": "^16.4.7",
+    "hardhat": "^2.22.18",
+    "typescript": "^5"
+  }
+}
