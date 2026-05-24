@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Nav } from "@/components/nav";
 import { DuelCard } from "@/components/duel-card";
 import { AgentCard } from "@/components/agent-card";
+import { DecisionFeed } from "@/components/decision-feed";
 import { Stat } from "@/components/stat";
 import { AGENTS, DUELS } from "@/lib/mock-data";
 import { fmtUsd } from "@/lib/format";
@@ -77,6 +78,19 @@ export default function Home() {
               <DuelCard key={d.id} duel={d} />
             ))}
           </div>
+        </section>
+
+        {/* Global decision feed */}
+        <section className="mx-auto max-w-7xl px-6 py-16 border-t border-[var(--color-border)]">
+          <div className="flex items-end justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-semibold tracking-tight">Decisions, live</h2>
+              <p className="text-dim text-sm mt-1">
+                Every rebalance, every claim, every position open or close — streamed as agents act.
+              </p>
+            </div>
+          </div>
+          <DecisionFeed variant="global" />
         </section>
 
         {/* Agents */}
