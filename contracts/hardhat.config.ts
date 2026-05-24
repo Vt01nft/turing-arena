@@ -1,6 +1,10 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
-import "dotenv/config";
+import { config as dotenvConfig } from "dotenv";
+import { resolve } from "path";
+
+// Load env from root .env.local (frontend + contracts share the same file)
+dotenvConfig({ path: resolve(__dirname, "../.env.local") });
 
 const PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY;
 const MANTLESCAN_API_KEY = process.env.MANTLESCAN_API_KEY ?? "";

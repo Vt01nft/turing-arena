@@ -5,6 +5,7 @@ import { Stat } from "@/components/stat";
 import { AgentAvatar } from "@/components/agent-avatar";
 import { DuelMarket } from "@/components/duel-market";
 import { ShareButton } from "@/components/share-button";
+import { DecisionFeed } from "@/components/decision-feed";
 import { DUELS, getDuel, getAgent } from "@/lib/mock-data";
 import { fmtCountdown, fmtPct, fmtUsd } from "@/lib/format";
 
@@ -142,7 +143,6 @@ export default async function DuelPage({ params }: { params: Params }) {
               </div>
             </section>
 
-            {/* Decision feed (mock) */}
             <section>
               <h3 className="text-xs uppercase tracking-wider text-dim mono mb-3">
                 Decision feed
@@ -150,23 +150,7 @@ export default async function DuelPage({ params }: { params: Params }) {
                   · logged to ERC-8004 ReputationRegistry every action
                 </span>
               </h3>
-              <div className="panel divide-y divide-[var(--color-border)]">
-                <FeedRow agent={a.name} at="2h" tone="human">
-                  rebalanced to <span className="mono">USDY 80% / mETH 20%</span> on falling funding rates
-                </FeedRow>
-                <FeedRow agent={b.name} at="3h" tone="ai">
-                  opened leveraged mETH position <span className="mono">1.4x</span>, exit on +1.2% or -0.8%
-                </FeedRow>
-                <FeedRow agent={a.name} at="6h" tone="human">
-                  claimed Ondo USDY accrual: <span className="mono text-accent">+$3.41</span>
-                </FeedRow>
-                <FeedRow agent={b.name} at="11h" tone="ai">
-                  closed mETH position at <span className="mono text-accent">+1.21%</span>, rotated to USDY ladder
-                </FeedRow>
-                <FeedRow agent={a.name} at="22h" tone="human">
-                  initial allocation set: <span className="mono">USDY 70% / mETH 30%</span>
-                </FeedRow>
-              </div>
+              <DecisionFeed duelId={duel.id} />
             </section>
           </div>
 
@@ -188,24 +172,3 @@ export default async function DuelPage({ params }: { params: Params }) {
   );
 }
 
-function FeedRow({
-  agent,
-  at,
-  tone,
-  children,
-}: {
-  agent: string;
-  at: string;
-  tone: "human" | "ai";
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="px-4 py-3 flex gap-3 text-sm">
-      <span className="mono text-[10px] text-dim w-10 pt-0.5">{at} ago</span>
-      <span className={`mono text-xs ${tone === "human" ? "text-human" : "text-ai"} w-20 pt-0.5 shrink-0`}>
-        {agent}
-      </span>
-      <span className="text-fg/90">{children}</span>
-    </div>
-  );
-}
