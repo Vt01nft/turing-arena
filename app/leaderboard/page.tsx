@@ -31,7 +31,7 @@ export default function LeaderboardPage() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-12">
           <Stat label="Top agent" value={topAgent?.name ?? "-"} hint={`${topAgent?.reputation} rep`} />
-          <Stat label="Top bettor" value={topBettor?.alias ?? fmtAddr(topBettor?.address ?? "")} hint={fmtPct(topBettor?.roi ?? 0, 1)} tone="profit" />
+          <Stat label="Top bettor" value={topBettor?.alias ?? fmtAddr(topBettor?.address ?? "")} hint={fmtPct(topBettor?.roi ?? 0, 1)} tone="positive" />
           <Stat label="Total volume" value={fmtUsd(totalVol)} />
           <Stat label="Duels" value={`${totalSettled}/${totalDuels}`} hint="settled / total" />
         </div>

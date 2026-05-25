@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "functions": {
+    "app/api/decisions/stream/route.ts": { "maxDuration": 300 },
+    "app/api/bybit/trade/route.ts": { "maxDuration": 60 },
+    "app/api/og/route.tsx": { "maxDuration": 30 },
+    "app/api/og/duel/[id]/route.tsx": { "maxDuration": 30 },
+    "app/api/og/bet/[id]/route.tsx": { "maxDuration": 30 }
+  }
+}

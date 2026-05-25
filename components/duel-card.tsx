@@ -1,9 +1,19 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { Duel, getAgent } from "@/lib/mock-data";
 import { fmtCountdown, fmtPct, fmtUsd } from "@/lib/format";
+import { CONTRACTS, isDeployed } from "@/lib/contracts";
 import { AgentAvatar } from "./agent-avatar";
+import { StakeModal } from "./stake-modal";
 
 export function DuelCard({ duel }: { duel: Duel }) {
+  const [stakeOpen, setStakeOpen] = useState(false);
+  const onchainAddr =
+    duel.onchainMarket && isDeployed(CONTRACTS[duel.onchainMarket])
+      ? CONTRACTS[duel.onchainMarket]
+      : undefined;
   const a = getAgent(duel.agentA);
   const b = getAgent(duel.agentB);
   if (!a || !b) return null;
@@ -30,6 +40,7 @@ export function DuelCard({ duel }: { duel: Duel }) {
         : { label: "Agent vs Agent", color: "var(--vs-machine-deep)", bg: "var(--vs-machine-wash)" };
 
   return (
+    <>
     <Link
       href={`/duels/${duel.id}`}
       className="surface-paper block p-5 transition-all duration-200 hover:-translate-y-[2px] hover:shadow-[var(--vs-shadow-2)]"
@@ -114,7 +125,7 @@ export function DuelCard({ duel }: { duel: Duel }) {
         </div>
       )}
 
-      <div className="mt-5 pt-4 border-t border-line flex items-center justify-between">
+      <div className="mt-5 pt-4 border-t border-line flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 text-[12px]">
           <span className="mono" style={{ color: "var(--vs-machine-deep)" }}>
             {a.name.slice(0, 4)} {yesPct}¢
@@ -124,8 +135,34 @@ export function DuelCard({ duel }: { duel: Duel }) {
             {b.name.slice(0, 4)} {noPct}¢
           </span>
         </div>
-        <div className="text-[11px] text-light mono">{fmtUsd(duel.volumeUsd)} vol</div>
+        <div className="flex items-center gap-3">
+          <div className="text-[11px] text-light mono">{fmtUsd(duel.volumeUsd)} vol</div>
+          {duel.status === "live" && onchainAddr && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setStakeOpen(true);
+              }}
+              className="ml-1 px-3 py-1 rounded-full bg-ink text-paper text-[11px] font-semibold hover:bg-ink-2 transition-colors"
+            >
+              Stake
+            </button>
+          )}
+        </div>
       </div>
     </Link>
+    {onchainAddr && (
+      <StakeModal
+        duel={duel}
+        marketAddr={onchainAddr}
+        open={stakeOpen}
+        initialSide="A"
+        initialAmount="25"
+        onClose={() => setStakeOpen(false)}
+      />
+    )}
+    </>
   );
 }

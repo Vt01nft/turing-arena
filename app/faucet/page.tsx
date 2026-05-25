@@ -7,9 +7,9 @@ import { CONTRACTS, isDeployed } from "@/lib/contracts";
 import { useState } from "react";
 
 const TOKENS = [
-  { key: "usdc" as const, addr: CONTRACTS.usdc, label: "USDC", amount: "1,000", note: "test stablecoin · 6 decimals" },
-  { key: "usdy" as const, addr: CONTRACTS.usdy, label: "USDY", amount: "1,000", note: "Ondo mock · 5.25% APY" },
-  { key: "meth" as const, addr: CONTRACTS.meth, label: "mETH", amount: "0.5", note: "Mantle staked ETH mock · 3.80% APY" },
+  { id: "usdc" as const, addr: CONTRACTS.usdc, label: "USDC", amount: "1,000", note: "test stablecoin · 6 decimals" },
+  { id: "usdy" as const, addr: CONTRACTS.usdy, label: "USDY", amount: "1,000", note: "Ondo mock · 5.25% APY" },
+  { id: "meth" as const, addr: CONTRACTS.meth, label: "mETH", amount: "0.5", note: "Mantle staked ETH mock · 3.80% APY" },
 ];
 
 export default function FaucetPage() {
@@ -29,8 +29,8 @@ export default function FaucetPage() {
         </header>
 
         <div className="grid gap-3">
-          {TOKENS.map((t) => (
-            <FaucetRow key={t.key} {...t} />
+          {TOKENS.map(({ id, ...rest }) => (
+            <FaucetRow key={id} {...rest} />
           ))}
         </div>
       </main>
