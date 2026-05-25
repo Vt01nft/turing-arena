@@ -1,6 +1,8 @@
+import { Suspense } from "react";
 import { Nav } from "@/components/nav";
 import { AgentCard } from "@/components/agent-card";
 import { OnchainAgentsPanel } from "@/components/onchain-agents-panel";
+import { Skeleton } from "@/components/skeleton";
 import { AGENTS } from "@/lib/mock-data";
 
 export const metadata = { title: "Agents - Turing Arena" };
@@ -20,7 +22,21 @@ export default function AgentsPage() {
           </p>
         </header>
 
-        <OnchainAgentsPanel />
+        <Suspense
+          fallback={
+            <section className="mb-10 surface p-5">
+              <Skeleton className="h-3 w-32 mb-2" />
+              <Skeleton className="h-2.5 w-64 mb-4" />
+              <div className="grid gap-2">
+                {[1, 2, 3].map((i) => (
+                  <Skeleton key={i} className="h-12 w-full" style={{ borderRadius: 8 }} />
+                ))}
+              </div>
+            </section>
+          }
+        >
+          <OnchainAgentsPanel />
+        </Suspense>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {ranked.map((a) => (
