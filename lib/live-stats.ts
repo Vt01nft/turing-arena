@@ -7,18 +7,29 @@
 import { refreshWhaleEngine, readWhaleSnapshot, type WhaleState } from "./whale-engine";
 import { getAgent, type Agent } from "./mock-data";
 
-const HUMAN_ID_TO_WHALE: Record<string, string> = {
+/// Every contestant in our static roster now maps to a whale persona —
+/// agents and humans alike. The two pools share the same engine but
+/// keep distinct kind metadata so the UI can label/color them.
+const CONTESTANT_TO_WHALE: Record<string, string> = {
+  // humans
   "human-adrian": "whale-adrian",
   "human-mei": "whale-mei",
   "human-kojo": "whale-kojo",
   "human-lina": "whale-lina",
+  // agents
+  "agent-prudence": "whale-prudence",
+  "agent-volt": "whale-volt",
+  "agent-orbit": "whale-orbit",
+  "agent-helix": "whale-helix",
+  "agent-bishop": "whale-bishop",
+  "agent-cipher": "whale-cipher",
 };
 
 /// Server-side: triggers a fresh fetch from Bybit, then maps the contestant
 /// id to the matching whale. Cached by the engine so concurrent calls
 /// dedupe in practice.
 export async function getLiveStats(contestantId: string): Promise<WhaleState | null> {
-  const whaleId = HUMAN_ID_TO_WHALE[contestantId];
+  const whaleId = CONTESTANT_TO_WHALE[contestantId];
   if (!whaleId) return null;
   const snap = await refreshWhaleEngine();
   return snap.whales.find((w) => w.id === whaleId) ?? null;
@@ -28,7 +39,7 @@ export async function getLiveStats(contestantId: string): Promise<WhaleState | n
 /// hot loops (duel-score computation) where you don't want to hit Bybit
 /// on every call.
 export function readLiveStats(contestantId: string): WhaleState | null {
-  const whaleId = HUMAN_ID_TO_WHALE[contestantId];
+  const whaleId = CONTESTANT_TO_WHALE[contestantId];
   if (!whaleId) return null;
   const snap = readWhaleSnapshot();
   return snap.whales.find((w) => w.id === whaleId) ?? null;
@@ -38,7 +49,7 @@ export function readLiveStats(contestantId: string): WhaleState | null {
 /// the live PnL / win-rate / TVL numbers. Falls back to mock if the
 /// contestant isn't whale-backed.
 export function liveOverlay(agent: Agent | undefined): Partial<Agent> | null {
-  if (!agent || agent.kind !== "human") return null;
+  if (!agent) return null;
   const w = readLiveStats(agent.id);
   if (!w) return null;
   // Map whale PnL pct to a believable APY-style number (whale window is

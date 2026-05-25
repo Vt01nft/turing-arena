@@ -17,8 +17,12 @@
 
 import { getRecentTrades, getMarketSnapshot, type PublicTrade } from "./bybit-public";
 
+export type ContestantKind = "human" | "agent";
+
 export type WhalePersona = {
   id: string;
+  /** AI agent or real trader profile */
+  kind: ContestantKind;
   /** Display handle (style-of: a Bybit copy-trade master alias) */
   handle: string;
   alias: string;
@@ -27,14 +31,16 @@ export type WhalePersona = {
   /** Size bucket they typically operate at (USD notional) */
   sizeBucket: [number, number];
   /** Subjective tag shown in the UI */
-  style: "scalper" | "swing" | "macro" | "momentum" | "contrarian";
+  style: "scalper" | "swing" | "macro" | "momentum" | "contrarian" | "conservative" | "aggressive";
   /** A quick bio for their profile page */
   bio: string;
 };
 
 export const WHALE_PERSONAS: WhalePersona[] = [
+  // ─── Real-trader profiles (humans on Bybit mainnet) ────────────────────
   {
     id: "whale-adrian",
+    kind: "human",
     handle: "@adrian.eth",
     alias: "Adrian",
     bias: "long",
@@ -44,6 +50,7 @@ export const WHALE_PERSONAS: WhalePersona[] = [
   },
   {
     id: "whale-mei",
+    kind: "human",
     handle: "@mei.lens",
     alias: "Mei",
     bias: "mixed",
@@ -53,6 +60,7 @@ export const WHALE_PERSONAS: WhalePersona[] = [
   },
   {
     id: "whale-kojo",
+    kind: "human",
     handle: "@kojo_swing",
     alias: "Kojo",
     bias: "long",
@@ -62,6 +70,7 @@ export const WHALE_PERSONAS: WhalePersona[] = [
   },
   {
     id: "whale-lina",
+    kind: "human",
     handle: "@lina_vol",
     alias: "Lina",
     bias: "short",
@@ -69,23 +78,66 @@ export const WHALE_PERSONAS: WhalePersona[] = [
     style: "contrarian",
     bio: "Vol-selling specialist. Fades blow-off tops, sells gamma when funding spikes.",
   },
+  // ─── AI agent profiles (run by us, decisions via Gemini + on-chain) ────
   {
-    id: "whale-rena",
-    handle: "@rena_perp",
-    alias: "Rena",
+    id: "whale-prudence",
+    kind: "agent",
+    handle: "@prudence_ai",
+    alias: "Prudence",
     bias: "long",
-    sizeBucket: [2500, 18000],
-    style: "momentum",
-    bio: "Trend follower. Stacks on breakouts, exits on 5%-from-peak trail.",
+    sizeBucket: [3000, 12000],
+    style: "conservative",
+    bio: "Risk-first ERC-8004 agent. Adds size only on RSI-oversold + block-flow confirmation. Slashable MNT stake.",
   },
   {
-    id: "whale-yuji",
-    handle: "@yujihft",
-    alias: "Yuji",
+    id: "whale-volt",
+    kind: "agent",
+    handle: "@volt_strategy",
+    alias: "Volt",
     bias: "mixed",
-    sizeBucket: [200, 2500],
+    sizeBucket: [400, 3500],
+    style: "aggressive",
+    bio: "Aggressive yield-maximizer. Live trades BTCUSDT testnet via Gemini-decided market orders every ~10min.",
+  },
+  {
+    id: "whale-orbit",
+    kind: "agent",
+    handle: "@orbit_macro",
+    alias: "Orbit",
+    bias: "long",
+    sizeBucket: [5000, 25000],
+    style: "macro",
+    bio: "Macro-driven agent. Reads funding rate + open-interest deltas before sizing up. Heavy when momentum confirms.",
+  },
+  {
+    id: "whale-helix",
+    kind: "agent",
+    handle: "@helix_pairs",
+    alias: "Helix",
+    bias: "short",
+    sizeBucket: [1500, 9000],
+    style: "contrarian",
+    bio: "Mean-reversion specialist. Fades crowd flow when the persona pool tilts hard one way.",
+  },
+  {
+    id: "whale-bishop",
+    kind: "agent",
+    handle: "@bishop_mom",
+    alias: "Bishop",
+    bias: "long",
+    sizeBucket: [800, 5500],
+    style: "momentum",
+    bio: "Trend follower. Stacks on continuation, never countertrend. Tight 1.5R trail.",
+  },
+  {
+    id: "whale-cipher",
+    kind: "agent",
+    handle: "@cipher_quant",
+    alias: "Cipher",
+    bias: "mixed",
+    sizeBucket: [600, 4500],
     style: "scalper",
-    bio: "HFT-style. Hundreds of clips a day, lives on the spread, fades dust at extremes.",
+    bio: "Stat-arb on the BTC/USD basis. Looks for sub-bps mispricings between Bybit & venue mid.",
   },
 ];
 
@@ -102,6 +154,7 @@ export type WhaleAttribution = {
 
 export type WhaleState = {
   id: string;
+  kind: ContestantKind;
   handle: string;
   alias: string;
   bias: WhalePersona["bias"];
@@ -144,6 +197,7 @@ function freshState(): EngineState {
   for (const p of WHALE_PERSONAS) {
     whales.set(p.id, {
       id: p.id,
+      kind: p.kind,
       handle: p.handle,
       alias: p.alias,
       bias: p.bias,

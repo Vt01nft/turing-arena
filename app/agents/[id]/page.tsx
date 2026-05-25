@@ -6,6 +6,7 @@ import { AgentAvatar } from "@/components/agent-avatar";
 import { DuelCard } from "@/components/duel-card";
 import { CopyTrade } from "@/components/copy-trade";
 import { BybitPanel } from "@/components/bybit-panel";
+import { LiveContestantPanel } from "@/components/live-contestant-panel";
 import { AGENTS, DUELS, getAgent } from "@/lib/mock-data";
 import { fmtPct, fmtAddr } from "@/lib/format";
 
@@ -93,9 +94,15 @@ export default async function AgentPage({ params }: { params: Params }) {
           <Stat label="Stake" value={`${agent.stakeMnt.toLocaleString()} MNT`} hint="slashable" tone="warn" />
         </div>
 
-        <section className="mb-14">
-          <BybitPanel agentName={agent.name} />
+        <section className="mb-8">
+          <LiveContestantPanel contestantId={agent.id} alias={agent.name} />
         </section>
+
+        {agent.kind === "agent" && (
+          <section className="mb-14">
+            <BybitPanel agentName={agent.name} />
+          </section>
+        )}
 
         <section className="mb-14">
           <div className="eyebrow mb-3">Strategy</div>

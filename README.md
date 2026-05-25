@@ -125,56 +125,123 @@ npm run build && npm start           # → optimized SSR + static
 
 ## Architecture
 
+### High level — data + control flow
+
+```
+                 ┌────────────────────────────────────────────────────────┐
+                 │                       BROWSER                          │
+                 │   Next.js 16 App Router · React 19 · Tailwind v4       │
+                 │   RainbowKit + wagmi + viem + AI SDK on the client     │
+                 │   SSE EventSource → /api/decisions/stream              │
+                 │   Polling every 12-15s → /api/whales · /api/duels      │
+                 └─────┬──────────────────────────┬───────────────────────┘
+                       │                          │
+                       │ wallet signs             │ JSON / SSE
+                       ▼                          ▼
+   ┌─────────────────────────────────┐   ┌──────────────────────────────┐
+   │   MANTLE SEPOLIA  (chain 5003)  │   │      VERCEL  (this app)      │
+   │                                 │   │                              │
+   │  • AgentRegistry  (ERC-8004)    │   │  Next.js SSR + API routes:   │
+   │  • DemoMarket     (parimutuel)  │◀──┼─ /api/decisions/stream  SSE  │
+   │  • Duel.sol       (production)  │   │  /api/whales            poll │
+   │  • DuelMarket.sol (production)  │   │  /api/duels/[id]/score  poll │
+   │  • YieldVenue x2  (USDY · mETH) │   │  /api/duels/[id]/settle POST │
+   │  • MockERC20 x3   (TAUSDC etc.) │   │  /api/bybit/{health,trade}   │
+   │                                 │   │  /api/og/{home,duel,bet}     │
+   │  viem reads via multicall3      │   │  /api/x402/{sub,status,cancel}│
+   └─────────────────────────────────┘   └──┬───────────┬────────────┬──┘
+                                            │           │            │
+                       deployer key (env)   │  fetch    │ HMAC SHA256│ fetch (no auth)
+                                            ▼           ▼            ▼
+                               ┌──────────────┐ ┌──────────────┐ ┌─────────────────┐
+                               │ GOOGLE       │ │ BYBIT TESTNET│ │ BYBIT MAINNET   │
+                               │ Gemini       │ │ (authed)     │ │ (public data)   │
+                               │ 2.5 Flash    │ │ Volt's real  │ │ • recent-trade  │
+                               │ via AI SDK   │ │ BTCUSDT perp │ │ • tickers       │
+                               │ structured   │ │ market orders│ │ • open-interest │
+                               │ output       │ │ every ~10min │ │ • funding rate  │
+                               └──────────────┘ └──────────────┘ └─────────────────┘
+                                                                          │
+                                                                          ▼
+                               ┌────────────────────────────────────────────┐
+                               │           WHALE ENGINE  (in-memory)        │
+                               │                                            │
+                               │  1. fetch real BTCUSDT trades every ~10s   │
+                               │  2. hash execId → stable persona            │
+                               │     (4 humans + 6 AI agents)                │
+                               │  3. update each persona's VWAP entry +     │
+                               │     realised/unrealised PnL vs live mark   │
+                               │  4. expose attributions + scores via       │
+                               │     /api/whales and /api/duels/[id]/score  │
+                               └────────────────────────────────────────────┘
+```
+
+### File layout
+
 ```
 app/
-├── (routes)/                 SSR + client pages
-│   ├── duels/[id]            on-chain market + decision feed + finale
-│   ├── agents/[id]           on-chain identity + Bybit panel + copy-trade
-│   ├── leaderboard           agent + bettor rankings
-│   ├── faucet                claim test tokens
-│   └── how-it-works          narrative
+├── (pages)                              SSR + client pages
+│   ├── page.tsx                          home: Hero + LiveBybitSection + roster
+│   ├── duels/page.tsx                    list + LiveBybit-driven scores
+│   ├── duels/[id]/page.tsx               scoreboard, DuelMarket, Finale
+│   ├── agents/page.tsx                   all contestants + on-chain panel
+│   ├── agents/[id]/page.tsx              identity + LiveContestantPanel +
+│   │                                     BybitPanel (agents only) + CopyTrade
+│   ├── leaderboard/page.tsx              all-time rankings
+│   ├── faucet/page.tsx                   claim TAUSDC / USDY / mETH
+│   └── how-it-works/page.tsx             narrative
 ├── api/
-│   ├── decisions/stream      SSE feed
-│   ├── bybit/{health,ticker,positions,trade}
-│   ├── x402/{subscribe,status,cancel}
-│   └── og/                   dynamic share cards
-├── icon.tsx                  dynamic favicon
-└── layout.tsx                root with Providers + RouteProgress + Onboarding
+│   ├── decisions/stream/route.ts         SSE feed for live decision ticker
+│   ├── decisions/route.ts                REST fallback for last 50 decisions
+│   ├── whales/route.ts                   live whale snapshot + recent trades
+│   ├── duels/[id]/score/route.ts         live duel score from whale engine
+│   ├── duels/[id]/settle/route.ts        on-chain DemoMarket.resolve() tx
+│   ├── bybit/health/route.ts             testnet wallet + BTCUSDT ticker
+│   ├── bybit/ticker/route.ts             live mark price
+│   ├── bybit/positions/route.ts          open testnet positions
+│   ├── bybit/trade/route.ts              place market order (authed)
+│   ├── x402/{subscribe,status,cancel}    HTTP-402 copy-trade subscription
+│   └── og/{route,duel/[id],bet/[id]}     dynamic 1200×630 share cards
+├── icon.tsx                              dynamic favicon (capsule mark)
+├── globals.css                           Versus design tokens + components
+└── layout.tsx                            Providers, RouteProgress, Onboarding
 
 components/
-├── logo.tsx                  capsule mark + wordmark
-├── nav.tsx                   sticky nav + live ribbon
-├── live-ribbon.tsx           continuous marquee, SSE-driven
-├── decision-feed.tsx         streamed agent actions w/ GEMINI + BYBIT badges
-├── bybit-panel.tsx           live testnet positions + manual trade buttons
-├── duel-market.tsx           on-chain parimutuel bet UI w/ wagmi
-├── duel-finale.tsx           "X won." celebration on settled duels
-├── stake-modal.tsx           slide-up confirmation modal
-├── copy-trade.tsx            x402 subscribe → mirror flow
-└── onboarding.tsx            3-step first-visit overlay
+├── logo.tsx · nav.tsx · live-ribbon.tsx · page-background.tsx
+├── decision-feed.tsx  · live-bybit-section.tsx · live-contestant-panel.tsx
+├── bybit-panel.tsx    · stake-modal.tsx        · duel-market.tsx
+├── duel-card.tsx      · duel-finale.tsx        · agent-card.tsx
+├── copy-trade.tsx     · onboarding.tsx         · toaster.tsx
+├── share-button.tsx   · route-progress.tsx     · dark-toggle.tsx
+└── skeleton.tsx · stat.tsx · agent-avatar.tsx · wallet-buttons.tsx
 
 lib/
-├── decision-engine.ts        SSE store + Gemini + Bybit auto-trading
-├── bybit.ts                  v5 REST client (HMAC SHA256 signing)
-├── onchain.ts                viem reads of AgentRegistry via multicall
-├── wagmi.ts                  RainbowKit + chain config
-├── abis.ts                   minimal hand-rolled ABIs
-├── chains.ts                 Mantle Sepolia + mainnet with multicall3
-├── mock-data.ts              10 contestants (6 agents + 4 humans) + 16 duels
-└── x402-store.ts             in-memory subscription store
+├── bybit.ts                              v5 testnet REST client (HMAC SHA256)
+├── bybit-public.ts                       mainnet public-data fetchers
+├── whale-engine.ts                       persona attribution + PnL math
+├── live-stats.ts                         contestant ⇄ whale bridge
+├── decision-engine.ts                    SSE store + Gemini + auto-trade loop
+├── onchain.ts                            viem reads via multicall3
+├── wagmi.ts · chains.ts                  RainbowKit + Mantle chain defs
+├── abis.ts                               hand-rolled minimal ABIs
+├── contracts.ts                          NEXT_PUBLIC_* address map
+├── mock-data.ts                          10 contestants + 16 duels
+├── x402-store.ts                         in-memory subscription store
+└── format.ts                             fmtPct / fmtUsd / fmtCountdown / cn
 
 contracts/
 ├── contracts/
-│   ├── AgentRegistry.sol     ERC-8004-style identity + slashable stake
-│   ├── DemoMarket.sol        parimutuel binary outcome market
-│   ├── Duel.sol              7-day head-to-head primitive (production form)
-│   ├── DuelMarket.sol        production market w/ on-chain settlement
-│   ├── MockERC20.sol         faucet-able test tokens
-│   └── YieldVenue.sol        mock USDY / mETH yield sinks
+│   ├── AgentRegistry.sol                 ERC-8004 identity + slashable stake
+│   ├── DemoMarket.sol                    parimutuel binary outcome market
+│   ├── Duel.sol                          production 7-day duel primitive
+│   ├── DuelMarket.sol                    production market w/ on-chain settle
+│   ├── MockERC20.sol                     faucet-able TAUSDC / USDY / mETH
+│   └── YieldVenue.sol                    mock USDY / mETH yield sinks
 └── scripts/
-    ├── deploy.ts             one-shot deploy of all core contracts
-    ├── register-agents.ts    funds 3 disposable wallets + registers each
-    └── seed-market.ts        deploys a DemoMarket for duel-001
+    ├── deploy.ts                         core deployment
+    ├── register-agents.ts                fund + register 3 agents
+    ├── seed-market.ts                    deploy DemoMarket for duel-001
+    └── seed-bets.ts                      drip + approve + stake seed bets
 ```
 
 ---
