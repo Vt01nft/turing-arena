@@ -119,7 +119,7 @@ export function CopyTrade({ agentId, agentName }: { agentId: string; agentName: 
           {busy ? "Cancelling…" : "Cancel subscription"}
         </button>
         <p className="mt-2 text-[10px] text-faint leading-relaxed">
-          x402 payments are streamed per-action. Cancel anytime — no further billing.
+          x402 payments are streamed per-action. Cancel anytime - no further billing.
         </p>
       </div>
     );

@@ -24,10 +24,10 @@ Built to win four lanes with one product:
 
 Uses two **new primitives** that almost no other team will deeply integrate:
 
-- **[ERC-8004](https://eips.ethereum.org/EIPS/eip-8004)** — Trustless Agent
+- **[ERC-8004](https://eips.ethereum.org/EIPS/eip-8004)** - Trustless Agent
   Identity standard. Deployed on Mantle 2026-02-16. We use Identity, Reputation,
   and Validation registries to give each agent a sovereign on-chain presence.
-- **[x402](https://www.x402.org/)** — Coinbase / Cloudflare HTTP-402 stablecoin
+- **[x402](https://www.x402.org/)** - Coinbase / Cloudflare HTTP-402 stablecoin
   payment protocol. We use it for per-block copy-trade subscriptions in USDC.
 
 ---
@@ -49,9 +49,9 @@ turing-arena/
 │   └── scripts/deploy.ts
 └── agents/                  TS agent runtime (Node, Gemini via AI SDK)
     ├── strategies/
-    │   ├── conservative.ts    Prudence — risk-first allocator
-    │   ├── aggressive.ts      Volt — yield-maximizer
-    │   └── gemini-macro.ts    Orbit — Gemini-driven structured decisions
+    │   ├── conservative.ts    Prudence - risk-first allocator
+    │   ├── aggressive.ts      Volt - yield-maximizer
+    │   └── gemini-macro.ts    Orbit - Gemini-driven structured decisions
     └── runner.ts
 ```
 
@@ -74,15 +74,15 @@ cp .env.example .env.local
 
 Fill in:
 
-- `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` — get one at https://cloud.walletconnect.com/
-- `GOOGLE_GENERATIVE_AI_API_KEY` — get a free key at https://aistudio.google.com/apikey
-- `DEPLOYER_PRIVATE_KEY` — a Mantle Sepolia wallet with testnet MNT
+- `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` - get one at https://cloud.walletconnect.com/
+- `GOOGLE_GENERATIVE_AI_API_KEY` - get a free key at https://aistudio.google.com/apikey
+- `DEPLOYER_PRIVATE_KEY` - a Mantle Sepolia wallet with testnet MNT
   (faucet: https://faucet.sepolia.mantle.xyz/)
 
 ### 3. Run
 
 ```bash
-# Frontend (mock data — no chain needed)
+# Frontend (mock data - no chain needed)
 npm run dev                          # → http://localhost:3000
 
 # Deploy contracts to Mantle Sepolia
@@ -99,11 +99,11 @@ npm run agent:run gemini-macro       # needs GOOGLE_GENERATIVE_AI_API_KEY
 
 ## Roadmap to submission (≈ 22 days)
 
-- [ ] **W1** — contracts deployed on Mantle Sepolia, wallet connect working,
+- [ ] **W1** - contracts deployed on Mantle Sepolia, wallet connect working,
       live reads of `AgentRegistry` and `Duel` state
-- [ ] **W2** — staking on `DuelMarket` works end-to-end, three agents running
+- [ ] **W2** - staking on `DuelMarket` works end-to-end, three agents running
       in scheduled cron, x402 subscription stub
-- [ ] **W3** — UI polish pass, demo video, X submission thread, deploy to
+- [ ] **W3** - UI polish pass, demo video, X submission thread, deploy to
       Vercel, deploy on Mantle mainnet for final demo
 
 ---

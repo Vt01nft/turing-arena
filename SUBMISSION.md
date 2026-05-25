@@ -16,9 +16,9 @@ ERC-8004-style registry.
 
 ## Tracks targeted
 
-- **Track 03 · AI × RWA** ("Mantle's moat") — duels run on USDY + mETH
-- **Track 04 · Consumer & Viral DApps** — OG share cards, leaderboard
-- **Track 06 · Agentic Economy** — ERC-8004 identity, x402 subscriptions
+- **Track 03 · AI × RWA** ("Mantle's moat") - duels run on USDY + mETH
+- **Track 04 · Consumer & Viral DApps** - OG share cards, leaderboard
+- **Track 06 · Agentic Economy** - ERC-8004 identity, x402 subscriptions
 - **Best UI/UX**
 - **Community Vote** (drive via shareable result cards)
 
@@ -49,7 +49,7 @@ ERC-8004-style registry.
 
 ---
 
-## Demo video — 3-minute shot list
+## Demo video - 3-minute shot list
 
 Record at **1920×1080**, dark mode, full-screen Chrome (no devtools bar).
 Pre-load MetaMask with a funded Mantle Sepolia wallet that already holds
@@ -60,7 +60,7 @@ USDC from `/faucet`.
 | 1 | 0:00–0:08 | Static title card · TuringArena logo · "Bet on humans. Or bet on the machines." | Cold open, one beat |
 | 2 | 0:08–0:25 | Slow scroll of `/` home page · Hero → stats → live duels | "Autonomous AI agents compete head-to-head in week-long RWA duels on Mantle." |
 | 3 | 0:25–0:45 | Click into `/duels` · linger on Live, Upcoming, Settled sections | "Two agents. Ten thousand dollars synthetic capital. Seven days. Eight percent max drawdown. Highest return wins." |
-| 4 | 0:45–1:05 | Click `/agents` · hover the "● 3 agents verified on-chain" panel · click owner address → opens Mantle explorer in new tab | "Every agent has on-chain identity. We're using ERC-8004 — the new trustless agent standard Mantle deployed in February." |
+| 4 | 0:45–1:05 | Click `/agents` · hover the "● 3 agents verified on-chain" panel · click owner address → opens Mantle explorer in new tab | "Every agent has on-chain identity. We're using ERC-8004 - the new trustless agent standard Mantle deployed in February." |
 | 5 | 1:05–1:25 | Cut to `/duels/duel-001` · scoreboard · highlight ON-CHAIN badge on the market | "Markets are real. Parimutuel binary outcome contracts. Settled on-chain." |
 | 6 | 1:25–1:55 | Click Approve → MetaMask confirm → wait → click Stake $25 on Volt → confirm → watch the price tick up | "I'm staking 25 USDC on Volt. Watch the price move." |
 | 7 | 1:55–2:15 | Show the live decision feed below · point at GEMINI badge when one ticks in | "Every agent action is streamed live. Yellow GEMINI badge means it came from a real LLM call." |
@@ -89,16 +89,16 @@ asset capital. humans bet on outcomes. or copy-trade the winners.
 
 [attach demo video]
 
-—
+-
 
 2/
 
-three agents — Prudence, Volt, Orbit — compete in week-long head-to-heads
+three agents - Prudence, Volt, Orbit - compete in week-long head-to-heads
 on USDY + mETH. equal capital. 8% max drawdown. highest return wins.
 
 every decision streamed live and logged on-chain.
 
-—
+-
 
 3/
 
@@ -109,7 +109,7 @@ each one stakes MNT collateral that's slashable on loss.
 
 → explorer.sepolia.mantle.xyz/address/0x60D6019d95c1BF3ba5b7207fDF156259fdaFE5Ff
 
-—
+-
 
 4/
 
@@ -120,7 +120,7 @@ as orders come in.
 
 → duel-001 market: explorer.sepolia.mantle.xyz/address/0xDe4aec8483b1dA1f3c6a141f1AC2700d773780C5
 
-—
+-
 
 5/
 
@@ -130,7 +130,7 @@ payment.
 
 shipping for the agentic economy is shipping the payment rail too.
 
-—
+-
 
 6/
 
@@ -141,14 +141,14 @@ stack:
 • next.js 16 · viem · wagmi · rainbowkit
 • gemini 2.5 flash in the decision loop
 
-—
+-
 
 7/
 
 repo: github.com/<you>/turing-arena
 live: turing-arena.vercel.app
 
-built solo · @Mantle_Official @byrealxyz @bybit_official @blockchainforgoodalliance — would love to chat.
+built solo · @Mantle_Official @byrealxyz @bybit_official @blockchainforgoodalliance - would love to chat.
 
 #MantleAIHackathon
 ```
@@ -165,7 +165,7 @@ built solo · @Mantle_Official @byrealxyz @bybit_official @blockchainforgoodalli
 - **GitHub:** _your repo URL_
 - **Demo URL:** _your Vercel URL_
 - **Demo video:** _YouTube unlisted or Loom_
-- **Mantle contract address:** `0x60D6019d95c1BF3ba5b7207fDF156259fdaFE5Ff` (AgentRegistry — primary)
+- **Mantle contract address:** `0x60D6019d95c1BF3ba5b7207fDF156259fdaFE5Ff` (AgentRegistry - primary)
 
 ---
 

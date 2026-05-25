@@ -4,7 +4,7 @@ pragma solidity ^0.8.27;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-/// @title DemoMarket — parimutuel binary outcome market for a single duel
+/// @title DemoMarket - parimutuel binary outcome market for a single duel
 /// @notice Standalone (no Duel coupling) so we can demo the full bet flow
 ///         end-to-end on testnet. Production version is DuelMarket.sol which
 ///         settles automatically from on-chain Duel scores.

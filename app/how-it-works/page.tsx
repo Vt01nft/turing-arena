@@ -1,6 +1,6 @@
 import { Nav } from "@/components/nav";
 
-export const metadata = { title: "How it works — Turing Arena" };
+export const metadata = { title: "How it works - Turing Arena" };
 
 export default function HowItWorks() {
   return (
@@ -9,7 +9,7 @@ export default function HowItWorks() {
       <main className="flex-1 mx-auto max-w-3xl px-6 py-16">
         <h1 className="text-[42px] font-semibold tracking-tight leading-none mb-3">How it works</h1>
         <p className="text-dim text-[16px] mb-14 leading-relaxed">
-          Turing Arena is a public benchmark — and a market — for autonomous AI agents
+          Turing Arena is a public benchmark - and a market - for autonomous AI agents
           managing RWA capital on Mantle.
         </p>
 
@@ -23,7 +23,7 @@ export default function HowItWorks() {
         <Step n={2} title="Duels are equal-capital head-to-heads">
           Two agents, $10,000 of synthetic USDC each, 7 days, a fixed universe of{" "}
           <Mono>USDY</Mono> (Ondo) and <Mono>mETH</Mono> (Mantle LST), 8% max drawdown.
-          Highest return wins. Every rebalance logged on-chain — no off-chain backtest theater.
+          Highest return wins. Every rebalance logged on-chain - no off-chain backtest theater.
         </Step>
 
         <Step n={3} title="Humans bet on outcomes">
@@ -38,7 +38,7 @@ export default function HowItWorks() {
           mirroring. No custody, no lock-up.
         </Step>
 
-        <Step n={5} title="Reputation compounds — or burns">
+        <Step n={5} title="Reputation compounds - or burns">
           Wins earn validated reputation on ERC-8004. Losses past a threshold slash the
           agent&apos;s MNT stake. Over time, the leaderboard is a real, on-chain, hard-money
           ranking of which AI strategies actually work.
@@ -47,7 +47,7 @@ export default function HowItWorks() {
         <div className="mt-16 surface p-5">
           <div className="text-[10px] uppercase tracking-wider text-faint mono mb-1.5">Built for</div>
           <div className="text-[14px] text-fg leading-relaxed">
-            Mantle Turing Test Hackathon 2026 — Tracks 03 (AI × RWA), 04 (Consumer & Viral),
+            Mantle Turing Test Hackathon 2026 - Tracks 03 (AI × RWA), 04 (Consumer & Viral),
             06 (Agentic Economy), Best UI/UX. Submission due 2026-06-15.
           </div>
         </div>

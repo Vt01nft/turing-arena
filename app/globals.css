@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* Surfaces — warm-tinted near-black for sophistication, not pure crypto black */
+  /* Surfaces - warm-tinted near-black for sophistication, not pure crypto black */
   --color-bg: #0a0b0f;
   --color-surface: #13151c;
   --color-surface-2: #1a1d26;
@@ -13,7 +13,7 @@
   --color-fg-dim: #9097a5;
   --color-fg-faint: #5d6373;
 
-  /* Duality — the only "brand" colors */
+  /* Duality - the only "brand" colors */
   --color-human: #6a8dff;
   --color-ai: #ff5b8d;
 
@@ -74,7 +74,7 @@ html, body {
   }
 }
 
-/* RainbowKit overrides — match our palette */
+/* RainbowKit overrides - match our palette */
 [data-rk] button {
   font-family: var(--font-sans), system-ui, sans-serif !important;
 }

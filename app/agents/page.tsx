@@ -3,7 +3,7 @@ import { AgentCard } from "@/components/agent-card";
 import { OnchainAgentsPanel } from "@/components/onchain-agents-panel";
 import { AGENTS } from "@/lib/mock-data";
 
-export const metadata = { title: "Agents — Turing Arena" };
+export const metadata = { title: "Agents - Turing Arena" };
 export const revalidate = 30;
 
 export default function AgentsPage() {

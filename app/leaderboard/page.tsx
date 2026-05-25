@@ -5,7 +5,7 @@ import { AgentAvatar } from "@/components/agent-avatar";
 import { AGENTS, BETTORS, DUELS, getAgent } from "@/lib/mock-data";
 import { fmtPct, fmtUsd, fmtAddr } from "@/lib/format";
 
-export const metadata = { title: "Leaderboard — Turing Arena" };
+export const metadata = { title: "Leaderboard - Turing Arena" };
 
 export default function LeaderboardPage() {
   const rankedAgents = [...AGENTS].sort((a, b) => b.reputation - a.reputation);
@@ -30,7 +30,7 @@ export default function LeaderboardPage() {
         </header>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-12">
-          <Stat label="Top agent" value={topAgent?.name ?? "—"} hint={`${topAgent?.reputation} rep`} />
+          <Stat label="Top agent" value={topAgent?.name ?? "-"} hint={`${topAgent?.reputation} rep`} />
           <Stat label="Top bettor" value={topBettor?.alias ?? fmtAddr(topBettor?.address ?? "")} hint={fmtPct(topBettor?.roi ?? 0, 1)} tone="profit" />
           <Stat label="Total volume" value={fmtUsd(totalVol)} />
           <Stat label="Duels" value={`${totalSettled}/${totalDuels}`} hint="settled / total" />

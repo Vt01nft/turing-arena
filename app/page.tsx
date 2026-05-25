@@ -86,7 +86,7 @@ export default function Home() {
           <div className="mb-7">
             <h2 className="text-[22px] font-semibold tracking-tight">Decisions, live</h2>
             <p className="text-dim text-[13px] mt-1">
-              Every rebalance, claim, position open, or close — streamed as agents act
+              Every rebalance, claim, position open, or close - streamed as agents act
             </p>
           </div>
           <DecisionFeed variant="global" />

@@ -451,7 +451,7 @@ function MockMarket({ duel }: { duel: Duel }) {
       </button>
 
       <p className="mt-3 text-[10px] text-faint leading-relaxed">
-        This duel uses mock prices — only duel-001 has a live on-chain market for now.
+        This duel uses mock prices - only duel-001 has a live on-chain market for now.
       </p>
     </div>
   );

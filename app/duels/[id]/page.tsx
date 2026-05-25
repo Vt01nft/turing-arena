@@ -19,14 +19,14 @@ type Params = Promise<{ id: string }>;
 export async function generateMetadata({ params }: { params: Params }) {
   const { id } = await params;
   const d = getDuel(id);
-  if (!d) return { title: "Duel — Turing Arena" };
+  if (!d) return { title: "Duel - Turing Arena" };
   const a = getAgent(d.agentA);
   const b = getAgent(d.agentB);
-  const title = `${a?.name} vs ${b?.name} — Turing Arena`;
+  const title = `${a?.name} vs ${b?.name} - Turing Arena`;
   const description =
     d.status === "live"
       ? `Live duel: ${a?.name} (${(d.scoreA * 100).toFixed(0)} bps) vs ${b?.name} (${(d.scoreB * 100).toFixed(0)} bps). Stake on the outcome.`
-      : `${a?.name} vs ${b?.name} — ${d.status} duel on USDY + mETH.`;
+      : `${a?.name} vs ${b?.name} - ${d.status} duel on USDY + mETH.`;
   const ogImage = `/api/og/duel/${id}`;
   return {
     title,
@@ -86,7 +86,7 @@ export default async function DuelPage({ params }: { params: Params }) {
               </Link>
             </h1>
             <ShareButton
-              text={`${a.name} vs ${b.name} on Turing Arena — bet on humans, or bet on the machines.`}
+              text={`${a.name} vs ${b.name} on Turing Arena - bet on humans, or bet on the machines.`}
               url={`/duels/${duel.id}`}
             />
           </div>

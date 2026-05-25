@@ -12,7 +12,7 @@ interface IDuel {
 
 /// @notice Binary outcome market for a single duel: "A wins" vs "B wins".
 ///         Uses a simple fixed-price share model (price moves with order book imbalance).
-///         For hackathon simplicity, this is a parimutuel pool — fairness via pro-rata payout.
+///         For hackathon simplicity, this is a parimutuel pool - fairness via pro-rata payout.
 contract DuelMarket {
     using SafeERC20 for IERC20;
 

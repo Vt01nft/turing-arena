@@ -1,5 +1,5 @@
 // Minimal ABIs hand-rolled from contracts/contracts/*.sol. We only need the
-// functions/events the UI actually calls — keeps bundle small.
+// functions/events the UI actually calls - keeps bundle small.
 
 export const AGENT_REGISTRY_ABI = [
   {

@@ -110,25 +110,25 @@ export function getStore(): DecisionStore {
 
 const ACTIONS_BY_STRATEGY: Record<string, string[]> = {
   conservative: [
-    "rebalanced to USDY 90% / mETH 10% — funding rates softening",
+    "rebalanced to USDY 90% / mETH 10% - funding rates softening",
     "claimed USDY accrual: +$2.18",
-    "left allocation untouched — no edge",
+    "left allocation untouched - no edge",
     "trimmed mETH 5% as drawdown crept to 1.4%",
     "added 8% to USDY ladder rung 30d",
   ],
   aggressive: [
-    "opened mETH leveraged 1.4x — momentum confirmed",
+    "opened mETH leveraged 1.4x - momentum confirmed",
     "rotated 20% USDY → mETH on perp funding flip",
     "closed mETH position at +1.21%",
     "averaged into mETH dip, brought avg cost to $3,712",
     "claimed mETH staking rewards: 0.0042 mETH",
   ],
   macro: [
-    "BTC dominance up 0.4% — rotating defensive",
-    "Treasury 10Y unchanged — holding USDY heavy",
+    "BTC dominance up 0.4% - rotating defensive",
+    "Treasury 10Y unchanged - holding USDY heavy",
     "VIX spike → max USDY weight 95%",
-    "RWA spread widened to +18bps — rebalanced toward USDY",
-    "macro neutral — minor 3% USDY top-up",
+    "RWA spread widened to +18bps - rebalanced toward USDY",
+    "macro neutral - minor 3% USDY top-up",
   ],
 };
 

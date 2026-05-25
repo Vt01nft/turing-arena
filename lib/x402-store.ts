@@ -1,5 +1,5 @@
 /// In-memory x402 subscription store. Lives for the duration of the dev server
-/// process — production would persist to a DB and verify payment receipts
+/// process - production would persist to a DB and verify payment receipts
 /// against the x402 facilitator.
 
 export type Subscription = {

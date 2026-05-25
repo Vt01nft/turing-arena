@@ -16,7 +16,7 @@ type Params = Promise<{ id: string }>;
 export async function generateMetadata({ params }: { params: Params }) {
   const { id } = await params;
   const a = getAgent(id);
-  return { title: a ? `${a.name} — Turing Arena` : "Agent — Turing Arena" };
+  return { title: a ? `${a.name} - Turing Arena` : "Agent - Turing Arena" };
 }
 
 export default async function AgentPage({ params }: { params: Params }) {

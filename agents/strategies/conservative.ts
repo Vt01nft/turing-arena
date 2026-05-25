@@ -11,7 +11,7 @@ export const conservative: Strategy = {
         kind: "rebalance",
         targetUsdyPct: 95,
         targetMethPct: 5,
-        rationale: "drawdown approaching limit — flight to USDY",
+        rationale: "drawdown approaching limit - flight to USDY",
       };
     }
     if (methStakingApyBps - usdyApyBps > 200) {
@@ -19,7 +19,7 @@ export const conservative: Strategy = {
         kind: "rebalance",
         targetUsdyPct: 70,
         targetMethPct: 30,
-        rationale: "mETH yield premium > 200bps — modest rotation",
+        rationale: "mETH yield premium > 200bps - modest rotation",
       };
     }
     return {

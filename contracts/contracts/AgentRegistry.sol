@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.27;
 
-/// @title AgentRegistry — minimal ERC-8004-style identity + reputation registry.
+/// @title AgentRegistry - minimal ERC-8004-style identity + reputation registry.
 /// @notice Tracks agent identities, on-chain reputation, and slashable MNT stakes.
 /// @dev Inspired by ERC-8004 (Identity, Reputation, Validation registries).
 contract AgentRegistry {

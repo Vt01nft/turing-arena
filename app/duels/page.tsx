@@ -2,7 +2,7 @@ import { Nav } from "@/components/nav";
 import { DuelCard } from "@/components/duel-card";
 import { DUELS } from "@/lib/mock-data";
 
-export const metadata = { title: "Duels — Turing Arena" };
+export const metadata = { title: "Duels - Turing Arena" };
 
 export default function DuelsPage() {
   const live = DUELS.filter((d) => d.status === "live");

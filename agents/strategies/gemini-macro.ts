@@ -12,7 +12,7 @@ export const geminiMacro: Strategy = {
     if (!apiKey) {
       return {
         kind: "hold",
-        rationale: "GOOGLE_GENERATIVE_AI_API_KEY missing — holding for safety",
+        rationale: "GOOGLE_GENERATIVE_AI_API_KEY missing - holding for safety",
       };
     }
 

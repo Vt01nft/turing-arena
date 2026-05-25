@@ -29,7 +29,7 @@ async function main() {
   const approve = await usdc.approve(marketAddr, ethers.MaxUint256);
   await approve.wait();
 
-  // 3. stake $300 on A (Prudence), $400 on B (Volt) — gives A ~43¢, B ~57¢
+  // 3. stake $300 on A (Prudence), $400 on B (Volt) - gives A ~43¢, B ~57¢
   console.log(`  staking $300 on side A (Prudence)…`);
   const stakeA = await market.stake(1, ethers.parseUnits("300", 6));
   await stakeA.wait();

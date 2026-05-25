@@ -36,7 +36,7 @@ yarn-error.log*
 .env.*.local
 !.env.example
 
-# secrets — never commit
+# secrets - never commit
 keys.txt
 keys.*
 *.key
