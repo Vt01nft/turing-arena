@@ -474,25 +474,34 @@ html.vs-dark [data-rk] [data-testid="rk-account-button"] {
   box-shadow: var(--vs-shadow-2);
 }
 
-/* Dark mode adjustments */
+/* Dark mode adjustments - match the visible-border treatment of the
+   center nav-links pill so all three controls (toggle, chain, wallet)
+   read as the same family. */
 html.vs-dark .ta-wallet-pill-chain {
   background: var(--vs-paper);
-  border-color: var(--vs-line-2);
+  border: 1px solid var(--vs-line-2);
   color: var(--vs-ink);
 }
-html.vs-dark .ta-wallet-pill-chain:hover { background: var(--vs-parchment); }
+html.vs-dark .ta-wallet-pill-chain:hover { background: var(--vs-parchment); border-color: var(--vs-ink-4); }
 html.vs-dark .ta-wallet-pill-account {
-  background: var(--vs-cream);
-  border-color: var(--vs-line-2);
+  background: var(--vs-paper);
+  border: 1px solid var(--vs-line-2);
   color: var(--vs-ink);
 }
-html.vs-dark .ta-wallet-pill-account:hover { background: var(--vs-parchment); }
+html.vs-dark .ta-wallet-pill-account:hover { background: var(--vs-parchment); border-color: var(--vs-ink-4); }
 html.vs-dark .ta-wallet-pill-connect {
   background: var(--vs-machine);
-  border-color: var(--vs-machine);
+  border: 1px solid var(--vs-machine);
   color: white;
 }
 html.vs-dark .ta-wallet-pill-connect:hover { background: var(--vs-machine-deep); }
+
+/* Light mode: also bump the wallet-pill borders so they match the
+   nav-links pill border weight at a glance. */
+.ta-wallet-pill-chain,
+.ta-wallet-pill-account {
+  border-width: 1px;
+}
 /* Force children of the rk buttons onto one line too — RainbowKit
    sometimes wraps the label in a column flex container which causes
    the icon + text to stack vertically once the parent has a fixed height. */
