@@ -33,6 +33,8 @@ export type Duel = {
   marketNoShares: number;
   marketPrice: number;
   volumeUsd: number;
+  /** If set, this duel has a real on-chain market at this address. */
+  onchainMarket?: "demoMarket001";
   rules: {
     assets: string[];
     maxDrawdownPct: number;
@@ -118,6 +120,7 @@ export const DUELS: Duel[] = [
     marketNoShares: 24_180,
     marketPrice: 0.43,
     volumeUsd: 42_600,
+    onchainMarket: "demoMarket001",
     rules: {
       assets: ["USDY", "mETH"],
       maxDrawdownPct: 8,

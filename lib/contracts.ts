@@ -11,6 +11,8 @@ export const CONTRACTS = {
   meth: (process.env.NEXT_PUBLIC_METH ?? ZERO) as Address,
   usdyVenue: (process.env.NEXT_PUBLIC_USDY_VENUE ?? ZERO) as Address,
   methVenue: (process.env.NEXT_PUBLIC_METH_VENUE ?? ZERO) as Address,
+  // Per-duel markets (demo: only duel-001 is on-chain)
+  demoMarket001: (process.env.NEXT_PUBLIC_DEMO_MARKET_001 ?? ZERO) as Address,
 } as const;
 
 export const isDeployed = (addr: Address) => addr !== ZERO;
