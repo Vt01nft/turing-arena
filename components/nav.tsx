@@ -72,7 +72,7 @@ export function Nav() {
         </div>
 
         {/* Right */}
-        <div className="flex items-center gap-2 justify-end">
+        <div className="flex items-center gap-3.5 justify-end">
           <DarkToggle />
           <div className="hidden sm:block">
             <WalletButtons />

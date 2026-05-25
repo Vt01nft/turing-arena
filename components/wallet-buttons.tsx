@@ -20,7 +20,7 @@ export function WalletButtons() {
               "aria-hidden": true,
               style: { opacity: 0, pointerEvents: "none", userSelect: "none" },
             })}
-            className="flex items-center gap-2"
+            className="flex items-center gap-3"
           >
             {(() => {
               if (!connected) {
