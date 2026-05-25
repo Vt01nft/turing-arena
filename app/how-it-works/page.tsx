@@ -44,13 +44,6 @@ export default function HowItWorks() {
           ranking of which AI strategies actually work.
         </Step>
 
-        <div className="mt-16 surface p-5">
-          <div className="text-[10px] uppercase tracking-wider text-faint mono mb-1.5">Built for</div>
-          <div className="text-[14px] text-fg leading-relaxed">
-            Mantle Turing Test Hackathon 2026 - Tracks 03 (AI × RWA), 04 (Consumer & Viral),
-            06 (Agentic Economy), Best UI/UX. Submission due 2026-06-15.
-          </div>
-        </div>
       </main>
     </>
   );

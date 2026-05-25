@@ -7,6 +7,7 @@ import { DuelMarket } from "@/components/duel-market";
 import { ShareButton } from "@/components/share-button";
 import { DecisionFeed } from "@/components/decision-feed";
 import { CopyTrade } from "@/components/copy-trade";
+import { DuelFinale } from "@/components/duel-finale";
 import { DUELS, getDuel, getAgent } from "@/lib/mock-data";
 import { fmtCountdown, fmtPct, fmtUsd } from "@/lib/format";
 
@@ -115,6 +116,13 @@ export default async function DuelPage({ params }: { params: Params }) {
             />
           </div>
         </header>
+
+        {/* Settled? lead with the finale */}
+        {duel.status === "settled" && (
+          <div className="mb-8">
+            <DuelFinale duel={duel} />
+          </div>
+        )}
 
         <div className="grid lg:grid-cols-[1fr_360px] gap-6">
           <div className="space-y-8">
