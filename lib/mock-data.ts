@@ -197,3 +197,24 @@ export function getAgent(id: string): Agent | undefined {
 export function getDuel(id: string): Duel | undefined {
   return DUELS.find((d) => d.id === id);
 }
+
+export type Bettor = {
+  address: string;
+  alias?: string;
+  staked: number;
+  pnl: number;
+  roi: number;
+  wins: number;
+  losses: number;
+};
+
+export const BETTORS: Bettor[] = [
+  { address: "0x42c1...8af1", alias: "yieldhunter.eth", staked: 4_820, pnl: 1_241.30, roi: 25.75, wins: 11, losses: 4 },
+  { address: "0xa039...cc2b", alias: "macromax",        staked: 2_400, pnl: 612.40,  roi: 25.52, wins: 7,  losses: 3 },
+  { address: "0xd875...1b0f", alias: "you",             staked: 1_280, pnl: 318.91,  roi: 24.92, wins: 6,  losses: 3 },
+  { address: "0x9b6e...0f12", alias: undefined,         staked: 980,   pnl: 142.30,  roi: 14.52, wins: 5,  losses: 4 },
+  { address: "0xc214...e7da", alias: "moe_lp",          staked: 760,   pnl: 88.10,   roi: 11.59, wins: 4,  losses: 3 },
+  { address: "0x6021...1188", alias: undefined,         staked: 540,   pnl: 41.20,   roi: 7.63,  wins: 3,  losses: 3 },
+  { address: "0xfa12...dc88", alias: "shorty.eth",      staked: 320,   pnl: -22.10,  roi: -6.91, wins: 1,  losses: 3 },
+  { address: "0x88aa...e201", alias: undefined,         staked: 240,   pnl: -58.40,  roi: -24.33, wins: 0, losses: 3 },
+];

@@ -1,3 +1,6 @@
+import { google } from "@ai-sdk/google";
+import { generateObject } from "ai";
+import { z } from "zod";
 import { AGENTS, DUELS, type Agent, type Duel } from "./mock-data";
 
 export type Decision = {
@@ -11,7 +14,14 @@ export type Decision = {
   kind: "rebalance" | "claim" | "hold" | "open" | "close";
   text: string;
   txHash?: string;
+  /** true if the decision came from a real Gemini call, false if synthesized */
+  llm?: boolean;
 };
+
+const GeminiDecision = z.object({
+  kind: z.enum(["rebalance", "claim", "hold", "open", "close"]),
+  text: z.string().min(8).max(160),
+});
 
 const MAX_HISTORY = 200;
 
@@ -76,7 +86,15 @@ class DecisionStore {
     if (!agent) return;
 
     const side: "A" | "B" = agent.id === duel.agentA ? "A" : "B";
-    const decision = synthesizeDecision(agent, duel, side, this.tick);
+
+    // Every 6th tick (~48s cadence), upgrade to a real Gemini call if we
+    // have a key. Keeps API quota modest while still showing real LLM signal.
+    const useLlm = this.tick % 6 === 0 && !!process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+    const decision = useLlm
+      ? await geminiDecision(agent, duel, side, this.tick).catch(() =>
+          synthesizeDecision(agent, duel, side, this.tick),
+        )
+      : synthesizeDecision(agent, duel, side, this.tick);
     this.push(decision);
   }
 }
@@ -145,6 +163,40 @@ function synthesizeDecision(
     kind: pickKind(text),
     text,
     txHash: `0x${[...Array(64)].map(() => "0123456789abcdef"[Math.floor(Math.random() * 16)]).join("")}`,
+    llm: false,
+  };
+}
+
+async function geminiDecision(
+  agent: Agent,
+  duel: Duel,
+  side: "A" | "B",
+  tick: number,
+): Promise<Decision> {
+  const { object } = await generateObject({
+    model: google("gemini-2.5-flash"),
+    schema: GeminiDecision,
+    system: `You are ${agent.name}, an autonomous DeFi yield agent on Mantle running a "${agent.strategy}" strategy.
+You allocate between USDY (Ondo, ~5.25% APY) and mETH (Mantle staked ETH, ~3.80% APY).
+Respond with ONE concrete next action (rebalance/claim/hold/open/close) and a terse rationale.
+Rationale must be a single sentence under 120 chars, present tense, no emojis, no preamble.
+Example: "rotated 15% USDY to mETH on staking-yield premium widening"`,
+    prompt: `Duel ${duel.id}: you (${agent.name}, side ${side}) vs opponent.
+Live score: A=${(duel.scoreA * 100).toFixed(1)}%, B=${(duel.scoreB * 100).toFixed(1)}%
+What's your next action?`,
+  });
+  return {
+    id: `${duel.id}-${agent.id}-${tick}-${Math.random().toString(36).slice(2, 6)}`,
+    duelId: duel.id,
+    agentId: agent.id,
+    agentName: agent.name,
+    agentSide: side,
+    strategy: agent.strategy,
+    at: Math.floor(Date.now() / 1000),
+    kind: object.kind,
+    text: object.text,
+    txHash: `0x${[...Array(64)].map(() => "0123456789abcdef"[Math.floor(Math.random() * 16)]).join("")}`,
+    llm: true,
   };
 }
 

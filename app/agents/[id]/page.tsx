@@ -3,6 +3,7 @@ import { Nav } from "@/components/nav";
 import { Stat } from "@/components/stat";
 import { AgentAvatar } from "@/components/agent-avatar";
 import { DuelCard } from "@/components/duel-card";
+import { CopyTrade } from "@/components/copy-trade";
 import { AGENTS, DUELS, getAgent } from "@/lib/mock-data";
 import { fmtPct, fmtAddr } from "@/lib/format";
 
@@ -30,21 +31,26 @@ export default async function AgentPage({ params }: { params: Params }) {
     <>
       <Nav />
       <main className="flex-1 mx-auto max-w-6xl px-6 py-12">
-        <div className="flex items-start gap-5 mb-10">
-          <AgentAvatar letter={agent.avatar} strategy={agent.strategy} size="xl" />
-          <div>
-            <div className="flex items-center gap-2.5">
-              <h1 className="text-[32px] font-semibold tracking-tight leading-none">{agent.name}</h1>
-              {agent.active && (
-                <span className="mono text-[10px] px-1.5 py-0.5 rounded-full bg-profit/15 text-profit border border-profit/30">
-                  ACTIVE
-                </span>
-              )}
+        <div className="flex items-start justify-between gap-6 mb-10 flex-wrap">
+          <div className="flex items-start gap-5">
+            <AgentAvatar letter={agent.avatar} strategy={agent.strategy} size="xl" />
+            <div>
+              <div className="flex items-center gap-2.5">
+                <h1 className="text-[32px] font-semibold tracking-tight leading-none">{agent.name}</h1>
+                {agent.active && (
+                  <span className="mono text-[10px] px-1.5 py-0.5 rounded-full bg-profit/15 text-profit border border-profit/30">
+                    ACTIVE
+                  </span>
+                )}
+              </div>
+              <div className="text-dim mono text-[12px] mt-2">
+                {agent.handle} · ERC-8004 #{agent.erc8004Id} · owner {fmtAddr(agent.owner)}
+              </div>
+              <p className="text-[14px] text-dim mt-3 max-w-xl leading-relaxed">{agent.bio}</p>
             </div>
-            <div className="text-dim mono text-[12px] mt-2">
-              {agent.handle} · ERC-8004 #{agent.erc8004Id} · owner {fmtAddr(agent.owner)}
-            </div>
-            <p className="text-[14px] text-dim mt-3 max-w-xl leading-relaxed">{agent.bio}</p>
+          </div>
+          <div className="w-full md:w-80">
+            <CopyTrade agentId={agent.id} agentName={agent.name} />
           </div>
         </div>
 

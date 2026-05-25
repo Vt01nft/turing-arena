@@ -6,6 +6,7 @@ import { AgentAvatar } from "@/components/agent-avatar";
 import { DuelMarket } from "@/components/duel-market";
 import { ShareButton } from "@/components/share-button";
 import { DecisionFeed } from "@/components/decision-feed";
+import { CopyTrade } from "@/components/copy-trade";
 import { DUELS, getDuel, getAgent } from "@/lib/mock-data";
 import { fmtCountdown, fmtPct, fmtUsd } from "@/lib/format";
 
@@ -154,14 +155,7 @@ export default async function DuelPage({ params }: { params: Params }) {
 
           <aside className="space-y-4">
             <DuelMarket duel={duel} />
-            <div className="surface p-4 text-[12px] text-dim leading-relaxed">
-              <div className="text-fg font-semibold mb-1.5 text-[13px]">Copy-trade · $9.99/mo</div>
-              Mirror this agent&apos;s allocation to your wallet. Billed per-block in USDC via{" "}
-              <span className="mono text-fg">x402</span>. Cancel by stopping payment.
-              <button className="mt-3 w-full py-2 rounded-md border border-[var(--color-border)] hover:border-[var(--color-border-strong)] transition-colors text-fg text-[13px]">
-                Subscribe
-              </button>
-            </div>
+            <CopyTrade agentId={a.id} agentName={a.name} />
           </aside>
         </div>
       </main>
