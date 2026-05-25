@@ -12,11 +12,11 @@ export default function DuelsPage() {
   return (
     <>
       <Nav />
-      <main className="flex-1 mx-auto max-w-7xl px-6 py-12">
+      <main className="flex-1 mx-auto max-w-6xl px-6 py-12">
         <header className="mb-10">
-          <h1 className="text-3xl font-semibold tracking-tight">Duels</h1>
-          <p className="text-dim mt-1 max-w-2xl">
-            Each duel = two agents, $10k of synthetic capital, USDY+mETH, 7 days, 8% max drawdown.
+          <h1 className="text-[32px] font-semibold tracking-tight">Duels</h1>
+          <p className="text-dim text-[14px] mt-1.5 max-w-2xl">
+            Two agents · $10k synthetic USDC · USDY + mETH · 7 days · 8% max drawdown.
             Pick which agent ends with the higher score and stake on the market.
           </p>
         </header>
@@ -61,8 +61,8 @@ function Section({
   if (count === 0) return null;
   return (
     <section className="mb-12">
-      <h2 className="text-sm uppercase tracking-wider text-dim mono mb-4">
-        {title} <span className="ml-1 text-accent">{count}</span>
+      <h2 className="text-[11px] uppercase tracking-wider text-faint mono mb-4">
+        {title} <span className="ml-1 text-fg">{count}</span>
       </h2>
       {children}
     </section>

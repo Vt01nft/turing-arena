@@ -4,12 +4,15 @@ import { AGENTS, DUELS } from "@/lib/mock-data";
 export const runtime = "nodejs";
 
 const COLORS = {
-  bg: "#07080a",
-  panel: "#14171d",
-  border: "#1f242d",
-  fg: "#f5f7fa",
-  dim: "#8a93a6",
-  accent: "#00e599",
+  bg: "#0a0b0f",
+  panel: "#13151c",
+  border: "#262a35",
+  fg: "#f5f6f8",
+  dim: "#9097a5",
+  faint: "#5d6373",
+  human: "#6a8dff",
+  ai: "#ff5b8d",
+  profit: "#1cb988",
 };
 
 export async function GET() {
@@ -48,31 +51,27 @@ export async function GET() {
             left: -200,
             width: 700,
             height: 700,
-            background: `radial-gradient(circle, ${COLORS.accent}22, transparent 70%)`,
+            background: `radial-gradient(circle, ${COLORS.human}22, transparent 70%)`,
             display: "flex",
           }}
         />
 
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div
-            style={{
-              width: 44,
-              height: 44,
-              background: COLORS.accent,
-              color: COLORS.bg,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: 800,
-              fontSize: 26,
-              borderRadius: 10,
-            }}
-          >
-            T
-          </div>
-          <div style={{ display: "flex", fontSize: 30, fontWeight: 700, letterSpacing: -0.5 }}>
-            <span>Turing</span>
-            <span style={{ color: COLORS.accent }}>Arena</span>
+          <svg width="44" height="44" viewBox="0 0 32 32">
+            <rect width="32" height="32" rx="7" fill={COLORS.panel} />
+            <path d="M 4.5 27.5 L 4.5 4.5 L 27.5 27.5 Z" fill={COLORS.human} />
+            <path d="M 27.5 4.5 L 27.5 27.5 L 4.5 4.5 Z" fill={COLORS.ai} />
+            <path
+              d="M 4.5 4.5 L 27.5 27.5"
+              stroke={COLORS.panel}
+              strokeWidth="1.25"
+              strokeLinecap="round"
+            />
+          </svg>
+          <div style={{ display: "flex", fontSize: 30, fontWeight: 600, letterSpacing: -0.6, gap: 4 }}>
+            <span>turing</span>
+            <span style={{ color: COLORS.faint, fontWeight: 300 }}>·</span>
+            <span>arena</span>
           </div>
           <div
             style={{
@@ -121,7 +120,7 @@ export async function GET() {
             }}
           >
             <span style={{ color: COLORS.dim }}>Or bet on&nbsp;</span>
-            <span style={{ color: COLORS.accent }}>the machines.</span>
+            <span style={{ color: COLORS.fg }}>the machines.</span>
           </div>
           <div style={{ display: "flex", fontSize: 26, color: COLORS.dim, marginTop: 28, maxWidth: 950 }}>
             Live AI agent duels on USDY + mETH. ERC-8004 identity. x402 payments.
@@ -129,7 +128,7 @@ export async function GET() {
         </div>
 
         <div style={{ display: "flex", gap: 16 }}>
-          <Stat label="Live duels" value={String(live)} tone="accent" />
+          <Stat label="Live duels" value={String(live)} tone="profit" />
           <Stat label="Agents" value={String(AGENTS.length)} />
           <Stat label="Volume" value={`$${(totalVol / 1000).toFixed(1)}k`} />
           <Stat label="Hackathon" value="Turing Test 2026" />
@@ -140,8 +139,8 @@ export async function GET() {
   );
 }
 
-function Stat({ label, value, tone }: { label: string; value: string; tone?: "accent" }) {
-  const color = tone === "accent" ? COLORS.accent : COLORS.fg;
+function Stat({ label, value, tone }: { label: string; value: string; tone?: "profit" }) {
+  const color = tone === "profit" ? COLORS.profit : COLORS.fg;
   return (
     <div
       style={{

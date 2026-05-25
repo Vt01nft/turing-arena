@@ -4,11 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import type { Decision } from "@/lib/decision-engine";
 
 const KIND_COLOR: Record<Decision["kind"], string> = {
-  rebalance: "text-accent",
-  claim: "text-[var(--color-warn)]",
+  rebalance: "text-fg",
+  claim: "text-warn",
   open: "text-human",
   close: "text-ai",
-  hold: "text-dim",
+  hold: "text-faint",
 };
 
 const KIND_LABEL: Record<Decision["kind"], string> = {
@@ -61,9 +61,10 @@ export function DecisionFeed({
 
   if (items.length === 0) {
     return (
-      <div className="panel p-6 text-sm text-dim">
-        <div className="mono text-[10px] text-dim mb-2">
-          {live ? "● CONNECTED" : "○ CONNECTING…"}
+      <div className="surface p-6 text-[13px] text-dim">
+        <div className="mono text-[10px] mb-2 flex items-center gap-1.5">
+          <span className={`h-1.5 w-1.5 rounded-full ${live ? "bg-profit animate-pulse" : "bg-[var(--color-border-strong)]"}`} />
+          {live ? "CONNECTED" : "CONNECTING…"}
         </div>
         Waiting for the next agent decision…
       </div>
@@ -71,34 +72,35 @@ export function DecisionFeed({
   }
 
   return (
-    <div className="panel divide-y divide-[var(--color-border)]">
-      <div className="px-4 py-2 flex items-center justify-between text-[10px] mono tracking-wider">
-        <span className={live ? "text-accent" : "text-dim"}>
-          {live ? "● LIVE FEED" : "○ DISCONNECTED"}
+    <div className="surface divide-y divide-[var(--color-border)]">
+      <div className="px-4 py-2.5 flex items-center justify-between text-[10px] mono tracking-wider">
+        <span className={`flex items-center gap-1.5 ${live ? "text-profit" : "text-faint"}`}>
+          <span className={`h-1.5 w-1.5 rounded-full ${live ? "bg-profit animate-pulse" : "bg-[var(--color-border-strong)]"}`} />
+          {live ? "LIVE FEED" : "DISCONNECTED"}
         </span>
-        <span className="text-dim">streamed via SSE · logged on-chain</span>
+        <span className="text-faint normal-case tracking-normal">streamed via SSE · logged on-chain</span>
       </div>
       {items.map((d) => (
-        <div key={d.id} className="px-4 py-3 flex items-start gap-3 text-sm">
-          <span className="mono text-[10px] text-dim w-10 pt-0.5">{relTime(d.at)} ago</span>
+        <div key={d.id} className="px-4 py-3 flex items-start gap-3 text-[13px]">
+          <span className="mono text-[10px] text-faint w-10 pt-0.5 shrink-0">{relTime(d.at)} ago</span>
           <span
             className={`mono text-[10px] w-12 pt-1 shrink-0 font-semibold tracking-wider ${KIND_COLOR[d.kind]}`}
           >
             {KIND_LABEL[d.kind]}
           </span>
           <span
-            className={`mono text-xs ${d.agentSide === "A" ? "text-human" : "text-ai"} w-20 pt-0.5 shrink-0`}
+            className={`mono text-[11px] ${d.agentSide === "A" ? "text-human" : "text-ai"} w-20 pt-0.5 shrink-0`}
           >
             {d.agentName}
           </span>
-          <span className="text-fg/90 flex-1">
+          <span className="text-fg/90 flex-1 leading-relaxed">
             {d.text}
             {variant === "global" && (
-              <span className="ml-2 text-dim mono text-[10px]">→ {d.duelId}</span>
+              <span className="ml-2 text-faint mono text-[10px]">→ {d.duelId}</span>
             )}
           </span>
           {d.txHash && (
-            <span className="mono text-[10px] text-dim shrink-0 pt-1">
+            <span className="mono text-[10px] text-faint shrink-0 pt-1 hidden sm:inline">
               {d.txHash.slice(0, 6)}…{d.txHash.slice(-4)}
             </span>
           )}

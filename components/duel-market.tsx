@@ -21,29 +21,30 @@ export function DuelMarket({ duel }: { duel: Duel }) {
   const profit = payout - dollar;
 
   const disabled = duel.status !== "live" || !isConnected || dollar <= 0;
+  const sideColor = side === "A" ? "var(--color-human)" : "var(--color-ai)";
 
   return (
-    <div className="panel-elev p-5">
+    <div className="surface-2 p-5">
       <div className="flex items-center justify-between mb-4">
-        <div className="text-sm font-semibold tracking-tight">Stake on outcome</div>
-        <div className="mono text-[10px] text-dim">
-          {fmtUsd(duel.volumeUsd)} volume · {Math.round(duel.marketYesShares + duel.marketNoShares).toLocaleString()} shares
+        <div className="text-[13px] font-semibold tracking-tight">Stake on outcome</div>
+        <div className="mono text-[10px] text-faint">
+          {fmtUsd(duel.volumeUsd)} vol
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 mb-4">
+      <div className="grid grid-cols-2 gap-2 mb-5">
         <button
           type="button"
           onClick={() => setSide("A")}
           className={cn(
-            "rounded-md py-3 border transition-all text-left px-3",
+            "rounded-md py-2.5 px-3 border transition-all text-left",
             side === "A"
-              ? "border-[var(--color-human)] bg-[var(--color-human)]/10 ring-1 ring-[var(--color-human)]/50"
-              : "border-[var(--color-border)] hover:border-[var(--color-fg-dim)]",
+              ? "border-[var(--color-human)] bg-[rgba(106,141,255,0.08)]"
+              : "border-[var(--color-border)] hover:border-[var(--color-border-strong)]",
           )}
         >
-          <div className="text-xs text-dim">{a.name} wins</div>
-          <div className="mono text-xl font-semibold text-human">
+          <div className="text-[11px] text-dim">{a.name}</div>
+          <div className="mono text-[20px] font-semibold text-human leading-tight mt-0.5">
             {Math.round(priceA * 100)}¢
           </div>
         </button>
@@ -51,20 +52,20 @@ export function DuelMarket({ duel }: { duel: Duel }) {
           type="button"
           onClick={() => setSide("B")}
           className={cn(
-            "rounded-md py-3 border transition-all text-left px-3",
+            "rounded-md py-2.5 px-3 border transition-all text-left",
             side === "B"
-              ? "border-[var(--color-ai)] bg-[var(--color-ai)]/10 ring-1 ring-[var(--color-ai)]/50"
-              : "border-[var(--color-border)] hover:border-[var(--color-fg-dim)]",
+              ? "border-[var(--color-ai)] bg-[rgba(255,91,141,0.08)]"
+              : "border-[var(--color-border)] hover:border-[var(--color-border-strong)]",
           )}
         >
-          <div className="text-xs text-dim">{b.name} wins</div>
-          <div className="mono text-xl font-semibold text-ai">
+          <div className="text-[11px] text-dim">{b.name}</div>
+          <div className="mono text-[20px] font-semibold text-ai leading-tight mt-0.5">
             {Math.round(priceB * 100)}¢
           </div>
         </button>
       </div>
 
-      <label className="block text-xs text-dim uppercase tracking-wider mono mb-2">
+      <label className="block text-[10px] text-faint uppercase tracking-wider mb-2">
         Amount (USDC)
       </label>
       <div className="flex gap-2 mb-3">
@@ -72,34 +73,35 @@ export function DuelMarket({ duel }: { duel: Duel }) {
           inputMode="decimal"
           value={amount}
           onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
-          className="flex-1 panel px-3 py-2.5 mono text-lg focus:outline-none focus:border-[var(--color-accent)]"
+          className="flex-1 rounded-md bg-[var(--color-surface)] border border-[var(--color-border)] px-3 py-2 mono text-[16px] focus:outline-none focus:border-[var(--color-border-strong)]"
         />
         {[10, 50, 250].map((v) => (
           <button
             key={v}
             type="button"
             onClick={() => setAmount(String(v))}
-            className="px-3 py-2 rounded-md border border-[var(--color-border)] mono text-xs text-dim hover:text-fg hover:border-[var(--color-fg-dim)] transition-colors"
+            className="px-2.5 rounded-md border border-[var(--color-border)] mono text-[11px] text-dim hover:text-fg hover:border-[var(--color-border-strong)] transition-colors"
           >
             ${v}
           </button>
         ))}
       </div>
 
-      <div className="panel px-3 py-2.5 mb-4 mono text-xs">
+      <div className="rounded-md border border-[var(--color-border)] px-3 py-2 mb-4 mono text-[11px] divide-y divide-[var(--color-border)]">
         <Row label="Shares" value={shares.toFixed(2)} />
-        <Row label="If correct, payout" value={fmtUsd(payout, 2)} tone="accent" />
-        <Row label="Profit" value={fmtUsd(profit, 2)} tone={profit >= 0 ? "accent" : "ai"} />
+        <Row label="If correct" value={fmtUsd(payout, 2)} tone="profit" />
+        <Row label="P&L" value={fmtUsd(profit, 2)} tone={profit >= 0 ? "profit" : "loss"} />
       </div>
 
       <button
         type="button"
         disabled={disabled}
+        style={{ backgroundColor: disabled ? undefined : sideColor }}
         className={cn(
-          "w-full py-3 rounded-md font-semibold transition-all",
+          "w-full py-2.5 rounded-md font-semibold text-[14px] transition-all",
           disabled
-            ? "bg-[var(--color-panel)] text-dim cursor-not-allowed"
-            : "bg-accent text-bg hover:opacity-90",
+            ? "bg-[var(--color-surface)] text-faint cursor-not-allowed"
+            : "text-bg hover:opacity-90",
         )}
       >
         {!isConnected
@@ -109,9 +111,8 @@ export function DuelMarket({ duel }: { duel: Duel }) {
             : `Stake ${fmtUsd(dollar, 2)} on ${side === "A" ? a.name : b.name}`}
       </button>
 
-      <p className="mt-3 text-[11px] text-dim leading-relaxed">
-        Outcome resolves via on-chain settlement when the duel ends. Capital and stake
-        are escrowed in the DuelMarket contract; winners claim pro-rata.
+      <p className="mt-3 text-[10px] text-faint leading-relaxed">
+        Outcome resolves via on-chain settlement. Capital + stake escrowed in DuelMarket; winners claim pro-rata.
       </p>
     </div>
   );
@@ -124,12 +125,12 @@ function Row({
 }: {
   label: string;
   value: string;
-  tone?: "accent" | "ai";
+  tone?: "profit" | "loss";
 }) {
   return (
-    <div className="flex justify-between py-0.5">
-      <span className="text-dim">{label}</span>
-      <span className={tone === "accent" ? "text-accent" : tone === "ai" ? "text-ai" : ""}>
+    <div className="flex justify-between py-1.5 first:pt-0 last:pb-0">
+      <span className="text-faint">{label}</span>
+      <span className={tone === "profit" ? "text-profit" : tone === "loss" ? "text-loss" : ""}>
         {value}
       </span>
     </div>

@@ -5,13 +5,16 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const COLORS = {
-  bg: "#07080a",
-  panel: "#14171d",
-  border: "#1f242d",
-  fg: "#f5f7fa",
-  dim: "#8a93a6",
-  accent: "#00e599",
-  ai: "#ff4d8d",
+  bg: "#0a0b0f",
+  panel: "#13151c",
+  border: "#262a35",
+  fg: "#f5f6f8",
+  dim: "#9097a5",
+  faint: "#5d6373",
+  human: "#6a8dff",
+  ai: "#ff5b8d",
+  profit: "#1cb988",
+  loss: "#ff5252",
 };
 
 export async function GET(
@@ -53,7 +56,7 @@ export async function GET(
   const otherAgent = side === "A" ? getAgent(duel.agentB)! : getAgent(duel.agentA)!;
 
   const profit = payout - amount;
-  const profitColor = won ? COLORS.accent : COLORS.ai;
+  const profitColor = won ? COLORS.profit : COLORS.loss;
   const profitSign = profit >= 0 ? "+" : "";
   const roiPct = ((profit / amount) * 100).toFixed(0);
 
@@ -94,25 +97,21 @@ export async function GET(
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div
-              style={{
-                width: 44,
-                height: 44,
-                background: COLORS.accent,
-                color: COLORS.bg,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: 800,
-                fontSize: 26,
-                borderRadius: 10,
-              }}
-            >
-              T
-            </div>
-            <div style={{ display: "flex", fontSize: 28, fontWeight: 700, letterSpacing: -0.5 }}>
-              <span>Turing</span>
-              <span style={{ color: COLORS.accent }}>Arena</span>
+            <svg width="44" height="44" viewBox="0 0 32 32">
+              <rect width="32" height="32" rx="7" fill={COLORS.panel} />
+              <path d="M 4.5 27.5 L 4.5 4.5 L 27.5 27.5 Z" fill={COLORS.human} />
+              <path d="M 27.5 4.5 L 27.5 27.5 L 4.5 4.5 Z" fill={COLORS.ai} />
+              <path
+                d="M 4.5 4.5 L 27.5 27.5"
+                stroke={COLORS.panel}
+                strokeWidth="1.25"
+                strokeLinecap="round"
+              />
+            </svg>
+            <div style={{ display: "flex", fontSize: 28, fontWeight: 600, letterSpacing: -0.6, gap: 4 }}>
+              <span>turing</span>
+              <span style={{ color: COLORS.faint, fontWeight: 300 }}>·</span>
+              <span>arena</span>
             </div>
           </div>
           <div
@@ -211,7 +210,7 @@ function ReceiptCell({
   tone?: "accent" | "ai" | "dim";
 }) {
   const color =
-    tone === "accent" ? COLORS.accent : tone === "ai" ? COLORS.ai : tone === "dim" ? COLORS.dim : COLORS.fg;
+    tone === "accent" ? COLORS.profit : tone === "ai" ? COLORS.loss : tone === "dim" ? COLORS.dim : COLORS.fg;
   return (
     <div
       style={{

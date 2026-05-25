@@ -3,7 +3,7 @@
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { Nav } from "@/components/nav";
 import { ERC20_ABI } from "@/lib/abis";
-import { CONTRACTS } from "@/lib/contracts";
+import { CONTRACTS, isDeployed } from "@/lib/contracts";
 import { useState } from "react";
 
 const TOKENS = [
@@ -17,18 +17,18 @@ export default function FaucetPage() {
     <>
       <Nav />
       <main className="flex-1 mx-auto max-w-3xl px-6 py-12">
-        <header className="mb-8">
-          <h1 className="text-3xl font-semibold tracking-tight">Testnet faucet</h1>
-          <p className="text-dim mt-1">
-            Claim test tokens to stake on duels or deposit into yield venues. Each token has its own
-            faucet on Mantle Sepolia. Need testnet MNT? →{" "}
-            <a className="text-accent hover:underline" href="https://faucet.sepolia.mantle.xyz/">
+        <header className="mb-10">
+          <h1 className="text-[32px] font-semibold tracking-tight">Testnet faucet</h1>
+          <p className="text-dim mt-1.5 text-[14px] leading-relaxed">
+            Claim test tokens to stake on duels or deposit into yield venues. Need testnet MNT for
+            gas? →{" "}
+            <a className="text-fg underline underline-offset-2 hover:text-human transition-colors" href="https://faucet.sepolia.mantle.xyz/">
               official Mantle faucet
             </a>
           </p>
         </header>
 
-        <div className="grid gap-4">
+        <div className="grid gap-3">
           {TOKENS.map((t) => (
             <FaucetRow key={t.key} {...t} />
           ))}
@@ -44,27 +44,32 @@ function FaucetRow({ addr, label, amount, note }: { addr: string; label: string;
   const { isLoading: confirming, isSuccess } = useWaitForTransactionReceipt({ hash });
   const [clicked, setClicked] = useState(false);
 
-  const isZero = addr === "0x0000000000000000000000000000000000000000";
+  const deployed = isDeployed(addr as `0x${string}`);
 
   return (
-    <div className="panel p-5 flex items-center gap-4">
-      <div className="h-12 w-12 grid place-items-center rounded-md bg-[var(--color-bg-elev)] border border-[var(--color-border)] mono font-semibold text-accent">
+    <div className="surface p-5 flex items-center gap-4">
+      <div className="h-11 w-11 grid place-items-center rounded-md surface-2 mono font-semibold">
         {label.slice(0, 1)}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className="font-semibold">{label}</span>
-          <span className="mono text-[10px] text-dim">
-            {isZero ? "not deployed yet" : `${addr.slice(0, 6)}…${addr.slice(-4)}`}
-          </span>
+          <span className="font-semibold text-[15px]">{label}</span>
+          <a
+            href={deployed ? `https://explorer.sepolia.mantle.xyz/address/${addr}` : undefined}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mono text-[10px] text-faint hover:text-fg transition-colors"
+          >
+            {deployed ? `${addr.slice(0, 6)}…${addr.slice(-4)}` : "not deployed"}
+          </a>
         </div>
-        <div className="text-dim text-xs">{note}</div>
-        {error && <div className="text-ai text-xs mt-1">{error.message.split("\n")[0]}</div>}
-        {isSuccess && <div className="text-accent text-xs mt-1">✓ {amount} {label} dripped</div>}
+        <div className="text-dim text-[11px] mt-0.5">{note}</div>
+        {error && <div className="text-loss text-[11px] mt-1">{error.message.split("\n")[0]}</div>}
+        {isSuccess && <div className="text-profit text-[11px] mt-1">✓ {amount} {label} dripped</div>}
       </div>
       <button
         type="button"
-        disabled={!isConnected || isZero || isPending || confirming}
+        disabled={!isConnected || !deployed || isPending || confirming}
         onClick={() => {
           setClicked(true);
           writeContract({
@@ -73,14 +78,14 @@ function FaucetRow({ addr, label, amount, note }: { addr: string; label: string;
             functionName: "drip",
           });
         }}
-        className="px-4 py-2 rounded-md bg-accent text-bg font-semibold disabled:bg-[var(--color-panel)] disabled:text-dim transition-colors"
+        className="px-4 py-2 rounded-md bg-fg text-bg font-semibold text-[13px] disabled:bg-[var(--color-surface)] disabled:text-faint transition-colors"
       >
         {!isConnected
           ? "Connect wallet"
-          : isZero
+          : !deployed
             ? "Unavailable"
             : isPending
-              ? "Confirm in wallet…"
+              ? "Confirm…"
               : confirming
                 ? "Pending…"
                 : clicked && isSuccess

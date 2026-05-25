@@ -44,46 +44,43 @@ export default async function DuelPage({ params }: { params: Params }) {
   if (!a || !b) notFound();
 
   const leading = duel.scoreA > duel.scoreB ? "A" : duel.scoreB > duel.scoreA ? "B" : null;
+  const statusTone =
+    duel.status === "live" ? "text-profit" : duel.status === "upcoming" ? "text-dim" : "text-warn";
+  const statusDot =
+    duel.status === "live" ? "bg-profit animate-pulse" : duel.status === "upcoming" ? "bg-[var(--color-border-strong)]" : "bg-warn";
 
   return (
     <>
       <Nav />
-      <main className="flex-1 mx-auto max-w-7xl px-6 py-8">
-        <Link href="/duels" className="mono text-xs text-dim hover:text-fg">
+      <main className="flex-1 mx-auto max-w-6xl px-6 py-10">
+        <Link href="/duels" className="mono text-[11px] text-faint hover:text-fg transition-colors">
           ← all duels
         </Link>
 
         <header className="mt-4 mb-8">
-          <div className="flex items-center gap-2 mono text-[11px] mb-3">
-            <span
-              className={
-                duel.status === "live"
-                  ? "text-accent"
-                  : duel.status === "upcoming"
-                    ? "text-dim"
-                    : "text-[var(--color-warn)]"
-              }
-            >
-              ● {duel.status.toUpperCase()}
+          <div className="flex items-center gap-2 text-[11px] mb-3">
+            <span className={`flex items-center gap-1.5 ${statusTone}`}>
+              <span className={`h-1.5 w-1.5 rounded-full ${statusDot}`} />
+              <span className="capitalize">{duel.status}</span>
             </span>
-            <span className="text-dim">·</span>
+            <span className="text-faint">·</span>
             <span className="text-dim">
               {duel.status === "live"
                 ? `${fmtCountdown(duel.endsAt)} remaining`
                 : duel.status === "upcoming"
                   ? `starts in ${fmtCountdown(duel.startsAt)}`
-                  : `settled`}
+                  : "settled"}
             </span>
-            <span className="text-dim">·</span>
-            <span className="text-dim mono">{duel.id}</span>
+            <span className="text-faint">·</span>
+            <span className="text-faint mono">{duel.id}</span>
           </div>
           <div className="flex items-end justify-between flex-wrap gap-4">
-            <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
-              <Link href={`/agents/${a.id}`} className="hover:text-human">
+            <h1 className="text-[34px] md:text-[42px] font-semibold tracking-tight leading-none">
+              <Link href={`/agents/${a.id}`} className="hover:text-human transition-colors">
                 {a.name}
-              </Link>{" "}
-              <span className="text-dim">vs</span>{" "}
-              <Link href={`/agents/${b.id}`} className="hover:text-ai">
+              </Link>
+              <span className="text-faint font-light"> vs </span>
+              <Link href={`/agents/${b.id}`} className="hover:text-ai transition-colors">
                 {b.name}
               </Link>
             </h1>
@@ -94,44 +91,44 @@ export default async function DuelPage({ params }: { params: Params }) {
           </div>
         </header>
 
-        <div className="grid lg:grid-cols-[1fr_360px] gap-6">
-          <div className="space-y-6">
+        <div className="grid lg:grid-cols-[1fr_340px] gap-6">
+          <div className="space-y-8">
             {/* Scoreboard */}
-            <section className="panel p-6">
+            <section className="surface p-6">
               <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-6">
                 <div className="flex items-center gap-4">
-                  <AgentAvatar letter={a.avatar} strategy={a.strategy} size="lg" />
+                  <AgentAvatar letter={a.avatar} strategy={a.strategy} size="xl" />
                   <div>
-                    <div className="font-semibold text-lg">{a.name}</div>
-                    <div className="text-xs text-dim">{a.strategy}</div>
+                    <div className="font-semibold text-[17px]">{a.name}</div>
+                    <div className="text-[11px] text-dim mt-0.5">{a.strategy}</div>
                     <div
-                      className={`mono text-2xl mt-1 ${duel.scoreA >= 0 ? "text-accent" : "text-ai"} ${leading === "A" ? "font-semibold" : ""}`}
+                      className={`mono text-[28px] mt-2 leading-none ${duel.scoreA >= 0 ? "text-profit" : "text-loss"} ${leading === "A" ? "font-semibold" : "font-medium"}`}
                     >
                       {fmtPct(duel.scoreA)}
                     </div>
                   </div>
                 </div>
-                <div className="text-dim mono">⚔</div>
+                <div className="text-faint mono text-[11px]">VS</div>
                 <div className="flex items-center gap-4 justify-end text-right">
                   <div>
-                    <div className="font-semibold text-lg">{b.name}</div>
-                    <div className="text-xs text-dim">{b.strategy}</div>
+                    <div className="font-semibold text-[17px]">{b.name}</div>
+                    <div className="text-[11px] text-dim mt-0.5">{b.strategy}</div>
                     <div
-                      className={`mono text-2xl mt-1 ${duel.scoreB >= 0 ? "text-accent" : "text-ai"} ${leading === "B" ? "font-semibold" : ""}`}
+                      className={`mono text-[28px] mt-2 leading-none ${duel.scoreB >= 0 ? "text-profit" : "text-loss"} ${leading === "B" ? "font-semibold" : "font-medium"}`}
                     >
                       {fmtPct(duel.scoreB)}
                     </div>
                   </div>
-                  <AgentAvatar letter={b.avatar} strategy={b.strategy} size="lg" />
+                  <AgentAvatar letter={b.avatar} strategy={b.strategy} size="xl" />
                 </div>
               </div>
             </section>
 
             {/* Rules */}
             <section>
-              <h3 className="text-xs uppercase tracking-wider text-dim mono mb-3">Rules of engagement</h3>
+              <h3 className="text-[11px] uppercase tracking-wider text-faint mono mb-3">Rules</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <Stat label="Starting capital" value={fmtUsd(duel.capitalUsd)} />
+                <Stat label="Capital" value={fmtUsd(duel.capitalUsd)} />
                 <Stat label="Assets" value={duel.rules.assets.join(" + ")} />
                 <Stat
                   label="Max drawdown"
@@ -139,14 +136,15 @@ export default async function DuelPage({ params }: { params: Params }) {
                   hint="auto-liquidate"
                   tone="warn"
                 />
-                <Stat label="Duration" value={`${duel.rules.durationHours / 24} days`} />
+                <Stat label="Duration" value={`${duel.rules.durationHours / 24}d`} />
               </div>
             </section>
 
+            {/* Decision feed */}
             <section>
-              <h3 className="text-xs uppercase tracking-wider text-dim mono mb-3">
+              <h3 className="text-[11px] uppercase tracking-wider text-faint mono mb-3">
                 Decision feed
-                <span className="ml-2 text-dim normal-case tracking-normal font-sans">
+                <span className="ml-2 text-faint normal-case tracking-normal font-sans">
                   · logged to ERC-8004 ReputationRegistry every action
                 </span>
               </h3>
@@ -156,12 +154,11 @@ export default async function DuelPage({ params }: { params: Params }) {
 
           <aside className="space-y-4">
             <DuelMarket duel={duel} />
-            <div className="panel p-4 text-xs text-dim leading-relaxed">
-              <div className="text-fg font-semibold mb-2 text-sm">Copy-trade for $9.99/mo</div>
-              Mirror this agent&apos;s allocation to your own wallet. Subscription billed in
-              USDC via <span className="mono text-accent">x402</span>, settled per-block.
-              Cancel anytime by stopping payment.
-              <button className="mt-3 w-full py-2 rounded-md border border-[var(--color-border)] hover:border-[var(--color-accent-dim)] transition-colors text-fg">
+            <div className="surface p-4 text-[12px] text-dim leading-relaxed">
+              <div className="text-fg font-semibold mb-1.5 text-[13px]">Copy-trade · $9.99/mo</div>
+              Mirror this agent&apos;s allocation to your wallet. Billed per-block in USDC via{" "}
+              <span className="mono text-fg">x402</span>. Cancel by stopping payment.
+              <button className="mt-3 w-full py-2 rounded-md border border-[var(--color-border)] hover:border-[var(--color-border-strong)] transition-colors text-fg text-[13px]">
                 Subscribe
               </button>
             </div>
@@ -171,4 +168,3 @@ export default async function DuelPage({ params }: { params: Params }) {
     </>
   );
 }
-

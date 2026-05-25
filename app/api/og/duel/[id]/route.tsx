@@ -5,22 +5,24 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const COLORS = {
-  bg: "#07080a",
-  panel: "#14171d",
-  border: "#1f242d",
-  fg: "#f5f7fa",
-  dim: "#8a93a6",
-  accent: "#00e599",
-  human: "#5b8cff",
-  ai: "#ff4d8d",
-  warn: "#ffb84d",
+  bg: "#0a0b0f",
+  panel: "#13151c",
+  border: "#262a35",
+  fg: "#f5f6f8",
+  dim: "#9097a5",
+  faint: "#5d6373",
+  human: "#6a8dff",
+  ai: "#ff5b8d",
+  profit: "#1cb988",
+  loss: "#ff5252",
+  warn: "#f7c14b",
 };
 
 const STRATEGY_TINT: Record<string, string> = {
-  conservative: "#5b8cff",
-  aggressive: "#ff4d8d",
+  conservative: "#6a8dff",
+  aggressive: "#ff5b8d",
   contrarian: "#c084fc",
-  macro: "#34d399",
+  macro: "#5ed4a8",
   momentum: "#fbbf24",
 };
 
@@ -65,7 +67,7 @@ export async function GET(
           ? `${a.name.toUpperCase()} WON`
           : `${b.name.toUpperCase()} WON`;
   const statusColor =
-    duel.status === "live" ? COLORS.accent : duel.status === "upcoming" ? COLORS.dim : COLORS.warn;
+    duel.status === "live" ? COLORS.profit : duel.status === "upcoming" ? COLORS.dim : COLORS.warn;
 
   const yesPct = Math.round(duel.marketPrice * 100);
   const noPct = 100 - yesPct;
@@ -102,7 +104,7 @@ export async function GET(
             right: -200,
             width: 600,
             height: 600,
-            background: `radial-gradient(circle, ${COLORS.accent}22, transparent 70%)`,
+            background: `radial-gradient(circle, ${COLORS.human}22, transparent 70%)`,
             display: "flex",
           }}
         />
@@ -115,25 +117,21 @@ export async function GET(
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div
-              style={{
-                width: 44,
-                height: 44,
-                background: COLORS.accent,
-                color: COLORS.bg,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: 800,
-                fontSize: 26,
-                borderRadius: 10,
-              }}
-            >
-              T
-            </div>
-            <div style={{ display: "flex", fontSize: 30, fontWeight: 700, letterSpacing: -0.5 }}>
-              <span>Turing</span>
-              <span style={{ color: COLORS.accent }}>Arena</span>
+            <svg width="44" height="44" viewBox="0 0 32 32">
+              <rect width="32" height="32" rx="7" fill={COLORS.panel} />
+              <path d="M 4.5 27.5 L 4.5 4.5 L 27.5 27.5 Z" fill={COLORS.human} />
+              <path d="M 27.5 4.5 L 27.5 27.5 L 4.5 4.5 Z" fill={COLORS.ai} />
+              <path
+                d="M 4.5 4.5 L 27.5 27.5"
+                stroke={COLORS.panel}
+                strokeWidth="1.25"
+                strokeLinecap="round"
+              />
+            </svg>
+            <div style={{ display: "flex", fontSize: 30, fontWeight: 600, letterSpacing: -0.6, gap: 4 }}>
+              <span>turing</span>
+              <span style={{ color: COLORS.faint, fontWeight: 300 }}>·</span>
+              <span>arena</span>
             </div>
           </div>
           <div
@@ -247,7 +245,7 @@ function AgentBlock({
   if (!agent) return <div style={{ display: "flex" }} />;
   const tint = STRATEGY_TINT[agent.strategy] ?? COLORS.fg;
   const sign = score >= 0 ? "+" : "";
-  const scoreColor = score >= 0 ? COLORS.accent : COLORS.ai;
+  const scoreColor = score >= 0 ? COLORS.profit : COLORS.loss;
 
   return (
     <div

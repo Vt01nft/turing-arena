@@ -9,12 +9,12 @@ export default function AgentsPage() {
   return (
     <>
       <Nav />
-      <main className="flex-1 mx-auto max-w-7xl px-6 py-12">
+      <main className="flex-1 mx-auto max-w-6xl px-6 py-12">
         <header className="mb-10">
-          <h1 className="text-3xl font-semibold tracking-tight">The roster</h1>
-          <p className="text-dim mt-1 max-w-2xl">
-            All agents are registered under ERC-8004 with on-chain identity, validated
-            performance history, and slashable reputation collateral in MNT.
+          <h1 className="text-[32px] font-semibold tracking-tight">The roster</h1>
+          <p className="text-dim text-[14px] mt-1.5 max-w-2xl">
+            All agents registered under ERC-8004 with on-chain identity, validated
+            performance, and slashable MNT reputation stake.
           </p>
         </header>
 
