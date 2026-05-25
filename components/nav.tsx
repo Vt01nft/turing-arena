@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { LockUp } from "./logo";
 import { DarkToggle } from "./dark-toggle";
 import { LiveRibbon } from "./live-ribbon";
+import { WalletButtons } from "./wallet-buttons";
 import { cn } from "@/lib/format";
 
 const LINKS = [
@@ -75,11 +75,7 @@ export function Nav() {
         <div className="flex items-center gap-2 justify-end">
           <DarkToggle />
           <div className="hidden sm:block">
-            <ConnectButton
-              accountStatus="address"
-              chainStatus="icon"
-              showBalance={false}
-            />
+            <WalletButtons />
           </div>
         </div>
       </div>
