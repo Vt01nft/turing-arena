@@ -112,6 +112,13 @@ export const DEMO_MARKET_ABI = [
   },
   {
     type: "function",
+    name: "resolve",
+    stateMutability: "nonpayable",
+    inputs: [{ name: "_winner", type: "uint8" }],
+    outputs: [],
+  },
+  {
+    type: "function",
     name: "poolA",
     stateMutability: "view",
     inputs: [],
