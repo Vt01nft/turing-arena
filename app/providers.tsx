@@ -6,6 +6,7 @@ import { WagmiProvider } from "wagmi";
 import { RainbowKitProvider, lightTheme } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { wagmiConfig } from "@/lib/wagmi";
+import { ToasterProvider } from "@/components/toaster";
 
 export function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
@@ -24,7 +25,7 @@ export function Providers({ children }: { children: ReactNode }) {
           })}
           modalSize="compact"
         >
-          {children}
+          <ToasterProvider>{children}</ToasterProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

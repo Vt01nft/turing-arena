@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
 import { PageBackground } from "@/components/page-background";
+import { LiveRibbon } from "@/components/live-ribbon";
+import { Onboarding } from "@/components/onboarding";
 
 export const metadata: Metadata = {
   title: "Turing Arena — Humans vs. AI on Mantle",
@@ -33,6 +35,7 @@ export default function RootLayout({
         <Providers>
           <PageBackground />
           <div className="relative z-[1] flex flex-col flex-1">{children}</div>
+          <Onboarding />
         </Providers>
       </body>
     </html>

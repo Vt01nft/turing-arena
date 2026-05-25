@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { LockUp } from "./logo";
 import { DarkToggle } from "./dark-toggle";
+import { LiveRibbon } from "./live-ribbon";
 import { cn } from "@/lib/format";
 
 const LINKS = [
@@ -28,6 +29,7 @@ export function Nav() {
   }, []);
 
   return (
+    <>
     <nav
       className={cn(
         "sticky top-0 z-30 transition-all duration-300",
@@ -82,5 +84,7 @@ export function Nav() {
         </div>
       </div>
     </nav>
+    <LiveRibbon />
+    </>
   );
 }
