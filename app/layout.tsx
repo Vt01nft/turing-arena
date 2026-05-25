@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import "./globals.css";
 import { Providers } from "./providers";
 import { PageBackground } from "@/components/page-background";
-import { LiveRibbon } from "@/components/live-ribbon";
 import { Onboarding } from "@/components/onboarding";
+import { RouteProgress } from "@/components/route-progress";
 
 export const metadata: Metadata = {
   title: "Turing Arena — Humans vs. AI on Mantle",
@@ -33,6 +34,9 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <body className="min-h-full flex flex-col" style={{ background: "var(--vs-bone)", color: "var(--vs-ink)" }}>
         <Providers>
+          <Suspense fallback={null}>
+            <RouteProgress />
+          </Suspense>
           <PageBackground />
           <div className="relative z-[1] flex flex-col flex-1">{children}</div>
           <Onboarding />

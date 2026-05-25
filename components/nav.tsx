@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useLinkStatus } from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LockUp } from "./logo";
@@ -57,16 +58,9 @@ export function Nav() {
           {LINKS.map((l) => {
             const active = l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
             return (
-              <Link
-                key={l.href}
-                href={l.href}
-                className={cn(
-                  "px-4 py-1.5 rounded-full text-[13.5px] font-medium transition-all duration-150",
-                  active ? "bg-ink text-paper" : "text-ink-2 hover:text-ink",
-                )}
-              >
+              <NavPill key={l.href} href={l.href} active={active}>
                 {l.label}
-              </Link>
+              </NavPill>
             );
           })}
         </div>
@@ -82,5 +76,54 @@ export function Nav() {
     </nav>
     <LiveRibbon />
     </header>
+  );
+}
+
+function NavPill({
+  href,
+  active,
+  children,
+}: {
+  href: string;
+  active: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      prefetch
+      className={cn(
+        "nav-link inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[13.5px] font-medium relative",
+        active ? "bg-ink text-paper" : "text-ink-2 hover:text-ink",
+      )}
+    >
+      {children}
+      <NavPending />
+    </Link>
+  );
+}
+
+/// Tiny spinner that only shows while THIS link is pending navigation.
+function NavPending() {
+  const { pending } = useLinkStatus();
+  if (!pending) return null;
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      className="inline-block animate-spin"
+      style={{ animationDuration: "0.8s" }}
+      aria-hidden
+    >
+      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="2.5" opacity="0.25" />
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        d="M12 3a9 9 0 0 1 9 9"
+      />
+    </svg>
   );
 }
