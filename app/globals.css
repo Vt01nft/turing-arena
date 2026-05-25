@@ -197,6 +197,23 @@ html.vs-dark .vs-pg-blob.b2 { background: #B45647; opacity: 0.10; }
 
 @keyframes pulse-soft { 0%, 100% { box-shadow: 0 0 0 0 rgba(123,125,235,0.36); } 50% { box-shadow: 0 0 0 6px rgba(123,125,235,0); } }
 
+/* Live ribbon marquee. Track is duplicated, so translating by -50% gives
+   a seamless loop. Pauses on hover so the eye can settle on one item. */
+.ribbon-marquee { overflow: hidden; }
+.ribbon-track {
+  animation: ribbon-scroll 55s linear infinite;
+}
+.ribbon-marquee:hover .ribbon-track {
+  animation-play-state: paused;
+}
+@keyframes ribbon-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ribbon-track { animation: none; }
+}
+
 @keyframes toast-in {
   from { opacity: 0; transform: translateY(-8px) scale(0.96); }
   to   { opacity: 1; transform: translateY(0)    scale(1); }

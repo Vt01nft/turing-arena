@@ -29,10 +29,10 @@ export function Nav() {
   }, []);
 
   return (
-    <>
+    <header className="sticky top-0 z-30">
     <nav
       className={cn(
-        "sticky top-0 z-30 transition-all duration-300",
+        "transition-all duration-300",
         scrolled
           ? "border-b border-[rgba(212,216,229,0.45)]"
           : "bg-transparent border-b border-transparent",
@@ -85,6 +85,6 @@ export function Nav() {
       </div>
     </nav>
     <LiveRibbon />
-    </>
+    </header>
   );
 }
