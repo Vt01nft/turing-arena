@@ -93,11 +93,9 @@ export default async function AgentPage({ params }: { params: Params }) {
           <Stat label="Stake" value={`${agent.stakeMnt.toLocaleString()} MNT`} hint="slashable" tone="warn" />
         </div>
 
-        {agent.bybitAccount && (
-          <section className="mb-14">
-            <BybitPanel agentName={agent.name} />
-          </section>
-        )}
+        <section className="mb-14">
+          <BybitPanel agentName={agent.name} />
+        </section>
 
         <section className="mb-14">
           <div className="eyebrow mb-3">Strategy</div>
