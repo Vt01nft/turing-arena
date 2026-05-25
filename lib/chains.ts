@@ -10,6 +10,11 @@ export const mantleSepolia = defineChain({
   blockExplorers: {
     default: { name: "Mantle Sepolia Explorer", url: "https://explorer.sepolia.mantle.xyz" },
   },
+  contracts: {
+    multicall3: {
+      address: "0xcA11bde05977b3631167028862bE2a173976CA11",
+    },
+  },
   testnet: true,
 });
 
@@ -22,5 +27,10 @@ export const mantle = defineChain({
   },
   blockExplorers: {
     default: { name: "Mantle Explorer", url: "https://explorer.mantle.xyz" },
+  },
+  contracts: {
+    multicall3: {
+      address: "0xcA11bde05977b3631167028862bE2a173976CA11",
+    },
   },
 });

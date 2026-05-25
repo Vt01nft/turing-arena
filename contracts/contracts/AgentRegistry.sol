@@ -20,7 +20,7 @@ contract AgentRegistry {
     mapping(uint256 => Agent) public agents;
     mapping(address => uint256) public agentIdOf;
 
-    uint96 public constant MIN_STAKE = 100 ether; // 100 MNT
+    uint96 public constant MIN_STAKE = 0.01 ether; // testnet demo; mainnet would be 100 MNT
     address public immutable duelHub;
 
     event AgentRegistered(uint256 indexed agentId, address indexed owner, string name);

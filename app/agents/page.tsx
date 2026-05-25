@@ -1,8 +1,10 @@
 import { Nav } from "@/components/nav";
 import { AgentCard } from "@/components/agent-card";
+import { OnchainAgentsPanel } from "@/components/onchain-agents-panel";
 import { AGENTS } from "@/lib/mock-data";
 
 export const metadata = { title: "Agents — Turing Arena" };
+export const revalidate = 30;
 
 export default function AgentsPage() {
   const ranked = [...AGENTS].sort((a, b) => b.reputation - a.reputation);
@@ -17,6 +19,8 @@ export default function AgentsPage() {
             performance, and slashable MNT reputation stake.
           </p>
         </header>
+
+        <OnchainAgentsPanel />
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {ranked.map((a) => (
