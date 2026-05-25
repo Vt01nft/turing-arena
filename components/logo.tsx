@@ -1,121 +1,65 @@
 import { cn } from "@/lib/format";
 
-/// Trefoil mark: tri-lobed medallion with thick ochre gold rim and deep navy
-/// interior. Reads as the "stake / pot" symbol of the arena. Optionally
-/// rotates slowly (one full revolution every ~22s) for a quiet liveness cue.
+/// Versus capsule mark — vertical pill split horizontally into two halves:
+/// periwinkle/machine on top, coral/human on the bottom, with an ochre stake
+/// dot at the meeting line. One bold silhouette that rhymes with the
+/// duality colors of the palette. Subtle bounce when `animated`.
 export function Mark({
-  size = 56,
-  rotating = true,
-  showText = true,
+  size = 44,
+  animated = true,
   className,
 }: {
   size?: number;
-  rotating?: boolean;
-  /** Include "TURING ARENA" text inside the medallion (hide at small sizes). */
-  showText?: boolean;
+  animated?: boolean;
   className?: string;
 }) {
-  const id = `tm-${size}`;
-  const tooSmallForText = size < 44 ? false : showText;
+  const id = `ta-mark-${size}`;
   return (
     <span
-      className={cn("ta-trefoil inline-block leading-none", rotating && "rotating", className)}
+      className={cn("ta-mark inline-block leading-none", animated && "spinning", className)}
       style={{ width: size, height: size }}
       aria-hidden
     >
       <svg
+        className="ta-mark-disc"
         width={size}
         height={size}
-        viewBox="0 0 128 128"
+        viewBox="0 0 64 64"
         style={{ overflow: "visible", display: "block" }}
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
-          <linearGradient id={`${id}-rim`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#F4C892" />
-            <stop offset="38%" stopColor="#E8A452" />
-            <stop offset="78%" stopColor="#B57F36" />
-            <stop offset="100%" stopColor="#8B5E1F" />
+          <linearGradient id={`${id}-top`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#9396F0" />
+            <stop offset="100%" stopColor="#5C5FCE" />
           </linearGradient>
-          <linearGradient id={`${id}-rimInner`} x1="0%" y1="100%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#F4C892" stopOpacity="0.95" />
-            <stop offset="50%" stopColor="#E8A452" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="#8B5E1F" stopOpacity="0.95" />
+          <linearGradient id={`${id}-bot`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#F09A8C" />
+            <stop offset="100%" stopColor="#C56353" />
           </linearGradient>
-          <radialGradient id={`${id}-shine`} cx="35%" cy="22%" r="60%">
-            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.42" />
-            <stop offset="55%" stopColor="#FFFFFF" stopOpacity="0" />
+          <radialGradient id={`${id}-hl`} cx="32%" cy="20%" r="70%">
+            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.50" />
+            <stop offset="60%" stopColor="#FFFFFF" stopOpacity="0" />
+            <stop offset="100%" stopColor="#000000" stopOpacity="0.10" />
           </radialGradient>
+          <clipPath id={`${id}-clip`}>
+            <rect x="20" y="6" width="24" height="52" rx="12" ry="12" />
+          </clipPath>
         </defs>
-
-        {/* Outer tri-lobed gold rim */}
-        <path
-          d="M 31.7,50.6 A 34 34 0 1 1 96.3,50.6 A 34 34 0 0 1 64,105.9 A 34 34 0 0 1 31.7,50.6 Z"
-          fill="#1A1F2E"
-          stroke={`url(#${id}-rim)`}
-          strokeWidth="10"
-          strokeLinejoin="round"
-          strokeLinecap="round"
-        />
-
-        {/* Inner gold hairline border (the bevel) */}
-        <path
-          d="M 35.5,53 A 30 30 0 1 1 92.5,53 A 30 30 0 0 1 64,101 A 30 30 0 0 1 35.5,53 Z"
-          fill="none"
-          stroke={`url(#${id}-rimInner)`}
-          strokeWidth="1.4"
-          opacity="0.9"
-          strokeLinejoin="round"
-        />
-
-        {/* Subtle highlight wash */}
-        <path
-          d="M 31.7,50.6 A 34 34 0 1 1 96.3,50.6 A 34 34 0 0 1 64,105.9 A 34 34 0 0 1 31.7,50.6 Z"
-          fill={`url(#${id}-shine)`}
-          stroke="none"
-        />
-
-        {tooSmallForText && (
-          <g>
-            <text
-              x="64"
-              y="68"
-              textAnchor="middle"
-              fill="#E8A452"
-              style={{
-                fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif",
-                fontSize: 13,
-                fontWeight: 700,
-                letterSpacing: "0.10em",
-              }}
-            >
-              TURING
-            </text>
-            <text
-              x="64"
-              y="82"
-              textAnchor="middle"
-              fill="#E8A452"
-              style={{
-                fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif",
-                fontSize: 9,
-                fontWeight: 500,
-                letterSpacing: "0.22em",
-              }}
-            >
-              ARENA
-            </text>
-          </g>
-        )}
+        <g clipPath={`url(#${id}-clip)`}>
+          <rect x="20" y="6" width="24" height="26" fill={`url(#${id}-top)`} />
+          <rect x="20" y="32" width="24" height="26" fill={`url(#${id}-bot)`} />
+          <rect x="20" y="6" width="24" height="52" fill={`url(#${id}-hl)`} />
+          <line x1="20" y1="32" x2="44" y2="32" stroke="#1A1F2E" strokeWidth="1.2" opacity="0.55" />
+        </g>
+        <rect x="20" y="6" width="24" height="52" rx="12" ry="12" fill="none" stroke="#1A1F2E" strokeWidth="1.5" />
+        <circle cx="32" cy="32" r="4" fill="#E8A452" stroke="#1A1F2E" strokeWidth="1.2" />
       </svg>
     </span>
   );
 }
 
-/// Compact wordmark for places where the medallion alone isn't readable
-/// (or as a complement next to a small mark). The medallion already contains
-/// the lock-up, so this is usually omitted.
-export function Wordmark({ size = 22, className }: { size?: number; className?: string }) {
+export function Wordmark({ size = 20, className }: { size?: number; className?: string }) {
   return (
     <span
       className={cn("inline-flex items-baseline gap-1.5 font-semibold leading-none tracking-tight", className)}
@@ -125,8 +69,8 @@ export function Wordmark({ size = 22, className }: { size?: number; className?: 
       <span
         className="rounded-full"
         style={{
-          width: Math.max(4, size * 0.18),
-          height: Math.max(4, size * 0.18),
+          width: Math.max(4, size * 0.20),
+          height: Math.max(4, size * 0.20),
           background: "var(--vs-ochre)",
           alignSelf: "center",
         }}
@@ -136,23 +80,20 @@ export function Wordmark({ size = 22, className }: { size?: number; className?: 
   );
 }
 
-/// LockUp = the medallion. Text is inside the mark above ~44px, so the
-/// separate wordmark is hidden by default. Pass `withWordmark` to force it.
+/// Default home-link lockup: capsule mark + lowercase wordmark.
 export function LockUp({
-  markSize = 56,
-  rotating = true,
-  withWordmark = false,
+  markSize = 44,
+  animated = true,
   className,
 }: {
   markSize?: number;
-  rotating?: boolean;
-  withWordmark?: boolean;
+  animated?: boolean;
   className?: string;
 }) {
   return (
     <div className={cn("inline-flex items-center gap-3", className)}>
-      <Mark size={markSize} rotating={rotating} />
-      {withWordmark && <Wordmark size={Math.round(markSize * 0.42)} />}
+      <Mark size={markSize} animated={animated} />
+      <Wordmark size={Math.round(markSize * 0.42)} />
     </div>
   );
 }

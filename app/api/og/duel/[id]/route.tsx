@@ -4,27 +4,52 @@ import { getDuel, getAgent } from "@/lib/mock-data";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const COLORS = {
-  bg: "#0a0b0f",
-  panel: "#13151c",
-  border: "#262a35",
-  fg: "#f5f6f8",
-  dim: "#9097a5",
-  faint: "#5d6373",
-  human: "#6a8dff",
-  ai: "#ff5b8d",
-  profit: "#1cb988",
-  loss: "#ff5252",
-  warn: "#f7c14b",
+const C = {
+  bone: "#E8EBF3",
+  paper: "#FFFFFF",
+  parchment: "#F0F2F8",
+  ink: "#1A1F2E",
+  ink2: "#3A4256",
+  ink3: "#6E7689",
+  ink4: "#9CA3B5",
+  line: "#D4D8E5",
+  human: "#E68676",
+  humanDeep: "#B45647",
+  humanWash: "#FCE5E2",
+  machine: "#7B7DEB",
+  machineDeep: "#4A4DC0",
+  machineWash: "#E0E3F8",
+  ochre: "#E8A452",
+  ochreDeep: "#B57F36",
+  positive: "#4A9E7F",
+  negative: "#DD7368",
 };
 
-const STRATEGY_TINT: Record<string, string> = {
-  conservative: "#6a8dff",
-  aggressive: "#ff5b8d",
-  contrarian: "#c084fc",
-  macro: "#5ed4a8",
-  momentum: "#fbbf24",
-};
+function CapsuleMark() {
+  return (
+    <svg width="48" height="48" viewBox="0 0 64 64" style={{ display: "flex" }}>
+      <defs>
+        <linearGradient id="dm-top" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#9396F0" />
+          <stop offset="100%" stopColor="#5C5FCE" />
+        </linearGradient>
+        <linearGradient id="dm-bot" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#F09A8C" />
+          <stop offset="100%" stopColor="#C56353" />
+        </linearGradient>
+        <clipPath id="dm-clip">
+          <rect x="20" y="6" width="24" height="52" rx="12" ry="12" />
+        </clipPath>
+      </defs>
+      <g clipPath="url(#dm-clip)">
+        <rect x="20" y="6" width="24" height="26" fill="url(#dm-top)" />
+        <rect x="20" y="32" width="24" height="26" fill="url(#dm-bot)" />
+      </g>
+      <rect x="20" y="6" width="24" height="52" rx="12" ry="12" fill="none" stroke={C.ink} strokeWidth="2" />
+      <circle cx="32" cy="32" r="4" fill={C.ochre} stroke={C.ink} strokeWidth="1.4" />
+    </svg>
+  );
+}
 
 export async function GET(
   _req: Request,
@@ -36,19 +61,7 @@ export async function GET(
   if (!duel) {
     return new ImageResponse(
       (
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: COLORS.bg,
-            color: COLORS.fg,
-            fontSize: 48,
-            fontFamily: "sans-serif",
-          }}
-        >
+        <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: C.bone, color: C.ink, fontSize: 48, fontFamily: "sans-serif" }}>
           Duel not found
         </div>
       ),
@@ -59,18 +72,19 @@ export async function GET(
   const b = getAgent(duel.agentB)!;
 
   const statusLabel =
-    duel.status === "live"
-      ? "● LIVE"
-      : duel.status === "upcoming"
-        ? "○ UPCOMING"
-        : duel.winner === "A"
-          ? `${a.name.toUpperCase()} WON`
-          : `${b.name.toUpperCase()} WON`;
+    duel.status === "live" ? "● LIVE"
+      : duel.status === "upcoming" ? "○ UPCOMING"
+      : duel.winner === "A" ? `${a.name.toUpperCase()} WON`
+      : `${b.name.toUpperCase()} WON`;
   const statusColor =
-    duel.status === "live" ? COLORS.profit : duel.status === "upcoming" ? COLORS.dim : COLORS.warn;
+    duel.status === "live" ? C.positive
+      : duel.status === "upcoming" ? C.ink3
+      : C.ochreDeep;
 
   const yesPct = Math.round(duel.marketPrice * 100);
   const noPct = 100 - yesPct;
+  const matchType =
+    a.kind !== b.kind ? "HUMAN vs AGENT" : a.kind === "human" ? "HUMAN vs HUMAN" : "AGENT vs AGENT";
 
   return new ImageResponse(
     (
@@ -80,148 +94,58 @@ export async function GET(
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          background: COLORS.bg,
-          color: COLORS.fg,
+          background: C.bone,
+          color: C.ink,
           fontFamily: "sans-serif",
-          padding: 64,
+          padding: 56,
           position: "relative",
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)",
-            backgroundSize: "48px 48px",
-            display: "flex",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            top: -200,
-            right: -200,
-            width: 600,
-            height: 600,
-            background: `radial-gradient(circle, ${COLORS.human}22, transparent 70%)`,
-            display: "flex",
-          }}
-        />
+        <div style={{
+          position: "absolute", top: -200, right: -200,
+          width: 600, height: 600,
+          background: `radial-gradient(circle, ${C.machine}44, transparent 70%)`,
+          filter: "blur(40px)", display: "flex",
+        }} />
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
+        {/* header */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <svg width="44" height="44" viewBox="0 0 32 32">
-              <rect width="32" height="32" rx="7" fill={COLORS.panel} />
-              <path d="M 4.5 27.5 L 4.5 4.5 L 27.5 27.5 Z" fill={COLORS.human} />
-              <path d="M 27.5 4.5 L 27.5 27.5 L 4.5 4.5 Z" fill={COLORS.ai} />
-              <path
-                d="M 4.5 4.5 L 27.5 27.5"
-                stroke={COLORS.panel}
-                strokeWidth="1.25"
-                strokeLinecap="round"
-              />
-            </svg>
-            <div style={{ display: "flex", fontSize: 30, fontWeight: 600, letterSpacing: -0.6, gap: 4 }}>
+            <CapsuleMark />
+            <div style={{ display: "flex", fontSize: 26, fontWeight: 600, letterSpacing: "-0.04em", gap: 5, alignItems: "baseline" }}>
               <span>turing</span>
-              <span style={{ color: COLORS.faint, fontWeight: 300 }}>·</span>
+              <span style={{ width: 5, height: 5, borderRadius: 999, background: C.ochre, alignSelf: "center", display: "flex" }} />
               <span>arena</span>
             </div>
           </div>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 18,
-              letterSpacing: 2,
-              color: statusColor,
-              fontWeight: 600,
-            }}
-          >
-            {statusLabel}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
+            <div style={{ display: "flex", fontSize: 18, letterSpacing: 2, color: statusColor, fontWeight: 600 }}>{statusLabel}</div>
+            <div style={{ display: "flex", fontSize: 12, letterSpacing: 2, color: C.ink3, fontWeight: 500 }}>{matchType}</div>
           </div>
         </div>
 
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginTop: 40,
-          }}
-        >
+        {/* matchup */}
+        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 32 }}>
           <AgentBlock agent={a} score={duel.scoreA} status={duel.status} side="left" />
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 12,
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                fontSize: 64,
-                color: COLORS.dim,
-                fontWeight: 200,
-                letterSpacing: 8,
-              }}
-            >
-              VS
-            </div>
-            <div
-              style={{
-                display: "flex",
-                fontSize: 14,
-                color: COLORS.dim,
-                letterSpacing: 2,
-                fontFamily: "monospace",
-              }}
-            >
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
+            <div style={{ display: "flex", fontFamily: "serif", fontStyle: "italic", fontSize: 64, color: C.ink3, fontWeight: 400 }}>vs</div>
+            <div style={{ display: "flex", fontSize: 14, color: C.ink3, letterSpacing: 2, fontFamily: "monospace", fontWeight: 500 }}>
               {`${duel.rules.durationHours / 24}D · USDY+mETH · $${duel.capitalUsd.toLocaleString()}`}
             </div>
           </div>
           <AgentBlock agent={b} score={duel.scoreB} status={duel.status} side="right" />
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingTop: 24,
-            borderTop: `1px solid ${COLORS.border}`,
-          }}
-        >
-          <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
-            <Pill color={COLORS.human} label={`${a.name} ${yesPct}¢`} />
-            <Pill color={COLORS.ai} label={`${b.name} ${noPct}¢`} />
-            <div
-              style={{
-                display: "flex",
-                fontSize: 16,
-                color: COLORS.dim,
-                fontFamily: "monospace",
-              }}
-            >
+        {/* market footer */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 24, borderTop: `1px solid ${C.line}` }}>
+          <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
+            <Pill color={a.kind === "human" ? C.humanDeep : C.machineDeep} bg={a.kind === "human" ? C.humanWash : C.machineWash} label={`${a.name} ${yesPct}¢`} />
+            <Pill color={b.kind === "human" ? C.humanDeep : C.machineDeep} bg={b.kind === "human" ? C.humanWash : C.machineWash} label={`${b.name} ${noPct}¢`} />
+            <div style={{ display: "flex", fontSize: 14, color: C.ink3, fontFamily: "monospace" }}>
               {`$${duel.volumeUsd.toLocaleString()} volume`}
             </div>
           </div>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 18,
-              color: COLORS.dim,
-              fontFamily: "monospace",
-            }}
-          >
+          <div style={{ display: "flex", fontSize: 14, color: C.ink3, fontFamily: "monospace" }}>
             {`turing.arena/duels/${duel.id}`}
           </div>
         </div>
@@ -243,9 +167,11 @@ function AgentBlock({
   side: "left" | "right";
 }) {
   if (!agent) return <div style={{ display: "flex" }} />;
-  const tint = STRATEGY_TINT[agent.strategy] ?? COLORS.fg;
+  const tintBg = agent.kind === "human" ? C.humanWash : C.machineWash;
+  const tintBorder = agent.kind === "human" ? C.human : C.machine;
+  const tintText = agent.kind === "human" ? C.humanDeep : C.machineDeep;
   const sign = score >= 0 ? "+" : "";
-  const scoreColor = score >= 0 ? COLORS.profit : COLORS.loss;
+  const scoreColor = score >= 0 ? C.positive : C.negative;
 
   return (
     <div
@@ -259,60 +185,39 @@ function AgentBlock({
     >
       <div
         style={{
-          width: 140,
-          height: 140,
-          borderRadius: 20,
-          background: `linear-gradient(135deg, ${tint}40, ${tint}10)`,
-          border: `1px solid ${COLORS.border}`,
+          width: 132,
+          height: 132,
+          borderRadius: 24,
+          background: tintBg,
+          border: `2px solid ${tintBorder}`,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: 80,
-          fontWeight: 800,
-          color: tint,
-          fontFamily: "monospace",
+          fontSize: 64,
+          fontWeight: 600,
+          color: tintText,
+          fontFamily: "sans-serif",
         }}
       >
         {agent.avatar}
       </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 4,
-          alignItems: side === "left" ? "flex-start" : "flex-end",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            fontSize: 48,
-            fontWeight: 700,
-            letterSpacing: -1,
-          }}
-        >
+      <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: side === "left" ? "flex-start" : "flex-end" }}>
+        <div style={{ display: "flex", fontSize: 46, fontWeight: 500, letterSpacing: "-0.02em", color: C.ink, fontStyle: "italic", fontFamily: "serif" }}>
           {agent.name}
         </div>
-        <div
-          style={{
-            display: "flex",
-            fontSize: 18,
-            color: COLORS.dim,
-            fontFamily: "monospace",
-          }}
-        >
-          {`${agent.strategy} · ERC-8004 #${agent.erc8004Id}`}
+        <div style={{ display: "flex", fontSize: 16, color: C.ink3, fontFamily: "monospace" }}>
+          {`${agent.kind} · ${agent.strategy} · ERC-8004 #${agent.erc8004Id}`}
         </div>
       </div>
       {status !== "upcoming" && (
         <div
           style={{
             display: "flex",
-            fontSize: 56,
-            fontWeight: 800,
+            fontSize: 52,
+            fontWeight: 500,
             color: scoreColor,
             fontFamily: "monospace",
-            letterSpacing: -2,
+            letterSpacing: "-0.02em",
           }}
         >
           {`${sign}${score.toFixed(2)}%`}
@@ -322,7 +227,7 @@ function AgentBlock({
   );
 }
 
-function Pill({ color, label }: { color: string; label: string }) {
+function Pill({ color, bg, label }: { color: string; bg: string; label: string }) {
   return (
     <div
       style={{
@@ -331,23 +236,14 @@ function Pill({ color, label }: { color: string; label: string }) {
         gap: 8,
         padding: "8px 14px",
         borderRadius: 999,
-        border: `1px solid ${color}40`,
-        background: `${color}10`,
-        fontSize: 18,
+        background: bg,
+        fontSize: 16,
         color,
         fontWeight: 600,
         fontFamily: "monospace",
       }}
     >
-      <div
-        style={{
-          width: 8,
-          height: 8,
-          borderRadius: 999,
-          background: color,
-          display: "flex",
-        }}
-      />
+      <div style={{ width: 7, height: 7, borderRadius: 999, background: color, display: "flex" }} />
       <span>{label}</span>
     </div>
   );

@@ -4,18 +4,43 @@ import { getDuel, getAgent } from "@/lib/mock-data";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const COLORS = {
-  bg: "#0a0b0f",
-  panel: "#13151c",
-  border: "#262a35",
-  fg: "#f5f6f8",
-  dim: "#9097a5",
-  faint: "#5d6373",
-  human: "#6a8dff",
-  ai: "#ff5b8d",
-  profit: "#1cb988",
-  loss: "#ff5252",
+const C = {
+  bone: "#E8EBF3",
+  paper: "#FFFFFF",
+  ink: "#1A1F2E",
+  ink2: "#3A4256",
+  ink3: "#6E7689",
+  line: "#D4D8E5",
+  positive: "#4A9E7F",
+  negative: "#DD7368",
+  ochre: "#E8A452",
 };
+
+function CapsuleMark() {
+  return (
+    <svg width="48" height="48" viewBox="0 0 64 64" style={{ display: "flex" }}>
+      <defs>
+        <linearGradient id="bm-top" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#9396F0" />
+          <stop offset="100%" stopColor="#5C5FCE" />
+        </linearGradient>
+        <linearGradient id="bm-bot" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#F09A8C" />
+          <stop offset="100%" stopColor="#C56353" />
+        </linearGradient>
+        <clipPath id="bm-clip">
+          <rect x="20" y="6" width="24" height="52" rx="12" ry="12" />
+        </clipPath>
+      </defs>
+      <g clipPath="url(#bm-clip)">
+        <rect x="20" y="6" width="24" height="26" fill="url(#bm-top)" />
+        <rect x="20" y="32" width="24" height="26" fill="url(#bm-bot)" />
+      </g>
+      <rect x="20" y="6" width="24" height="52" rx="12" ry="12" fill="none" stroke={C.ink} strokeWidth="2" />
+      <circle cx="32" cy="32" r="4" fill={C.ochre} stroke={C.ink} strokeWidth="1.4" />
+    </svg>
+  );
+}
 
 export async function GET(
   req: Request,
@@ -31,39 +56,22 @@ export async function GET(
   const duel = getDuel(id);
   if (!duel) {
     return new ImageResponse(
-      (
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: COLORS.bg,
-            color: COLORS.fg,
-            fontSize: 48,
-            fontFamily: "sans-serif",
-          }}
-        >
-          Duel not found
-        </div>
-      ),
+      (<div style={{ width: "100%", height: "100%", display: "flex", background: C.bone, color: C.ink, fontSize: 48, alignItems: "center", justifyContent: "center", fontFamily: "sans-serif" }}>Duel not found</div>),
       { width: 1200, height: 630 },
     );
   }
 
-  const pickedAgent = side === "A" ? getAgent(duel.agentA)! : getAgent(duel.agentB)!;
-  const otherAgent = side === "A" ? getAgent(duel.agentB)! : getAgent(duel.agentA)!;
-
+  const picked = side === "A" ? getAgent(duel.agentA)! : getAgent(duel.agentB)!;
+  const other = side === "A" ? getAgent(duel.agentB)! : getAgent(duel.agentA)!;
   const profit = payout - amount;
-  const profitColor = won ? COLORS.profit : COLORS.loss;
+  const profitColor = won ? C.positive : C.negative;
   const profitSign = profit >= 0 ? "+" : "";
   const roiPct = ((profit / amount) * 100).toFixed(0);
 
   const headline = won ? "I beat the AI." : "The AI got me.";
   const sub = won
-    ? `Stacked $${amount.toFixed(0)} on ${pickedAgent.name} · cashed out $${payout.toFixed(2)}.`
-    : `Bet $${amount.toFixed(0)} on ${pickedAgent.name} · ${otherAgent.name} took the duel.`;
+    ? `Stacked $${amount.toFixed(0)} on ${picked.name} · cashed out $${payout.toFixed(2)}.`
+    : `Bet $${amount.toFixed(0)} on ${picked.name} · ${other.name} took the duel.`;
 
   return new ImageResponse(
     (
@@ -73,122 +81,53 @@ export async function GET(
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          background: COLORS.bg,
-          color: COLORS.fg,
+          background: C.bone,
+          color: C.ink,
           fontFamily: "sans-serif",
           padding: 72,
           position: "relative",
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: `radial-gradient(circle at 80% 20%, ${profitColor}22, transparent 60%)`,
-            display: "flex",
-          }}
-        />
+        <div style={{ position: "absolute", inset: 0, background: `radial-gradient(circle at 80% 20%, ${profitColor}33, transparent 60%)`, filter: "blur(30px)", display: "flex" }} />
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
+        {/* header */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <svg width="44" height="44" viewBox="0 0 32 32">
-              <rect width="32" height="32" rx="7" fill={COLORS.panel} />
-              <path d="M 4.5 27.5 L 4.5 4.5 L 27.5 27.5 Z" fill={COLORS.human} />
-              <path d="M 27.5 4.5 L 27.5 27.5 L 4.5 4.5 Z" fill={COLORS.ai} />
-              <path
-                d="M 4.5 4.5 L 27.5 27.5"
-                stroke={COLORS.panel}
-                strokeWidth="1.25"
-                strokeLinecap="round"
-              />
-            </svg>
-            <div style={{ display: "flex", fontSize: 28, fontWeight: 600, letterSpacing: -0.6, gap: 4 }}>
+            <CapsuleMark />
+            <div style={{ display: "flex", fontSize: 26, fontWeight: 600, letterSpacing: "-0.04em", gap: 5, alignItems: "baseline" }}>
               <span>turing</span>
-              <span style={{ color: COLORS.faint, fontWeight: 300 }}>·</span>
+              <span style={{ width: 5, height: 5, borderRadius: 999, background: C.ochre, alignSelf: "center", display: "flex" }} />
               <span>arena</span>
             </div>
           </div>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 15,
-              letterSpacing: 2,
-              color: COLORS.dim,
-              fontFamily: "monospace",
-            }}
-          >
+          <div style={{ display: "flex", fontSize: 14, letterSpacing: 2, color: C.ink3, fontFamily: "monospace" }}>
             {`DUEL #${id.slice(-3)} · MANTLE`}
           </div>
         </div>
 
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              fontSize: 96,
-              fontWeight: 800,
-              letterSpacing: -3,
-              lineHeight: 1.0,
-            }}
-          >
-            {headline}
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <div style={{ display: "flex", fontSize: 96, fontWeight: 500, letterSpacing: "-0.035em", lineHeight: 1 }}>
+            <span style={{ fontFamily: "serif", fontStyle: "italic", fontWeight: 400, color: profitColor }}>
+              {headline}
+            </span>
           </div>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 28,
-              color: COLORS.dim,
-              marginTop: 20,
-              maxWidth: 900,
-            }}
-          >
+          <div style={{ display: "flex", fontSize: 26, color: C.ink2, marginTop: 24, maxWidth: 900 }}>
             {sub}
           </div>
 
-          <div
-            style={{
-              marginTop: 48,
-              display: "flex",
-              gap: 16,
-              alignItems: "stretch",
-            }}
-          >
-            <ReceiptCell label="Staked" value={`$${amount.toFixed(2)}`} />
-            <ReceiptCell label="Payout" value={`$${payout.toFixed(2)}`} tone={won ? "accent" : "dim"} />
-            <ReceiptCell
+          <div style={{ marginTop: 48, display: "flex", gap: 16, alignItems: "stretch" }}>
+            <Cell label="Staked" value={`$${amount.toFixed(2)}`} />
+            <Cell label="Payout" value={`$${payout.toFixed(2)}`} tone={won ? "positive" : "dim"} />
+            <Cell
               label="P&L"
               value={`${profitSign}$${profit.toFixed(2)}`}
               hint={`${profitSign}${roiPct}% ROI`}
-              tone={won ? "accent" : "ai"}
+              tone={won ? "positive" : "negative"}
             />
           </div>
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingTop: 24,
-            borderTop: `1px solid ${COLORS.border}`,
-            fontFamily: "monospace",
-            fontSize: 18,
-            color: COLORS.dim,
-          }}
-        >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 24, borderTop: `1px solid ${C.line}`, fontFamily: "monospace", fontSize: 16, color: C.ink3 }}>
           <div style={{ display: "flex" }}>#MantleAIHackathon</div>
           <div style={{ display: "flex" }}>turing.arena</div>
         </div>
@@ -198,67 +137,28 @@ export async function GET(
   );
 }
 
-function ReceiptCell({
-  label,
-  value,
-  hint,
-  tone,
-}: {
-  label: string;
-  value: string;
-  hint?: string;
-  tone?: "accent" | "ai" | "dim";
-}) {
+function Cell({ label, value, hint, tone }: { label: string; value: string; hint?: string; tone?: "positive" | "negative" | "dim" }) {
   const color =
-    tone === "accent" ? COLORS.profit : tone === "ai" ? COLORS.loss : tone === "dim" ? COLORS.dim : COLORS.fg;
+    tone === "positive" ? C.positive
+      : tone === "negative" ? C.negative
+      : tone === "dim" ? C.ink3
+      : C.ink;
   return (
     <div
       style={{
         flex: 1,
         display: "flex",
         flexDirection: "column",
-        gap: 6,
-        padding: "20px 24px",
-        background: COLORS.panel,
-        border: `1px solid ${COLORS.border}`,
-        borderRadius: 14,
+        gap: 8,
+        padding: "22px 26px",
+        background: C.paper,
+        border: `1px solid ${C.line}`,
+        borderRadius: 18,
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          fontSize: 14,
-          letterSpacing: 2,
-          color: COLORS.dim,
-          textTransform: "uppercase",
-        }}
-      >
-        {label}
-      </div>
-      <div
-        style={{
-          display: "flex",
-          fontSize: 48,
-          fontWeight: 700,
-          color,
-          fontFamily: "monospace",
-          letterSpacing: -1,
-        }}
-      >
-        {value}
-      </div>
-      {hint && (
-        <div
-          style={{
-            display: "flex",
-            fontSize: 16,
-            color: COLORS.dim,
-            fontFamily: "monospace",
-          }}
-        >
-          {hint}
-        </div>
-      )}
+      <div style={{ display: "flex", fontSize: 14, letterSpacing: 2, color: C.ink3, textTransform: "uppercase", fontWeight: 500 }}>{label}</div>
+      <div style={{ display: "flex", fontSize: 48, fontWeight: 500, color, fontFamily: "monospace", letterSpacing: "-0.02em" }}>{value}</div>
+      {hint && <div style={{ display: "flex", fontSize: 16, color: C.ink3, fontFamily: "monospace" }}>{hint}</div>}
     </div>
   );
 }

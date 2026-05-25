@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { Mark } from "./logo";
+import { LockUp } from "./logo";
 import { DarkToggle } from "./dark-toggle";
 import { cn } from "@/lib/format";
 
@@ -32,27 +32,23 @@ export function Nav() {
       className={cn(
         "sticky top-0 z-30 transition-all duration-300",
         scrolled
-          ? "bg-[rgba(232,235,243,0.55)] backdrop-blur-xl border-b border-line"
+          ? "border-b border-[rgba(212,216,229,0.45)]"
           : "bg-transparent border-b border-transparent",
       )}
       style={{
-        backdropFilter: scrolled ? "blur(22px) saturate(1.6)" : undefined,
-        WebkitBackdropFilter: scrolled ? "blur(22px) saturate(1.6)" : undefined,
+        background: scrolled ? "rgba(232,235,243,0.32)" : "transparent",
+        backdropFilter: scrolled ? "blur(28px) saturate(1.85)" : undefined,
+        WebkitBackdropFilter: scrolled ? "blur(28px) saturate(1.85)" : undefined,
+        boxShadow: scrolled
+          ? "inset 0 1px 0 rgba(255,255,255,0.65), 0 12px 40px -24px rgba(26,31,46,0.22)"
+          : undefined,
       }}
     >
       <div className="mx-auto max-w-[1240px] grid grid-cols-[1fr_auto_1fr] items-center gap-6 px-8 py-3.5">
         {/* Left */}
-        <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center" aria-label="Turing Arena home">
-            <Mark size={56} rotating />
-          </Link>
-          <span
-            className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md mono text-[11px] font-medium uppercase tracking-[0.08em]"
-            style={{ background: "var(--vs-indigo-soft)", color: "var(--vs-indigo)" }}
-          >
-            Sepolia
-          </span>
-        </div>
+        <Link href="/" className="flex items-center" aria-label="Turing Arena home">
+          <LockUp markSize={42} animated />
+        </Link>
 
         {/* Center pill */}
         <div className="hidden md:flex items-center gap-1 p-1 rounded-full border border-line bg-paper">

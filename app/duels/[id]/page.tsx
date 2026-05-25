@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: { params: Params }) {
   const title = `${a?.name} vs ${b?.name} - Turing Arena`;
   const description =
     d.status === "live"
-      ? `Live duel: ${a?.name} (${(d.scoreA * 100).toFixed(0)} bps) vs ${b?.name} (${(d.scoreB * 100).toFixed(0)} bps). Stake on the outcome.`
+      ? `Live duel: ${a?.name} (${(d.scoreA * 100).toFixed(0)} bps) vs ${b?.name} (${(d.scoreB * 100).toFixed(0)} bps).`
       : `${a?.name} vs ${b?.name} - ${d.status} duel on USDY + mETH.`;
   const ogImage = `/api/og/duel/${id}`;
   return {
@@ -45,44 +45,68 @@ export default async function DuelPage({ params }: { params: Params }) {
   if (!a || !b) notFound();
 
   const leading = duel.scoreA > duel.scoreB ? "A" : duel.scoreB > duel.scoreA ? "B" : null;
-  const statusTone =
-    duel.status === "live" ? "text-profit" : duel.status === "upcoming" ? "text-dim" : "text-warn";
-  const statusDot =
-    duel.status === "live" ? "bg-profit animate-pulse" : duel.status === "upcoming" ? "bg-[var(--color-border-strong)]" : "bg-warn";
+  const statusColor =
+    duel.status === "live" ? "var(--vs-positive)" : duel.status === "upcoming" ? "var(--vs-ink-3)" : "var(--vs-ochre-deep)";
+
+  const matchType =
+    a.kind !== b.kind
+      ? { label: "Human vs Agent", tint: "var(--vs-lilac-deep)", wash: "var(--vs-lilac-soft)" }
+      : a.kind === "human"
+        ? { label: "Human vs Human", tint: "var(--vs-human-deep)", wash: "var(--vs-human-wash)" }
+        : { label: "Agent vs Agent", tint: "var(--vs-machine-deep)", wash: "var(--vs-machine-wash)" };
+
+  const colorA = a.kind === "human" ? "var(--vs-human-deep)" : "var(--vs-machine-deep)";
+  const colorB = b.kind === "human" ? "var(--vs-human-deep)" : "var(--vs-machine-deep)";
 
   return (
     <>
       <Nav />
-      <main className="flex-1 mx-auto max-w-6xl px-6 py-10">
-        <Link href="/duels" className="mono text-[11px] text-faint hover:text-fg transition-colors">
+      <main className="flex-1 mx-auto max-w-[1240px] px-8 py-10">
+        <Link href="/duels" className="mono text-[11px] text-light hover:text-ink transition-colors">
           ← all duels
         </Link>
 
-        <header className="mt-4 mb-8">
-          <div className="flex items-center gap-2 text-[11px] mb-3">
-            <span className={`flex items-center gap-1.5 ${statusTone}`}>
-              <span className={`h-1.5 w-1.5 rounded-full ${statusDot}`} />
+        <header className="mt-4 mb-10">
+          <div className="flex items-center gap-2.5 text-[11px] mb-4 flex-wrap">
+            <span className="inline-flex items-center gap-1.5 font-medium" style={{ color: statusColor }}>
+              <span className="h-1.5 w-1.5 rounded-full" style={{ background: statusColor, animation: duel.status === "live" ? "pulse-soft 2.4s ease-in-out infinite" : undefined }} />
               <span className="capitalize">{duel.status}</span>
             </span>
-            <span className="text-faint">·</span>
-            <span className="text-dim">
+            <span className="text-ink-4">·</span>
+            <span className="text-ink-2">
               {duel.status === "live"
                 ? `${fmtCountdown(duel.endsAt)} remaining`
                 : duel.status === "upcoming"
                   ? `starts in ${fmtCountdown(duel.startsAt)}`
                   : "settled"}
             </span>
-            <span className="text-faint">·</span>
-            <span className="text-faint mono">{duel.id}</span>
+            <span
+              className="ml-1 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider"
+              style={{ color: matchType.tint, background: matchType.wash }}
+            >
+              {matchType.label}
+            </span>
+            <span className="text-ink-4">·</span>
+            <span className="text-ink-4 mono">{duel.id}</span>
           </div>
-          <div className="flex items-end justify-between flex-wrap gap-4">
-            <h1 className="text-[34px] md:text-[42px] font-semibold tracking-tight leading-none">
-              <Link href={`/agents/${a.id}`} className="hover:text-human transition-colors">
-                {a.name}
+          <div className="flex items-end justify-between gap-4 flex-wrap">
+            <h1
+              style={{
+                fontFamily: "var(--vs-font-display)",
+                fontWeight: 500,
+                fontSize: "clamp(34px, 4.6vw, 60px)",
+                letterSpacing: "-0.03em",
+                lineHeight: 1.02,
+                color: "var(--vs-ink)",
+                margin: 0,
+              }}
+            >
+              <Link href={`/agents/${a.id}`} style={{ color: colorA, textDecoration: "none" }}>
+                <em style={{ fontStyle: "italic", fontWeight: 400 }}>{a.name}</em>
               </Link>
-              <span className="text-faint font-light"> vs </span>
-              <Link href={`/agents/${b.id}`} className="hover:text-ai transition-colors">
-                {b.name}
+              <span className="text-ink-3" style={{ fontWeight: 300 }}> versus </span>
+              <Link href={`/agents/${b.id}`} style={{ color: colorB, textDecoration: "none" }}>
+                <em style={{ fontStyle: "italic", fontWeight: 400 }}>{b.name}</em>
               </Link>
             </h1>
             <ShareButton
@@ -92,63 +116,66 @@ export default async function DuelPage({ params }: { params: Params }) {
           </div>
         </header>
 
-        <div className="grid lg:grid-cols-[1fr_340px] gap-6">
+        <div className="grid lg:grid-cols-[1fr_360px] gap-6">
           <div className="space-y-8">
             {/* Scoreboard */}
-            <section className="surface p-6">
+            <section className="surface-paper p-6">
               <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-6">
                 <div className="flex items-center gap-4">
-                  <AgentAvatar letter={a.avatar} strategy={a.strategy} size="xl" />
+                  <AgentAvatar letter={a.avatar} kind={a.kind} strategy={a.strategy} size="xl" />
                   <div>
-                    <div className="font-semibold text-[17px]">{a.name}</div>
-                    <div className="text-[11px] text-dim mt-0.5">{a.strategy}</div>
+                    <div className="font-semibold text-ink text-[17px]">{a.name}</div>
+                    <div className="text-[11px] text-ink-3 mt-0.5">{a.strategy} · {a.kind}</div>
                     <div
-                      className={`mono text-[28px] mt-2 leading-none ${duel.scoreA >= 0 ? "text-profit" : "text-loss"} ${leading === "A" ? "font-semibold" : "font-medium"}`}
+                      className="num text-[30px] mt-2 leading-none"
+                      style={{
+                        color: duel.scoreA >= 0 ? "var(--vs-positive)" : "var(--vs-negative)",
+                        fontWeight: leading === "A" ? 600 : 500,
+                      }}
                     >
                       {fmtPct(duel.scoreA)}
                     </div>
                   </div>
                 </div>
-                <div className="text-faint mono text-[11px]">VS</div>
+                <div className="text-ink-4 mono text-[11px]">VS</div>
                 <div className="flex items-center gap-4 justify-end text-right">
                   <div>
-                    <div className="font-semibold text-[17px]">{b.name}</div>
-                    <div className="text-[11px] text-dim mt-0.5">{b.strategy}</div>
+                    <div className="font-semibold text-ink text-[17px]">{b.name}</div>
+                    <div className="text-[11px] text-ink-3 mt-0.5">{b.strategy} · {b.kind}</div>
                     <div
-                      className={`mono text-[28px] mt-2 leading-none ${duel.scoreB >= 0 ? "text-profit" : "text-loss"} ${leading === "B" ? "font-semibold" : "font-medium"}`}
+                      className="num text-[30px] mt-2 leading-none"
+                      style={{
+                        color: duel.scoreB >= 0 ? "var(--vs-positive)" : "var(--vs-negative)",
+                        fontWeight: leading === "B" ? 600 : 500,
+                      }}
                     >
                       {fmtPct(duel.scoreB)}
                     </div>
                   </div>
-                  <AgentAvatar letter={b.avatar} strategy={b.strategy} size="xl" />
+                  <AgentAvatar letter={b.avatar} kind={b.kind} strategy={b.strategy} size="xl" />
                 </div>
               </div>
             </section>
 
             {/* Rules */}
             <section>
-              <h3 className="text-[11px] uppercase tracking-wider text-faint mono mb-3">Rules</h3>
+              <div className="eyebrow mb-3">Rules of engagement</div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <Stat label="Capital" value={fmtUsd(duel.capitalUsd)} />
                 <Stat label="Assets" value={duel.rules.assets.join(" + ")} />
-                <Stat
-                  label="Max drawdown"
-                  value={`${duel.rules.maxDrawdownPct}%`}
-                  hint="auto-liquidate"
-                  tone="warn"
-                />
+                <Stat label="Max drawdown" value={`${duel.rules.maxDrawdownPct}%`} hint="auto-liquidate" tone="warn" />
                 <Stat label="Duration" value={`${duel.rules.durationHours / 24}d`} />
               </div>
             </section>
 
             {/* Decision feed */}
             <section>
-              <h3 className="text-[11px] uppercase tracking-wider text-faint mono mb-3">
+              <div className="eyebrow mb-3">
                 Decision feed
-                <span className="ml-2 text-faint normal-case tracking-normal font-sans">
-                  · logged to ERC-8004 ReputationRegistry every action
+                <span className="ml-2 normal-case tracking-normal font-sans text-ink-3 text-[12px]">
+                  · logged to ERC-8004 ReputationRegistry
                 </span>
-              </h3>
+              </div>
               <DecisionFeed duelId={duel.id} />
             </section>
           </div>

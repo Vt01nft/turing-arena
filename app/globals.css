@@ -153,19 +153,20 @@ em, .vs-em {
   font-weight: 400;
 }
 
-/* Trefoil mark — slow continuous rotation. Rotates the SVG node itself so
-   the centered transform-origin works without parent constraints. */
-.ta-trefoil { line-height: 0; }
-.ta-trefoil svg { transform-origin: 50% 50%; will-change: transform; }
-.ta-trefoil.rotating svg { animation: ta-trefoil-rotate 22s linear infinite; }
-@keyframes ta-trefoil-rotate {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+/* Capsule mark — gentle vertical bounce. */
+.ta-mark { display: inline-block; position: relative; line-height: 0; }
+.ta-mark-disc { display: block; }
+.ta-mark.spinning .ta-mark-disc {
+  animation: ta-mark-bounce 2.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  transform-origin: center;
 }
-/* Pause rotation on hover so users can read the inset text */
-.ta-trefoil:hover svg { animation-play-state: paused; }
+@keyframes ta-mark-bounce {
+  0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+  50%      { transform: translateY(-9%) rotate(1.5deg); }
+}
+.ta-mark:hover .ta-mark-disc { animation-play-state: paused; }
 @media (prefers-reduced-motion: reduce) {
-  .ta-trefoil.rotating svg { animation: none; }
+  .ta-mark.spinning .ta-mark-disc { animation: none; }
 }
 
 /* Page background drift blobs */
