@@ -108,7 +108,19 @@ export function DecisionFeed({
             </span>
             <span className="text-ink-2 flex-1 leading-relaxed">
               {d.text}
-              {d.llm && (
+              {d.bybit ? (
+                <a
+                  href={d.orderId ? `https://testnet.bybit.com/trade/usdt/BTCUSDT` : undefined}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ml-2 mono text-[10px] font-semibold px-1.5 py-0.5 rounded-md align-middle no-underline inline-flex items-center gap-1"
+                  style={{ color: "white", background: "var(--vs-machine-deep)" }}
+                  title={`real Bybit testnet order · ${d.orderId ?? ""}`}
+                >
+                  <span className="h-1 w-1 rounded-full bg-white animate-pulse" />
+                  BYBIT
+                </a>
+              ) : d.llm ? (
                 <span
                   className="ml-2 mono text-[10px] font-semibold px-1.5 py-0.5 rounded-md align-middle"
                   style={{ color: "var(--vs-ochre-deep)", background: "var(--vs-ochre-soft)" }}
@@ -116,7 +128,7 @@ export function DecisionFeed({
                 >
                   GEMINI
                 </span>
-              )}
+              ) : null}
               {variant === "global" && (
                 <span className="ml-2 text-ink-3 mono text-[11px]">→ {d.duelId}</span>
               )}

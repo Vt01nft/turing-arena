@@ -2,6 +2,7 @@ import { google } from "@ai-sdk/google";
 import { generateObject } from "ai";
 import { z } from "zod";
 import { AGENTS, DUELS, type Agent, type Duel } from "./mock-data";
+import { getTicker, getPositions, placeOrder, hasBybitKeys } from "./bybit";
 
 export type Decision = {
   id: string;
@@ -16,12 +17,27 @@ export type Decision = {
   txHash?: string;
   /** true if the decision came from a real Gemini call, false if synthesized */
   llm?: boolean;
+  /** true if this decision was actually executed on Bybit (real market order) */
+  bybit?: boolean;
+  /** Bybit order ID when bybit=true */
+  orderId?: string;
 };
 
 const GeminiDecision = z.object({
   kind: z.enum(["rebalance", "claim", "hold", "open", "close"]),
   text: z.string().min(8).max(160),
 });
+
+const BybitDecision = z.object({
+  action: z.enum(["long", "short", "close", "hold"]),
+  rationale: z.string().min(8).max(140),
+});
+
+/// Which agent's decisions get executed for real on Bybit testnet.
+/// Picked Volt because the aggressive yield-maximizer strategy is the most
+/// natural fit for BTCUSDT perp directional trading.
+const LIVE_TRADING_AGENT = "agent-volt";
+const MIN_TRADE_INTERVAL_MS = 10 * 60 * 1000; // 10 min between real orders
 
 const MAX_HISTORY = 200;
 
@@ -31,6 +47,8 @@ class DecisionStore {
   private timer: NodeJS.Timeout | null = null;
   private tick = 0;
   private bootstrapped = false;
+  private lastTradeAt = 0;
+  private tradeInFlight = false;
 
   ensureStarted() {
     if (this.timer) return;
@@ -86,9 +104,37 @@ class DecisionStore {
     if (!agent) return;
 
     const side: "A" | "B" = agent.id === duel.agentA ? "A" : "B";
+    const now = Date.now();
 
-    // Every 6th tick (~48s cadence), upgrade to a real Gemini call if we
-    // have a key. Keeps API quota modest while still showing real LLM signal.
+    // ─── LIVE TRADE PATH (the killer demo moment) ────────────────────────
+    // If this tick lands on the designated live-trading agent AND enough
+    // time has elapsed since the last real order AND we have both Gemini +
+    // Bybit keys, run the real Gemini -> Bybit pipeline.
+    const canTradeLive =
+      agent.id === LIVE_TRADING_AGENT &&
+      hasBybitKeys() &&
+      !!process.env.GOOGLE_GENERATIVE_AI_API_KEY &&
+      !this.tradeInFlight &&
+      now - this.lastTradeAt > MIN_TRADE_INTERVAL_MS;
+
+    if (canTradeLive) {
+      this.tradeInFlight = true;
+      try {
+        const d = await bybitTradeDecision(agent, duel, side, this.tick);
+        if (d) {
+          this.lastTradeAt = now;
+          this.push(d);
+          return;
+        }
+      } catch (e) {
+        console.error("[engine] bybit trade tick failed:", e);
+      } finally {
+        this.tradeInFlight = false;
+      }
+    }
+
+    // ─── SYNTHESIZED + GEMINI PATH (fallback / every other tick) ─────────
+    // Every 6th tick, upgrade to a real Gemini call if we have a key.
     const useLlm = this.tick % 6 === 0 && !!process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     const decision = useLlm
       ? await geminiDecision(agent, duel, side, this.tick).catch(() =>
@@ -164,6 +210,120 @@ function synthesizeDecision(
     text,
     txHash: `0x${[...Array(64)].map(() => "0123456789abcdef"[Math.floor(Math.random() * 16)]).join("")}`,
     llm: false,
+  };
+}
+
+/// Asks Gemini for a directional call, executes it on Bybit testnet,
+/// returns a Decision tagged with bybit=true and the real orderId. Skips
+/// trading if the LLM says hold or if the wallet is empty.
+async function bybitTradeDecision(
+  agent: Agent,
+  duel: Duel,
+  side: "A" | "B",
+  tick: number,
+): Promise<Decision | null> {
+  const ticker = await getTicker("BTCUSDT");
+  if (!ticker) return null;
+  const positions = (await getPositions("BTCUSDT")) ?? [];
+  const pos = positions[0];
+
+  const { object } = await generateObject({
+    model: google("gemini-2.5-flash"),
+    schema: BybitDecision,
+    system: `You are ${agent.name}, an aggressive yield-maximizing AI agent running on Mantle.
+You trade BTCUSDT perpetual on Bybit testnet. You can go LONG, SHORT, CLOSE current position, or HOLD.
+Be decisive. Respond with rationale under 130 chars, present tense, no preamble.
+Risk rules: max 2x notional vs equity, prefer short-window directional plays on 24h momentum.`,
+    prompt: `BTCUSDT mark price: $${ticker.lastPrice.toFixed(2)}
+24h change: ${(ticker.price24hPcnt * 100).toFixed(2)}%
+24h volume: ${ticker.volume24h.toFixed(0)} BTC
+Bid/ask spread: $${(ticker.ask1Price - ticker.bid1Price).toFixed(2)}
+
+Current position: ${pos ? `${pos.side} ${pos.size} BTC @ $${pos.entryPrice.toFixed(0)} (unrealised $${pos.unrealisedPnl.toFixed(2)})` : "FLAT"}
+
+What's your next action?`,
+  });
+
+  // If we already hold the same side, no new order — surface as a synthesized hold.
+  if (object.action === "hold") {
+    return {
+      id: `${duel.id}-${agent.id}-${tick}-${Math.random().toString(36).slice(2, 6)}`,
+      duelId: duel.id,
+      agentId: agent.id,
+      agentName: agent.name,
+      agentSide: side,
+      strategy: agent.strategy,
+      at: Math.floor(Date.now() / 1000),
+      kind: "hold",
+      text: object.rationale,
+      llm: true,
+      bybit: false,
+    };
+  }
+
+  let placed: { orderId: string } | null = null;
+  let kind: Decision["kind"] = "open";
+
+  if (object.action === "close" && pos) {
+    // Close = opposite side, same size
+    placed = await placeOrder({
+      symbol: "BTCUSDT",
+      side: pos.side === "Buy" ? "Sell" : "Buy",
+      orderType: "Market",
+      qty: pos.size.toFixed(3),
+      category: "linear",
+    });
+    kind = "close";
+  } else if (object.action === "long" || object.action === "short") {
+    // If already in the requested direction, do nothing (avoid stacking).
+    if (pos && ((object.action === "long" && pos.side === "Buy") || (object.action === "short" && pos.side === "Sell"))) {
+      return {
+        id: `${duel.id}-${agent.id}-${tick}-${Math.random().toString(36).slice(2, 6)}`,
+        duelId: duel.id,
+        agentId: agent.id,
+        agentName: agent.name,
+        agentSide: side,
+        strategy: agent.strategy,
+        at: Math.floor(Date.now() / 1000),
+        kind: "hold",
+        text: `holding existing ${pos.side === "Buy" ? "long" : "short"} - ${object.rationale}`,
+        llm: true,
+        bybit: false,
+      };
+    }
+    // If we have an opposite position, close it first (single market order flips us)
+    const notional = 50; // $50 per order
+    const qty = Math.max(0.001, Math.round((notional / ticker.lastPrice) * 1000) / 1000);
+    const totalQty = pos ? (pos.size + qty).toFixed(3) : qty.toFixed(3);
+    placed = await placeOrder({
+      symbol: "BTCUSDT",
+      side: object.action === "long" ? "Buy" : "Sell",
+      orderType: "Market",
+      qty: totalQty,
+      category: "linear",
+    });
+    kind = "open";
+  }
+
+  if (!placed) {
+    // Fall through to synth so the engine never gets stuck silent
+    return null;
+  }
+
+  const directional = object.action === "close" ? "closed BTCUSDT" : `opened BTCUSDT ${object.action}`;
+  return {
+    id: `${duel.id}-${agent.id}-${tick}-${Math.random().toString(36).slice(2, 6)}`,
+    duelId: duel.id,
+    agentId: agent.id,
+    agentName: agent.name,
+    agentSide: side,
+    strategy: agent.strategy,
+    at: Math.floor(Date.now() / 1000),
+    kind,
+    text: `${directional} — ${object.rationale}`,
+    llm: true,
+    bybit: true,
+    orderId: placed.orderId,
   };
 }
 

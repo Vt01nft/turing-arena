@@ -96,14 +96,23 @@ export function LiveRibbon() {
                 </span>
                 <span className="font-semibold text-ink mono text-[13px]">{d.agentName}</span>
                 <span className="text-ink-2">{d.text}</span>
-                {d.llm && (
+                {d.bybit ? (
+                  <span
+                    className="mono text-[10px] font-semibold tracking-wider px-1.5 py-0.5 rounded-md inline-flex items-center gap-1"
+                    style={{ color: "white", background: "var(--vs-machine-deep)" }}
+                    title={`real Bybit order · ${d.orderId ?? ""}`}
+                  >
+                    <span className="h-1 w-1 rounded-full bg-white animate-pulse" />
+                    BYBIT
+                  </span>
+                ) : d.llm ? (
                   <span
                     className="mono text-[10px] font-semibold tracking-wider px-1.5 py-0.5 rounded-md"
                     style={{ color: "var(--vs-ochre-deep)", background: "var(--vs-ochre-soft)" }}
                   >
                     GEMINI
                   </span>
-                )}
+                ) : null}
                 <span className="mono text-[11px] text-light">· {relTime(d.at)}</span>
                 <span aria-hidden className="text-ink-4 mx-3">●</span>
               </Link>
