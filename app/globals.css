@@ -18,13 +18,13 @@
 
   /* ----------  Ink (deep navy)  ---------- */
   --vs-ink:         #1A1F2E;
-  --vs-ink-2:       #3A4256;
-  --vs-ink-3:       #6E7689;
-  --vs-ink-4:       #9CA3B5;
+  --vs-ink-2:       #2E3548;   /* body / lead - was #3A4256 */
+  --vs-ink-3:       #525B72;   /* eyebrows / captions - was #6E7689 */
+  --vs-ink-4:       #7A8298;   /* faint helpers - was #9CA3B5 */
 
   /* Lines & dividers */
-  --vs-line:        #D4D8E5;
-  --vs-line-2:      #BAC0D2;
+  --vs-line:        #C4C9DA;   /* slightly stronger so cards pop - was #D4D8E5 */
+  --vs-line-2:      #A8AFC4;
 
   /* ----------  Duality  ---------- */
   --vs-human:       #E68676;
@@ -71,11 +71,11 @@ html.vs-dark {
   --vs-hero-from:   #0E1119;
   --vs-hero-to:     #16182A;
   --vs-ink:         #F0F2F8;
-  --vs-ink-2:       #C8CEDB;
-  --vs-ink-3:       #8A93A8;
-  --vs-ink-4:       #5A6478;
-  --vs-line:        #2A2F40;
-  --vs-line-2:      #3A4256;
+  --vs-ink-2:       #D2D7E3;   /* body, brighter than before */
+  --vs-ink-3:       #A4ACBE;   /* eyebrows / captions, brighter */
+  --vs-ink-4:       #7C8497;   /* faint helpers */
+  --vs-line:        #303652;
+  --vs-line-2:      #455070;
   --vs-human-wash:  #3A2622;
   --vs-machine-wash:#1F2540;
   --vs-ochre-soft:  #3B2F1A;
@@ -279,10 +279,26 @@ html.vs-dark .vs-pg-blob.b2 { background: #B45647; opacity: 0.10; }
   .mono { font-family: var(--vs-font-mono); font-feature-settings: "ss01", "tnum"; letter-spacing: -0.005em; }
   .num  { font-family: var(--vs-font-mono); font-variant-numeric: tabular-nums; }
   .eyebrow {
-    font-size: 11px; font-weight: 500;
-    letter-spacing: 0.14em; text-transform: uppercase;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
     color: var(--vs-ink-3);
   }
+}
+
+/* ─── Readable small-text helpers ────────────────────────────────────────
+   Upgrades the tiny captions that previously sat in ink-4 (too faint).
+   Use these helpers when text is informational but should still be skim-
+   readable, e.g. 'streamed via SSE · logged on-chain'. */
+.text-caption {
+  color: var(--vs-ink-2);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.text-caption-strong {
+  color: var(--vs-ink);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
 }
 
 /* RainbowKit overrides — chain selector / connect / account pills.
@@ -342,8 +358,7 @@ html.vs-dark .vs-pg-blob.b2 { background: #B45647; opacity: 0.10; }
   background: var(--vs-ink-2) !important;
   transform: translateY(-1px);
 }
-/* Strip the avatar / blockie / any white circle inside the wallet pill -
-   we only want "0xd8…1B0f ▾" with no leading circle. */
+/* Strip avatar / blockie inside the wallet pill */
 [data-rk] [aria-label="Account"] img,
 [data-rk] [data-testid="rk-account-button"] img,
 [data-rk] [aria-label="Account"] picture,
@@ -360,6 +375,48 @@ html.vs-dark .vs-pg-blob.b2 { background: #B45647; opacity: 0.10; }
   height: 0 !important;
   margin: 0 !important;
   overflow: hidden !important;
+}
+/* Strip ALL stray borders / shadows / outlines from every descendant of
+   the connected account + chain pills. RainbowKit leaves residual rings
+   around inner spans that don't fit our flat palette pill aesthetic. */
+[data-rk] [aria-label="Account"],
+[data-rk] [aria-label="Account"] *,
+[data-rk] [data-testid="rk-account-button"],
+[data-rk] [data-testid="rk-account-button"] *,
+[data-rk] [aria-label="Chain Selector"],
+[data-rk] [aria-label="Chain Selector"] *,
+[data-rk] [data-testid="rk-chain-button"],
+[data-rk] [data-testid="rk-chain-button"] * {
+  outline: none !important;
+}
+[data-rk] [aria-label="Account"] *,
+[data-rk] [data-testid="rk-account-button"] *,
+[data-rk] [aria-label="Chain Selector"] *,
+[data-rk] [data-testid="rk-chain-button"] * {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+/* but keep the outer pill's intentional border */
+[data-rk] [aria-label="Account"],
+[data-rk] [data-testid="rk-account-button"] {
+  border: 1px solid var(--vs-ink) !important;
+}
+[data-rk] [aria-label="Chain Selector"],
+[data-rk] [data-testid="rk-chain-button"] {
+  border: 1px solid var(--vs-line-2) !important;
+}
+/* dark mode: chain selector needs a darker border that's still visible */
+html.vs-dark [data-rk] [aria-label="Chain Selector"],
+html.vs-dark [data-rk] [data-testid="rk-chain-button"] {
+  background: var(--vs-paper) !important;
+  border: 1px solid var(--vs-line-2) !important;
+  color: var(--vs-ink) !important;
+}
+html.vs-dark [data-rk] [aria-label="Account"],
+html.vs-dark [data-rk] [data-testid="rk-account-button"] {
+  background: var(--vs-ink-2) !important;
+  color: var(--vs-ink) !important;
+  border: 1px solid var(--vs-line-2) !important;
 }
 /* Force children of the rk buttons onto one line too — RainbowKit
    sometimes wraps the label in a column flex container which causes

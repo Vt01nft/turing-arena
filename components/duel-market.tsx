@@ -193,7 +193,7 @@ function OnchainMarket({ duel, marketAddr }: { duel: Duel; marketAddr: Address }
           <span className="h-1 w-1 rounded-full bg-profit animate-pulse" /> ON-CHAIN
         </span>
       </div>
-      <div className="mono text-[10px] text-faint mb-4">
+      <div className="mono text-[12px] text-ink-3 mb-4">
         ${(Number(formatUnits(poolA + poolB, USDC_DECIMALS))).toFixed(2)} volume · {fmtAddr(marketAddr)}
       </div>
 
@@ -240,10 +240,10 @@ function OnchainMarket({ duel, marketAddr }: { duel: Duel; marketAddr: Address }
         </button>
       </div>
 
-      <label className="block text-[10px] text-faint uppercase tracking-wider mb-2">
+      <label className="block eyebrow mb-2">
         Amount (USDC)
         {isConnected && (
-          <span className="float-right mono text-faint normal-case tracking-normal">
+          <span className="float-right mono text-ink-3 normal-case tracking-normal text-[12px] font-medium">
             bal: {Number(formatUnits(usdcBalance, USDC_DECIMALS)).toFixed(2)}
           </span>
         )}
@@ -267,7 +267,7 @@ function OnchainMarket({ duel, marketAddr }: { duel: Duel; marketAddr: Address }
         ))}
       </div>
 
-      <div className="rounded-md border border-[var(--color-border)] px-3 py-2 mb-4 mono text-[11px] divide-y divide-[var(--color-border)]">
+      <div className="rounded-md border border-[var(--color-border)] px-3 py-2 mb-4 mono text-[13px] divide-y divide-[var(--color-border)]">
         <Row label="Shares" value={shares.toFixed(2)} />
         <Row label="If correct" value={fmtUsd(payout, 2)} tone="profit" />
         <Row label="P&L" value={fmtUsd(profit, 2)} tone={profit >= 0 ? "profit" : "loss"} />
@@ -339,8 +339,8 @@ function OnchainMarket({ duel, marketAddr }: { duel: Duel; marketAddr: Address }
         </button>
       )}
 
-      <p className="mt-3 text-[10px] text-faint leading-relaxed">
-        Parimutuel pool · winners split losers&apos; stakes pro-rata · resolves on-chain when duel ends.
+      <p className="mt-3 text-caption">
+        Parimutuel pool · winners split losers&apos; stakes pro-rata · resolves on-chain when the duel ends.
       </p>
     </div>
   );
@@ -408,7 +408,7 @@ function MockMarket({ duel }: { duel: Duel }) {
         </button>
       </div>
 
-      <label className="block text-[10px] text-faint uppercase tracking-wider mb-2">Amount (USDC)</label>
+      <label className="block eyebrow mb-2">Amount (USDC)</label>
       <div className="flex gap-2 mb-3">
         <input
           inputMode="decimal"
@@ -428,7 +428,7 @@ function MockMarket({ duel }: { duel: Duel }) {
         ))}
       </div>
 
-      <div className="rounded-md border border-[var(--color-border)] px-3 py-2 mb-4 mono text-[11px] divide-y divide-[var(--color-border)]">
+      <div className="rounded-md border border-[var(--color-border)] px-3 py-2 mb-4 mono text-[13px] divide-y divide-[var(--color-border)]">
         <Row label="Shares" value={shares.toFixed(2)} />
         <Row label="If correct" value={fmtUsd(payout, 2)} tone="profit" />
         <Row label="P&L" value={fmtUsd(profit, 2)} tone={profit >= 0 ? "profit" : "loss"} />
@@ -450,7 +450,7 @@ function MockMarket({ duel }: { duel: Duel }) {
             : `Stake ${fmtUsd(dollar, 2)} on ${side === "A" ? a.name : b.name}`}
       </button>
 
-      <p className="mt-3 text-[10px] text-faint leading-relaxed">
+      <p className="mt-3 text-caption">
         This duel uses mock prices - only duel-001 has a live on-chain market for now.
       </p>
     </div>

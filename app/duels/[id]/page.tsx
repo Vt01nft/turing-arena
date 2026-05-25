@@ -178,11 +178,11 @@ export default async function DuelPage({ params }: { params: Params }) {
 
             {/* Decision feed */}
             <section>
-              <div className="eyebrow mb-3">
-                Decision feed
-                <span className="ml-2 normal-case tracking-normal font-sans text-ink-3 text-[12px]">
-                  · logged to ERC-8004 ReputationRegistry
-                </span>
+              <div className="flex items-baseline gap-3 flex-wrap mb-3">
+                <div className="eyebrow">Decision feed</div>
+                <div className="text-caption">
+                  Logged to <span className="mono text-ink">ERC-8004</span> ReputationRegistry every action.
+                </div>
               </div>
               <DecisionFeed duelId={duel.id} />
             </section>

@@ -126,18 +126,21 @@ export function CopyTrade({ agentId, agentName }: { agentId: string; agentName: 
   }
 
   return (
-    <div className="surface p-4 text-[12px] text-dim leading-relaxed">
-      <div className="flex items-center justify-between mb-1.5">
-        <div className="text-fg font-semibold text-[13px]">
-          Copy-trade <span className="text-warn">{agentName}</span>
+    <div className="surface-paper p-4 text-[13px] text-ink-2 leading-relaxed">
+      <div className="flex items-center justify-between mb-2">
+        <div className="text-ink font-semibold text-[14px]">
+          Copy-trade <span style={{ color: "var(--vs-ochre-deep)" }}>{agentName}</span>
         </div>
-        <span className="mono text-[9px] text-faint px-1 py-0.5 rounded border border-[var(--color-border)]">
+        <span
+          className="mono text-[10px] font-semibold tracking-wider px-1.5 py-0.5 rounded"
+          style={{ color: "var(--vs-machine-deep)", background: "var(--vs-machine-wash)" }}
+        >
           x402
         </span>
       </div>
-      Mirror allocations 1:1 to your wallet. Pay <span className="mono text-fg">$0.05</span> per
-      agent action via <span className="mono text-fg">HTTP 402</span>. Stop paying = stop mirroring.
-      {error && <div className="text-loss text-[11px] mt-2">{error}</div>}
+      Mirror allocations 1:1 to your wallet. Pay <span className="mono text-ink font-semibold">$0.05</span> per
+      agent action via <span className="mono text-ink font-semibold">HTTP 402</span>. Stop paying = stop mirroring.
+      {error && <div className="text-[12px] mt-2" style={{ color: "var(--vs-negative)" }}>{error}</div>}
       <button
         type="button"
         disabled={busy || signing}
@@ -152,9 +155,9 @@ export function CopyTrade({ agentId, agentName }: { agentId: string; agentName: 
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-md border border-[var(--color-border)] px-2.5 py-1.5">
-      <div className="text-[9px] uppercase tracking-wider text-faint">{label}</div>
-      <div className="mono text-[14px] text-fg mt-0.5">{value}</div>
+    <div className="rounded-md border border-line px-3 py-2">
+      <div className="text-[10px] uppercase tracking-wider text-ink-3 font-semibold">{label}</div>
+      <div className="mono text-[15px] text-ink mt-1 font-medium">{value}</div>
     </div>
   );
 }
