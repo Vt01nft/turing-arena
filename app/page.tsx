@@ -4,6 +4,7 @@ import { Hero } from "@/components/hero";
 import { DuelCard } from "@/components/duel-card";
 import { AgentCard } from "@/components/agent-card";
 import { DecisionFeed } from "@/components/decision-feed";
+import { LiveBybitSection } from "@/components/live-bybit-section";
 import { AGENTS, DUELS, agentsOnly, humansOnly } from "@/lib/mock-data";
 
 export default function Home() {
@@ -51,6 +52,9 @@ export default function Home() {
             ))}
           </div>
         </section>
+
+        {/* Live Bybit mainnet section */}
+        <LiveBybitSection />
 
         {/* Decision feed */}
         <section className="mx-auto max-w-[1240px] px-8 py-20 border-t border-line">

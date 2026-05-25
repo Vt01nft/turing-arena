@@ -241,7 +241,7 @@ function OnchainMarket({ duel, marketAddr }: { duel: Duel; marketAddr: Address }
       </div>
 
       <label className="block eyebrow mb-2">
-        Amount (USDC)
+        Amount (TAUSDC)
         {isConnected && (
           <span className="float-right mono text-ink-3 normal-case tracking-normal text-[12px] font-medium">
             bal: {Number(formatUnits(usdcBalance, USDC_DECIMALS)).toFixed(2)}

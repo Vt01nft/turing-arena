@@ -7,9 +7,30 @@ import { CONTRACTS, isDeployed } from "@/lib/contracts";
 import { useState } from "react";
 
 const TOKENS = [
-  { id: "usdc" as const, addr: CONTRACTS.usdc, label: "USDC", amount: "1,000", note: "test stablecoin · 6 decimals" },
-  { id: "usdy" as const, addr: CONTRACTS.usdy, label: "USDY", amount: "1,000", note: "Ondo mock · 5.25% APY" },
-  { id: "meth" as const, addr: CONTRACTS.meth, label: "mETH", amount: "0.5", note: "Mantle staked ETH mock · 3.80% APY" },
+  {
+    id: "tausdc" as const,
+    addr: CONTRACTS.usdc,
+    label: "TAUSDC",
+    longLabel: "Turing Arena USDC",
+    amount: "1,000",
+    note: "Stake on duels. Demo-only · zero real value · 6 decimals",
+  },
+  {
+    id: "usdy" as const,
+    addr: CONTRACTS.usdy,
+    label: "USDY",
+    longLabel: "USDY (Ondo mock)",
+    amount: "1,000",
+    note: "Ondo yield-bearing mock · 5.25% APY",
+  },
+  {
+    id: "meth" as const,
+    addr: CONTRACTS.meth,
+    label: "mETH",
+    longLabel: "Mantle staked ETH (mock)",
+    amount: "0.5",
+    note: "Mantle staked ETH mock · 3.80% APY",
+  },
 ];
 
 export default function FaucetPage() {
@@ -38,7 +59,19 @@ export default function FaucetPage() {
   );
 }
 
-function FaucetRow({ addr, label, amount, note }: { addr: string; label: string; amount: string; note: string }) {
+function FaucetRow({
+  addr,
+  label,
+  longLabel,
+  amount,
+  note,
+}: {
+  addr: string;
+  label: string;
+  longLabel: string;
+  amount: string;
+  note: string;
+}) {
   const { isConnected } = useAccount();
   const { writeContract, data: hash, isPending, error } = useWriteContract();
   const { isLoading: confirming, isSuccess } = useWaitForTransactionReceipt({ hash });
@@ -53,7 +86,13 @@ function FaucetRow({ addr, label, amount, note }: { addr: string; label: string;
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className="font-semibold text-[15px]">{label}</span>
+          <span className="font-semibold text-[15px]">{longLabel}</span>
+          <span
+            className="mono text-[10px] font-semibold tracking-wider px-1.5 py-0.5 rounded"
+            style={{ color: "var(--vs-ink-3)", background: "var(--vs-cream)" }}
+          >
+            {label}
+          </span>
           <a
             href={deployed ? `https://explorer.sepolia.mantle.xyz/address/${addr}` : undefined}
             target="_blank"
