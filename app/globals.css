@@ -220,3 +220,45 @@ html.vs-dark .vs-pg-blob.b2 { background: #B45647; opacity: 0.10; }
     color: var(--vs-ink-3);
   }
 }
+
+/* RainbowKit overrides — chain selector / connect / account pills */
+[data-rk] button {
+  font-family: var(--vs-font-sans), system-ui, sans-serif !important;
+}
+[data-rk] [aria-label="Chain Selector"],
+[data-rk] [aria-label="Open Connect Modal"],
+[data-rk] [data-testid="rk-chain-button"],
+[data-rk] [data-testid="rk-connect-button"] {
+  background: var(--vs-paper) !important;
+  color: var(--vs-ink) !important;
+  border: 1px solid var(--vs-line-2) !important;
+  border-radius: 999px !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  box-shadow: var(--vs-shadow-1) !important;
+  transition: all 140ms cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+[data-rk] [aria-label="Chain Selector"]:hover,
+[data-rk] [aria-label="Open Connect Modal"]:hover,
+[data-rk] [data-testid="rk-chain-button"]:hover,
+[data-rk] [data-testid="rk-connect-button"]:hover {
+  background: var(--vs-cream) !important;
+  transform: translateY(-1px);
+}
+[data-rk] [aria-label="Account"],
+[data-rk] [data-testid="rk-account-button"] {
+  background: var(--vs-ink) !important;
+  color: var(--vs-paper) !important;
+  border: 1px solid var(--vs-ink) !important;
+  border-radius: 999px !important;
+  font-family: var(--vs-font-mono), monospace !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  box-shadow: var(--vs-shadow-1) !important;
+  transition: all 140ms cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+[data-rk] [aria-label="Account"]:hover,
+[data-rk] [data-testid="rk-account-button"]:hover {
+  background: var(--vs-ink-2) !important;
+  transform: translateY(-1px);
+}
