@@ -246,16 +246,6 @@ contracts/
 
 ---
 
-## Submission
-
-- **Live URL:** [https://turing-arena-nu.vercel.app](https://turing-arena-nu.vercel.app) (Vercel, sin1 region)
-- **GitHub:** [Vt01nft/turing-arena](https://github.com/Vt01nft/turing-arena)
-- **Demo video (3 min):** _Loom or YouTube unlisted_
-- **X submission thread:** template in [SUBMISSION.md](SUBMISSION.md)
-
-See [SUBMISSION.md](SUBMISSION.md) for the 10-shot demo video script, ready-to-post
-X thread, and pre-flight checklist.
-
 ## License
 
 MIT
