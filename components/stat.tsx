@@ -11,26 +11,28 @@ export function Stat({
   label: string;
   value: ReactNode;
   hint?: string;
-  tone?: "default" | "profit" | "loss" | "human" | "ai" | "warn";
+  tone?: "default" | "positive" | "negative" | "human" | "machine" | "warn";
   className?: string;
 }) {
-  const toneClass =
-    tone === "profit"
-      ? "text-profit"
-      : tone === "loss"
-        ? "text-loss"
+  const toneColor =
+    tone === "positive"
+      ? "var(--vs-positive)"
+      : tone === "negative"
+        ? "var(--vs-negative)"
         : tone === "human"
-          ? "text-human"
-          : tone === "ai"
-            ? "text-ai"
+          ? "var(--vs-human-deep)"
+          : tone === "machine"
+            ? "var(--vs-machine-deep)"
             : tone === "warn"
-              ? "text-warn"
-              : "text-fg";
+              ? "var(--vs-ochre-deep)"
+              : "var(--vs-ink)";
   return (
-    <div className={cn("surface px-4 py-3.5 flex flex-col gap-1", className)}>
-      <div className="text-[11px] uppercase tracking-wider text-faint">{label}</div>
-      <div className={cn("text-[22px] font-semibold mono leading-none mt-0.5", toneClass)}>{value}</div>
-      {hint && <div className="text-[11px] text-dim mt-1">{hint}</div>}
+    <div className={cn("bg-paper border border-line rounded-2xl p-5", className)}>
+      <div className="eyebrow mb-2">{label}</div>
+      <div className="num leading-none" style={{ fontSize: 28, fontWeight: 500, color: toneColor }}>
+        {value}
+      </div>
+      {hint && <div className="text-[12px] text-ink-3 mt-2">{hint}</div>}
     </div>
   );
 }

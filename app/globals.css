@@ -1,80 +1,221 @@
+/* ============================================================
+   turing arena — design tokens (Versus design system)
+   Cool lavender surfaces, deep navy ink, coral/periwinkle duality.
+   Sans-led typography with serif italic as editorial accent.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
+:root {
+  /* ----------  Surfaces (cool & light)  ---------- */
+  --vs-bone:        #E8EBF3;
+  --vs-cream:       #DCDFEE;
+  --vs-parchment:   #F0F2F8;
+  --vs-paper:       #FFFFFF;
+  --vs-hero-from:   #E8EBF3;
+  --vs-hero-to:     #D8DCEF;
+
+  /* ----------  Ink (deep navy)  ---------- */
+  --vs-ink:         #1A1F2E;
+  --vs-ink-2:       #3A4256;
+  --vs-ink-3:       #6E7689;
+  --vs-ink-4:       #9CA3B5;
+
+  /* Lines & dividers */
+  --vs-line:        #D4D8E5;
+  --vs-line-2:      #BAC0D2;
+
+  /* ----------  Duality  ---------- */
+  --vs-human:       #E68676;
+  --vs-human-deep:  #B45647;
+  --vs-human-soft:  #F5C8C0;
+  --vs-human-wash:  #FCE5E2;
+  --vs-machine:     #7B7DEB;
+  --vs-machine-deep:#4A4DC0;
+  --vs-machine-soft:#C2C7F1;
+  --vs-machine-wash:#E0E3F8;
+
+  /* ----------  Accents  ---------- */
+  --vs-ochre:       #E8A452;
+  --vs-ochre-deep:  #B57F36;
+  --vs-ochre-soft:  #F4C892;
+  --vs-lilac:       #B889CE;
+  --vs-lilac-deep:  #8A569C;
+  --vs-lilac-soft:  #DFC7EB;
+  --vs-indigo:      #5C5FCE;
+  --vs-indigo-soft: #DFE0F4;
+
+  /* ----------  Semantic  ---------- */
+  --vs-positive:    #4A9E7F;
+  --vs-negative:    #DD7368;
+  --vs-warning:     #E8A452;
+  --vs-info:        #5C5FCE;
+
+  /* ----------  Type families  ---------- */
+  --vs-font-sans:    "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --vs-font-display: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --vs-font-serif:   "Newsreader", "Iowan Old Style", Georgia, serif;
+  --vs-font-mono:    "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --vs-shadow-1: 0 1px 0 rgba(26,31,46,0.03), 0 2px 8px -2px rgba(26,31,46,0.06);
+  --vs-shadow-2: 0 1px 0 rgba(26,31,46,0.04), 0 12px 28px -8px rgba(26,31,46,0.10);
+  --vs-shadow-3: 0 2px 0 rgba(26,31,46,0.05), 0 24px 56px -16px rgba(26,31,46,0.18);
+}
+
+html.vs-dark {
+  --vs-bone:        #0E1119;
+  --vs-cream:       #161A26;
+  --vs-parchment:   #1A1F2E;
+  --vs-paper:       #232838;
+  --vs-hero-from:   #0E1119;
+  --vs-hero-to:     #16182A;
+  --vs-ink:         #F0F2F8;
+  --vs-ink-2:       #C8CEDB;
+  --vs-ink-3:       #8A93A8;
+  --vs-ink-4:       #5A6478;
+  --vs-line:        #2A2F40;
+  --vs-line-2:      #3A4256;
+  --vs-human-wash:  #3A2622;
+  --vs-machine-wash:#1F2540;
+  --vs-ochre-soft:  #3B2F1A;
+  --vs-lilac-soft:  #2D1F36;
+  --vs-indigo-soft: #1F2540;
+}
+
 @theme {
-  /* Surfaces - warm-tinted near-black for sophistication, not pure crypto black */
-  --color-bg: #0a0b0f;
-  --color-surface: #13151c;
-  --color-surface-2: #1a1d26;
-  --color-border: #262a35;
-  --color-border-strong: #353a47;
+  --color-bone: var(--vs-bone);
+  --color-cream: var(--vs-cream);
+  --color-parchment: var(--vs-parchment);
+  --color-paper: var(--vs-paper);
+  --color-ink: var(--vs-ink);
+  --color-ink-2: var(--vs-ink-2);
+  --color-ink-3: var(--vs-ink-3);
+  --color-ink-4: var(--vs-ink-4);
+  --color-line: var(--vs-line);
+  --color-line-2: var(--vs-line-2);
+  --color-human: var(--vs-human);
+  --color-human-deep: var(--vs-human-deep);
+  --color-human-soft: var(--vs-human-soft);
+  --color-human-wash: var(--vs-human-wash);
+  --color-machine: var(--vs-machine);
+  --color-machine-deep: var(--vs-machine-deep);
+  --color-machine-soft: var(--vs-machine-soft);
+  --color-machine-wash: var(--vs-machine-wash);
+  --color-ochre: var(--vs-ochre);
+  --color-ochre-deep: var(--vs-ochre-deep);
+  --color-ochre-soft: var(--vs-ochre-soft);
+  --color-lilac: var(--vs-lilac);
+  --color-indigo: var(--vs-indigo);
+  --color-indigo-soft: var(--vs-indigo-soft);
+  --color-positive: var(--vs-positive);
+  --color-negative: var(--vs-negative);
+  --color-warning: var(--vs-warning);
+  --font-sans: var(--vs-font-sans);
+  --font-serif: var(--vs-font-serif);
+  --font-mono: var(--vs-font-mono);
 
-  /* Text */
-  --color-fg: #f5f6f8;
-  --color-fg-dim: #9097a5;
-  --color-fg-faint: #5d6373;
-
-  /* Duality - the only "brand" colors */
-  --color-human: #6a8dff;
-  --color-ai: #ff5b8d;
-
-  /* Money signals */
-  --color-profit: #1cb988;
-  --color-loss: #ff5252;
-  --color-warn: #f7c14b;
-
-  /* Type */
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* ───── Backwards-compat aliases (older code uses these names) ───── */
+  --color-fg: var(--vs-ink);
+  --color-dim: var(--vs-ink-2);
+  --color-faint: var(--vs-ink-3);
+  --color-bg: var(--vs-bone);
+  --color-bg-elev: var(--vs-cream);
+  --color-surface: var(--vs-parchment);
+  --color-surface-2: var(--vs-cream);
+  --color-border: var(--vs-line);
+  --color-border-strong: var(--vs-line-2);
+  --color-accent: var(--vs-ochre);
+  --color-accent-dim: var(--vs-ochre-deep);
+  --color-profit: var(--vs-positive);
+  --color-loss: var(--vs-negative);
+  --color-warn: var(--vs-warning);
+  --color-ai: var(--vs-machine);
+  --color-panel: var(--vs-parchment);
 }
 
 html, body {
-  background: var(--color-bg);
-  color: var(--color-fg);
-  font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--vs-bone);
+  color: var(--vs-ink);
+  font-family: var(--vs-font-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-::selection {
-  background: rgba(106, 141, 255, 0.3);
+::selection { background: var(--vs-machine-soft); color: var(--vs-ink); }
+
+/* Editorial italic emphasis */
+em, .vs-em {
+  font-family: var(--vs-font-serif);
+  font-style: italic;
+  font-weight: 400;
 }
+
+/* Trefoil mark — slow continuous rotation. Rotates the SVG node itself so
+   the centered transform-origin works without parent constraints. */
+.ta-trefoil { line-height: 0; }
+.ta-trefoil svg { transform-origin: 50% 50%; will-change: transform; }
+.ta-trefoil.rotating svg { animation: ta-trefoil-rotate 22s linear infinite; }
+@keyframes ta-trefoil-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+/* Pause rotation on hover so users can read the inset text */
+.ta-trefoil:hover svg { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .ta-trefoil.rotating svg { animation: none; }
+}
+
+/* Page background drift blobs */
+.vs-pg-bg { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+.vs-pg-blob { position: absolute; border-radius: 50%; filter: blur(80px); will-change: transform; }
+.vs-pg-blob.b1 {
+  width: 640px; height: 640px; left: -160px; top: -200px;
+  background: #C2C7F1; opacity: 0.32;
+  animation: vs-drift1 28s ease-in-out infinite;
+}
+.vs-pg-blob.b2 {
+  width: 560px; height: 560px; right: -160px; bottom: -120px;
+  background: #C2C7F1; opacity: 0.22;
+  animation: vs-drift2 36s ease-in-out infinite;
+}
+html.vs-dark .vs-pg-blob.b1 { background: #4A4DC0; opacity: 0.18; }
+html.vs-dark .vs-pg-blob.b2 { background: #B45647; opacity: 0.10; }
+@keyframes vs-drift1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(40px,30px) scale(1.06); } }
+@keyframes vs-drift2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-50px,-30px) scale(1.04); } }
+
+/* Rotating concentric rings in hero */
+.vs-ring { transform-origin: 50% 50%; transform-box: fill-box; }
+.vs-ring-1 { animation: vs-spin 40s linear infinite; }
+.vs-ring-2 { animation: vs-spin 60s linear infinite reverse; }
+.vs-ring-3 { animation: vs-spin 90s linear infinite; }
+.vs-ring-4 { animation: vs-spin 120s linear infinite reverse; }
+@keyframes vs-spin { to { transform: rotate(360deg); } }
+
+@keyframes pulse-soft { 0%, 100% { box-shadow: 0 0 0 0 rgba(123,125,235,0.36); } 50% { box-shadow: 0 0 0 6px rgba(123,125,235,0); } }
 
 @layer utilities {
-  .surface {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
+  .surface       { background: var(--vs-parchment); border: 1px solid var(--vs-line); border-radius: 20px; }
+  .surface-paper { background: var(--vs-paper); border: 1px solid var(--vs-line); border-radius: 20px; }
+  .surface-2     { background: var(--vs-cream); border: 1px solid var(--vs-line); border-radius: 16px; }
+  .surface-raised{ background: var(--vs-paper); border: 1px solid var(--vs-line); border-radius: 20px; box-shadow: var(--vs-shadow-2); }
+  /* Backwards-compat with prior class names */
+  .panel       { background: var(--vs-parchment); border: 1px solid var(--vs-line); border-radius: 16px; }
+  .panel-elev  { background: var(--vs-paper); border: 1px solid var(--vs-line); border-radius: 16px; }
+  .text-dim   { color: var(--vs-ink-2); }
+  .text-faint { color: var(--vs-ink-3); }
+  .text-light { color: var(--vs-ink-4); }
+  .text-accent { color: var(--vs-ochre-deep); }
+  .text-profit { color: var(--vs-positive); }
+  .text-loss   { color: var(--vs-negative); }
+  .text-warn   { color: var(--vs-ochre-deep); }
+  .mono { font-family: var(--vs-font-mono); font-feature-settings: "ss01", "tnum"; letter-spacing: -0.005em; }
+  .num  { font-family: var(--vs-font-mono); font-variant-numeric: tabular-nums; }
+  .eyebrow {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--vs-ink-3);
   }
-  .surface-2 {
-    background: var(--color-surface-2);
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
-  }
-  .text-dim { color: var(--color-fg-dim); }
-  .text-faint { color: var(--color-fg-faint); }
-  .text-human { color: var(--color-human); }
-  .text-ai { color: var(--color-ai); }
-  .text-profit { color: var(--color-profit); }
-  .text-loss { color: var(--color-loss); }
-  .text-warn { color: var(--color-warn); }
-  .bg-human { background: var(--color-human); }
-  .bg-ai { background: var(--color-ai); }
-  .mono {
-    font-family: var(--font-mono), ui-monospace, "SF Mono", Menlo, monospace;
-    font-feature-settings: "tnum", "zero";
-  }
-  .ring-human { box-shadow: 0 0 0 1px var(--color-human); }
-  .ring-ai { box-shadow: 0 0 0 1px var(--color-ai); }
-  .divider {
-    background: var(--color-border);
-    height: 1px;
-  }
-  /* Subtle dotted texture, not the loud grid */
-  .dotted {
-    background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
-    background-size: 24px 24px;
-  }
-}
-
-/* RainbowKit overrides - match our palette */
-[data-rk] button {
-  font-family: var(--font-sans), system-ui, sans-serif !important;
 }

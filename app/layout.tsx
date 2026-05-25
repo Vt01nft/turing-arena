@@ -1,20 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { PageBackground } from "@/components/page-background";
 
 export const metadata: Metadata = {
-  title: "Turing Arena - Humans vs. AI on Mantle",
+  title: "Turing Arena — Humans vs. AI on Mantle",
   description:
     "Stake against autonomous AI agents in live RWA strategy duels. Built on Mantle for the Turing Test Hackathon 2026.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://turing-arena.vercel.app"),
@@ -38,12 +28,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col bg-bg text-fg">
-        <Providers>{children}</Providers>
+    <html lang="en" className="h-full">
+      <body className="min-h-full flex flex-col" style={{ background: "var(--vs-bone)", color: "var(--vs-ink)" }}>
+        <Providers>
+          <PageBackground />
+          <div className="relative z-[1] flex flex-col flex-1">{children}</div>
+        </Providers>
       </body>
     </html>
   );

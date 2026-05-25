@@ -1,5 +1,9 @@
+export type ContestantKind = "agent" | "human";
+
 export type Agent = {
   id: string;
+  /** "agent" = autonomous AI bot, "human" = real trader via Bybit account */
+  kind: ContestantKind;
   name: string;
   handle: string;
   avatar: string;
@@ -16,6 +20,8 @@ export type Agent = {
   stakeMnt: number;
   active: boolean;
   owner: string;
+  /** If set, this contestant trades real positions on Bybit testnet under this subaccount */
+  bybitAccount?: string;
 };
 
 export type Duel = {
@@ -46,8 +52,10 @@ const now = Math.floor(Date.now() / 1000);
 const hour = 3600;
 
 export const AGENTS: Agent[] = [
+  // ─── AGENTS (autonomous AI) ──────────────────────────────────────────────
   {
     id: "agent-prudence",
+    kind: "agent",
     name: "Prudence",
     handle: "@prudence_ai",
     avatar: "P",
@@ -63,10 +71,12 @@ export const AGENTS: Agent[] = [
     tvl: 184_300,
     stakeMnt: 5000,
     active: true,
-    owner: "0xA01...c0f1",
+    owner: "0xc06d...55E5",
+    bybitAccount: "ta-prudence-tn",
   },
   {
     id: "agent-volt",
+    kind: "agent",
     name: "Volt",
     handle: "@volt_strategy",
     avatar: "V",
@@ -82,10 +92,12 @@ export const AGENTS: Agent[] = [
     tvl: 96_800,
     stakeMnt: 5000,
     active: true,
-    owner: "0x9bd...11aa",
+    owner: "0x6d1d...1771",
+    bybitAccount: "ta-volt-tn",
   },
   {
     id: "agent-orbit",
+    kind: "agent",
     name: "Orbit",
     handle: "@orbit_macro",
     avatar: "O",
@@ -101,9 +113,166 @@ export const AGENTS: Agent[] = [
     tvl: 51_200,
     stakeMnt: 5000,
     active: true,
-    owner: "0x42e...88c2",
+    owner: "0xa5bc...4Ce0",
+    bybitAccount: "ta-orbit-tn",
+  },
+  {
+    id: "agent-helix",
+    kind: "agent",
+    name: "Helix",
+    handle: "@helix_pairs",
+    avatar: "H",
+    strategy: "contrarian",
+    bio: "Mean-reversion specialist. Pairs trades on USDY/mETH basis and short-volatility funding plays.",
+    erc8004Id: 1118,
+    reputation: 521,
+    validations: 19,
+    totalDuels: 9,
+    wins: 5,
+    apy7d: 9.10,
+    apy30d: 12.40,
+    tvl: 38_700,
+    stakeMnt: 5000,
+    active: true,
+    owner: "0x7f02...9a31",
+  },
+  {
+    id: "agent-bishop",
+    kind: "agent",
+    name: "Bishop",
+    handle: "@bishop_mom",
+    avatar: "B",
+    strategy: "momentum",
+    bio: "Trend follower on mETH staking premium. Adds on confirmation, trims on weakness. No countertrend trades.",
+    erc8004Id: 1132,
+    reputation: 488,
+    validations: 16,
+    totalDuels: 11,
+    wins: 6,
+    apy7d: 14.20,
+    apy30d: 9.30,
+    tvl: 27_600,
+    stakeMnt: 5000,
+    active: true,
+    owner: "0xb482...c704",
+  },
+  {
+    id: "agent-cipher",
+    kind: "agent",
+    name: "Cipher",
+    handle: "@cipher_quant",
+    avatar: "C",
+    strategy: "macro",
+    bio: "Stat-arb on RWA vs synthetic dollar basis. Mostly market-neutral; bleeds in trendless tape.",
+    erc8004Id: 1149,
+    reputation: 402,
+    validations: 14,
+    totalDuels: 8,
+    wins: 4,
+    apy7d: 6.80,
+    apy30d: 7.95,
+    tvl: 22_100,
+    stakeMnt: 5000,
+    active: true,
+    owner: "0xd901...3b88",
+  },
+
+  // ─── HUMANS (real traders via Bybit) ─────────────────────────────────────
+  {
+    id: "human-adrian",
+    kind: "human",
+    name: "Adrian",
+    handle: "@adrian.eth",
+    avatar: "A",
+    strategy: "macro",
+    bio: "Ex-Jane Street. Discretionary macro, focuses on funding-rate dislocations and yield-curve plays.",
+    erc8004Id: 2001,
+    reputation: 718,
+    validations: 22,
+    totalDuels: 14,
+    wins: 9,
+    apy7d: 12.30,
+    apy30d: 11.40,
+    tvl: 78_500,
+    stakeMnt: 2500,
+    active: true,
+    owner: "0x42c1...8af1",
+    bybitAccount: "ta-adrian-tn",
+  },
+  {
+    id: "human-mei",
+    kind: "human",
+    name: "Mei",
+    handle: "@mei.lens",
+    avatar: "M",
+    strategy: "momentum",
+    bio: "Pro scalper. Lives in 5m candles. Heavy mETH, light USDY, tight stops.",
+    erc8004Id: 2014,
+    reputation: 612,
+    validations: 18,
+    totalDuels: 19,
+    wins: 12,
+    apy7d: 21.40,
+    apy30d: 16.80,
+    tvl: 42_300,
+    stakeMnt: 2500,
+    active: true,
+    owner: "0xa039...cc2b",
+    bybitAccount: "ta-mei-tn",
+  },
+  {
+    id: "human-kojo",
+    kind: "human",
+    name: "Kojo",
+    handle: "@kojo_swing",
+    avatar: "K",
+    strategy: "conservative",
+    bio: "DeFi-native swing trader. Yield ladder strategist; rotates weekly based on RWA spread.",
+    erc8004Id: 2028,
+    reputation: 540,
+    validations: 14,
+    totalDuels: 10,
+    wins: 6,
+    apy7d: 8.10,
+    apy30d: 9.20,
+    tvl: 31_800,
+    stakeMnt: 2500,
+    active: true,
+    owner: "0xd875...1B0f",
+    bybitAccount: "ta-kojo-tn",
+  },
+  {
+    id: "human-lina",
+    kind: "human",
+    name: "Lina",
+    handle: "@lina_vol",
+    avatar: "L",
+    strategy: "contrarian",
+    bio: "Vol seller. Sells weekly mETH covered calls, recycles premium into USDY ladder.",
+    erc8004Id: 2042,
+    reputation: 471,
+    validations: 11,
+    totalDuels: 7,
+    wins: 4,
+    apy7d: 10.60,
+    apy30d: 12.10,
+    tvl: 19_400,
+    stakeMnt: 2500,
+    active: true,
+    owner: "0x9b6e...0f12",
+    bybitAccount: "ta-lina-tn",
   },
 ];
+
+/** Returns only true AI agents (drops humans). */
+export function agentsOnly(): Agent[] {
+  return AGENTS.filter((a) => a.kind === "agent");
+}
+
+/** Returns only human contestants. */
+export function humansOnly(): Agent[] {
+  return AGENTS.filter((a) => a.kind === "human");
+}
 
 export const DUELS: Duel[] = [
   {
@@ -161,6 +330,48 @@ export const DUELS: Duel[] = [
     marketNoShares: 4_100,
     marketPrice: 0.44,
     volumeUsd: 7_300,
+    rules: {
+      assets: ["USDY", "mETH"],
+      maxDrawdownPct: 8,
+      durationHours: 168,
+    },
+  },
+  // Human vs Agent — the headline matchup for the Turing Test theme
+  {
+    id: "duel-h001",
+    agentA: "human-mei",
+    agentB: "agent-volt",
+    startsAt: now - 12 * hour,
+    endsAt: now + 6 * 24 * hour + 12 * hour,
+    status: "live",
+    capitalUsd: 10_000,
+    scoreA: 0.83,
+    scoreB: 1.04,
+    marketYesShares: 22_100,
+    marketNoShares: 19_800,
+    marketPrice: 0.53,
+    volumeUsd: 38_400,
+    rules: {
+      assets: ["USDY", "mETH"],
+      maxDrawdownPct: 8,
+      durationHours: 168,
+    },
+  },
+  // Human vs Human
+  {
+    id: "duel-h002",
+    agentA: "human-adrian",
+    agentB: "human-kojo",
+    startsAt: now - 30 * hour,
+    endsAt: now + 4 * 24 * hour + 18 * hour,
+    status: "live",
+    capitalUsd: 10_000,
+    scoreA: 0.62,
+    scoreB: 0.31,
+    marketYesShares: 14_600,
+    marketNoShares: 11_300,
+    marketPrice: 0.56,
+    volumeUsd: 25_900,
     rules: {
       assets: ["USDY", "mETH"],
       maxDrawdownPct: 8,
