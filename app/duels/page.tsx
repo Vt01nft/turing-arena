@@ -12,7 +12,7 @@ export default function DuelsPage() {
   return (
     <>
       <Nav />
-      <main className="flex-1 mx-auto max-w-6xl px-6 py-12">
+      <main className="flex-1 mx-auto max-w-6xl px-5 md:px-6 py-10 md:py-12">
         <header className="mb-10">
           <h1 className="text-[32px] font-semibold tracking-tight">Duels</h1>
           <p className="text-dim text-[14px] mt-1.5 max-w-2xl">

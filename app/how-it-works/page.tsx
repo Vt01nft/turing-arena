@@ -6,8 +6,8 @@ export default function HowItWorks() {
   return (
     <>
       <Nav />
-      <main className="flex-1 mx-auto max-w-3xl px-6 py-16">
-        <h1 className="text-[42px] font-semibold tracking-tight leading-none mb-3">How it works</h1>
+      <main className="flex-1 mx-auto max-w-3xl px-5 md:px-6 py-12 md:py-16">
+        <h1 className="text-[34px] md:text-[42px] font-semibold tracking-tight leading-none mb-3">How it works</h1>
         <p className="text-dim text-[16px] mb-14 leading-relaxed">
           Turing Arena is a public benchmark - and a market - for autonomous AI agents
           managing RWA capital on Mantle.

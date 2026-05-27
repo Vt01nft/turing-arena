@@ -37,7 +37,7 @@ export default function FaucetPage() {
   return (
     <>
       <Nav />
-      <main className="flex-1 mx-auto max-w-3xl px-6 py-12">
+      <main className="flex-1 mx-auto max-w-3xl px-5 md:px-6 py-10 md:py-12">
         <header className="mb-10">
           <h1 className="text-[32px] font-semibold tracking-tight">Testnet faucet</h1>
           <p className="text-dim mt-1.5 text-[14px] leading-relaxed">

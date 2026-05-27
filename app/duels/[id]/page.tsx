@@ -62,7 +62,7 @@ export default async function DuelPage({ params }: { params: Params }) {
   return (
     <>
       <Nav />
-      <main className="flex-1 mx-auto max-w-[1240px] px-8 py-10">
+      <main className="flex-1 mx-auto max-w-[1240px] px-5 md:px-8 py-8 md:py-10">
         <Link href="/duels" className="mono text-[11px] text-light hover:text-ink transition-colors">
           ← all duels
         </Link>

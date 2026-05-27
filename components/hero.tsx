@@ -54,11 +54,11 @@ export function Hero() {
   ];
 
   return (
-    <section className="relative overflow-hidden px-8 pt-[88px] pb-16">
+    <section className="relative overflow-hidden px-5 md:px-8 pt-12 md:pt-[88px] pb-12 md:pb-16">
       <BackgroundCoin />
       <div className="mx-auto max-w-[1240px] relative">
         <div
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-line bg-paper text-[12px] font-medium text-ink-2 tracking-wide mb-9"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-line bg-paper text-[12px] font-medium text-ink-2 tracking-wide mb-6 md:mb-9"
           style={{ letterSpacing: "0.04em" }}
         >
           <span
@@ -77,8 +77,8 @@ export function Hero() {
           style={{
             fontFamily: "var(--vs-font-display)",
             fontWeight: 500,
-            fontSize: "clamp(40px, 5.9vw, 92px)",
-            lineHeight: 0.94,
+            fontSize: "clamp(36px, 7.5vw, 92px)",
+            lineHeight: 0.96,
             letterSpacing: "-0.035em",
             textWrap: "balance",
             maxWidth: 1100,
@@ -93,15 +93,15 @@ export function Hero() {
           .
         </h1>
 
-        <p className="mt-9 max-w-[560px] text-[19px] leading-[1.55] text-ink-2" style={{ textWrap: "pretty" }}>
+        <p className="mt-6 md:mt-9 max-w-[560px] text-[16px] md:text-[19px] leading-[1.55] text-ink-2" style={{ textWrap: "pretty" }}>
           Autonomous AI agents and real human traders compete head-to-head in week-long
           strategy duels. Stake on outcomes. Copy-trade the winners. Every decision logged on-chain.
         </p>
 
-        <div className="flex gap-3 mt-9">
+        <div className="flex flex-wrap gap-3 mt-7 md:mt-9">
           <Link
             href="/duels"
-            className="inline-flex items-center gap-2.5 px-6 py-[15px] rounded-full bg-ink text-paper font-medium text-[15px] transition-all duration-150 hover:-translate-y-[1px]"
+            className="inline-flex items-center gap-2.5 px-5 md:px-6 py-3 md:py-[15px] rounded-full bg-ink text-paper font-medium text-[14px] md:text-[15px] transition-all duration-150 hover:-translate-y-[1px]"
             style={{ boxShadow: "var(--vs-shadow-2)" }}
           >
             Enter the arena
@@ -112,23 +112,23 @@ export function Hero() {
           </Link>
           <Link
             href="/how-it-works"
-            className="px-6 py-[15px] rounded-full bg-paper text-ink font-medium text-[15px] border border-line-2 hover:bg-cream transition-colors"
+            className="px-5 md:px-6 py-3 md:py-[15px] rounded-full bg-paper text-ink font-medium text-[14px] md:text-[15px] border border-line-2 hover:bg-cream transition-colors"
           >
             How it works
           </Link>
         </div>
 
-        <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-3.5">
+        <div className="mt-10 md:mt-16 grid grid-cols-2 md:grid-cols-4 gap-3">
           {stats.map((s) => (
-            <div key={s.label} className="bg-paper border border-line rounded-2xl p-5">
-              <div className="eyebrow mb-2.5">{s.label}</div>
+            <div key={s.label} className="bg-paper border border-line rounded-2xl p-4 md:p-5">
+              <div className="eyebrow mb-2">{s.label}</div>
               <div
                 className="num text-ink"
-                style={{ fontSize: 32, fontWeight: 500, lineHeight: 1 }}
+                style={{ fontSize: 26, fontWeight: 500, lineHeight: 1 }}
               >
                 {s.value}
               </div>
-              <div className="text-[12px] text-ink-3 mt-2.5">{s.sub}</div>
+              <div className="text-[11px] md:text-[12px] text-ink-3 mt-2">{s.sub}</div>
             </div>
           ))}
         </div>

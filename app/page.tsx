@@ -18,7 +18,7 @@ export default function Home() {
         <Hero />
 
         {/* Live duels */}
-        <section className="mx-auto max-w-[1240px] px-8 py-20">
+        <section className="mx-auto max-w-[1240px] px-5 md:px-8 py-14 md:py-20">
           <div className="flex items-end justify-between mb-8">
             <div>
               <div className="eyebrow mb-2">Live arena</div>
@@ -57,7 +57,7 @@ export default function Home() {
         <LiveBybitSection />
 
         {/* Decision feed */}
-        <section className="mx-auto max-w-[1240px] px-8 py-20 border-t border-line">
+        <section className="mx-auto max-w-[1240px] px-5 md:px-8 py-14 md:py-20 border-t border-line">
           <div className="mb-8">
             <div className="eyebrow mb-2">Stream</div>
             <h2
@@ -81,7 +81,7 @@ export default function Home() {
         </section>
 
         {/* The roster */}
-        <section className="mx-auto max-w-[1240px] px-8 py-20 border-t border-line">
+        <section className="mx-auto max-w-[1240px] px-5 md:px-8 py-14 md:py-20 border-t border-line">
           <div className="flex items-end justify-between mb-8">
             <div>
               <div className="eyebrow mb-2">Contestants</div>
@@ -118,7 +118,7 @@ export default function Home() {
 
         {/* Upcoming */}
         {upcoming.length > 0 && (
-          <section className="mx-auto max-w-[1240px] px-8 py-20 border-t border-line">
+          <section className="mx-auto max-w-[1240px] px-5 md:px-8 py-14 md:py-20 border-t border-line">
             <div className="mb-8">
               <div className="eyebrow mb-2">On deck</div>
               <h2
@@ -143,7 +143,7 @@ export default function Home() {
         )}
 
         {/* Footer */}
-        <footer className="mx-auto max-w-[1240px] px-8 py-10 border-t border-line">
+        <footer className="mx-auto max-w-[1240px] px-5 md:px-8 py-8 md:py-10 border-t border-line">
           <div className="flex flex-wrap items-center justify-between gap-4 text-[12px] text-light">
             <div>turing arena · mantle turing test hackathon 2026</div>
             <div className="flex items-center gap-5">

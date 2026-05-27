@@ -67,7 +67,7 @@ export function LiveBybitSection() {
   const ranked = [...whales].sort((a, b) => b.totalPnl - a.totalPnl);
 
   return (
-    <section className="mx-auto max-w-[1240px] px-8 py-20 border-t border-line">
+    <section className="mx-auto max-w-[1240px] px-5 md:px-8 py-14 md:py-20 border-t border-line">
       <div className="flex items-end justify-between mb-8 flex-wrap gap-3">
         <div>
           <div className="eyebrow mb-2 flex items-center gap-2">
