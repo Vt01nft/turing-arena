@@ -130,7 +130,7 @@ export async function GET(
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
             <div style={{ display: "flex", fontFamily: "serif", fontStyle: "italic", fontSize: 64, color: C.ink3, fontWeight: 400 }}>vs</div>
             <div style={{ display: "flex", fontSize: 14, color: C.ink3, letterSpacing: 2, fontFamily: "monospace", fontWeight: 500 }}>
-              {`${duel.rules.durationHours / 24}D · USDY+mETH · $${duel.capitalUsd.toLocaleString()}`}
+              {`${duel.rules.durationHours < 24 ? `${duel.rules.durationHours}H` : `${duel.rules.durationHours / 24}D`} · USDY+mETH · $${duel.capitalUsd.toLocaleString()}`}
             </div>
           </div>
           <AgentBlock agent={b} score={duel.scoreB} status={duel.status} side="right" />

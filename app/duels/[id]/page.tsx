@@ -9,7 +9,7 @@ import { DecisionFeed } from "@/components/decision-feed";
 import { CopyTrade } from "@/components/copy-trade";
 import { DuelFinale } from "@/components/duel-finale";
 import { DUELS, getDuel, getAgent } from "@/lib/mock-data";
-import { fmtCountdown, fmtPct, fmtUsd } from "@/lib/format";
+import { fmtCountdown, fmtPct, fmtUsd, fmtDuration } from "@/lib/format";
 
 export function generateStaticParams() {
   return DUELS.map((d) => ({ id: d.id }));
@@ -172,7 +172,7 @@ export default async function DuelPage({ params }: { params: Params }) {
                 <Stat label="Capital" value={fmtUsd(duel.capitalUsd)} />
                 <Stat label="Assets" value={duel.rules.assets.join(" + ")} />
                 <Stat label="Max drawdown" value={`${duel.rules.maxDrawdownPct}%`} hint="auto-liquidate" tone="warn" />
-                <Stat label="Duration" value={`${duel.rules.durationHours / 24}d`} />
+                <Stat label="Duration" value={fmtDuration(duel.rules.durationHours)} />
               </div>
             </section>
 
