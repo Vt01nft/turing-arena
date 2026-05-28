@@ -3,7 +3,7 @@ import { createWalletClient, http, type Address, type Hex } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { mantleSepolia } from "@/lib/chains";
 import { DEMO_MARKET_ABI } from "@/lib/abis";
-import { CONTRACTS, isDeployed } from "@/lib/contracts";
+import { marketFor } from "@/lib/contracts";
 import { getDuel } from "@/lib/mock-data";
 import { refreshWhaleEngine } from "@/lib/whale-engine";
 import { liveDuelScores } from "@/lib/live-stats";
@@ -35,12 +35,9 @@ export async function POST(
     });
   }
 
-  if (!duel.onchainMarket) {
+  const marketAddr = marketFor(id);
+  if (!marketAddr) {
     return NextResponse.json({ ok: false, reason: "no on-chain market for this duel" });
-  }
-  const marketAddr = CONTRACTS[duel.onchainMarket] as Address;
-  if (!isDeployed(marketAddr)) {
-    return NextResponse.json({ ok: false, reason: "market contract not deployed" });
   }
 
   const pk = process.env.DEPLOYER_PRIVATE_KEY;

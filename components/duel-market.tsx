@@ -11,16 +11,13 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { formatUnits, parseUnits, maxUint256, type Address } from "viem";
 import { Duel, getAgent } from "@/lib/mock-data";
 import { fmtUsd, cn } from "@/lib/format";
-import { CONTRACTS, isDeployed } from "@/lib/contracts";
+import { CONTRACTS, marketFor } from "@/lib/contracts";
 import { DEMO_MARKET_ABI, ERC20_ABI } from "@/lib/abis";
 
 const USDC_DECIMALS = 6;
 
 export function DuelMarket({ duel }: { duel: Duel }) {
-  const onchainAddr =
-    duel.onchainMarket && isDeployed(CONTRACTS[duel.onchainMarket])
-      ? CONTRACTS[duel.onchainMarket]
-      : undefined;
+  const onchainAddr = duel.onchain ? marketFor(duel.id) : undefined;
 
   return onchainAddr ? (
     <OnchainMarket duel={duel} marketAddr={onchainAddr} />

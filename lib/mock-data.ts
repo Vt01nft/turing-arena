@@ -39,8 +39,9 @@ export type Duel = {
   marketNoShares: number;
   marketPrice: number;
   volumeUsd: number;
-  /** If set, this duel has a real on-chain market at this address. */
-  onchainMarket?: "demoMarket001";
+  /** If true, this duel has a real on-chain DemoMarket (resolved via
+   *  marketFor(duel.id) in lib/contracts). */
+  onchain?: boolean;
   rules: {
     assets: string[];
     maxDrawdownPct: number;
@@ -293,7 +294,7 @@ export const DUELS: Duel[] = [
     marketNoShares: 24_180,
     marketPrice: 0.43,
     volumeUsd: 42_600,
-    onchainMarket: "demoMarket001",
+    onchain: true,
     rules: { assets: ["USDY", "mETH"], maxDrawdownPct: 8, durationHours: 0.5 },
   },
   // 2-hour burst
@@ -311,6 +312,7 @@ export const DUELS: Duel[] = [
     marketNoShares: 7_400,
     marketPrice: 0.55,
     volumeUsd: 16_500,
+    onchain: true,
     rules: { assets: ["USDY", "mETH"], maxDrawdownPct: 8, durationHours: 2 },
   },
   // 8-hour intra-day - headline Human vs Agent
@@ -328,6 +330,7 @@ export const DUELS: Duel[] = [
     marketNoShares: 19_800,
     marketPrice: 0.53,
     volumeUsd: 38_400,
+    onchain: true,
     rules: { assets: ["USDY", "mETH"], maxDrawdownPct: 8, durationHours: 8 },
   },
   // 24-hour - Human vs Human
@@ -345,6 +348,7 @@ export const DUELS: Duel[] = [
     marketNoShares: 11_300,
     marketPrice: 0.56,
     volumeUsd: 25_900,
+    onchain: true,
     rules: { assets: ["USDY", "mETH"], maxDrawdownPct: 8, durationHours: 24 },
   },
   // 7-day classic - Agent vs Agent
@@ -362,6 +366,7 @@ export const DUELS: Duel[] = [
     marketNoShares: 7_200,
     marketPrice: 0.61,
     volumeUsd: 18_600,
+    onchain: true,
     rules: { assets: ["USDY", "mETH"], maxDrawdownPct: 8, durationHours: 168 },
   },
 

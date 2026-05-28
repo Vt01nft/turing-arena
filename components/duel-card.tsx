@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Duel, getAgent } from "@/lib/mock-data";
 import { fmtCountdown, fmtPct, fmtUsd } from "@/lib/format";
-import { CONTRACTS, isDeployed } from "@/lib/contracts";
+import { marketFor } from "@/lib/contracts";
 import { AgentAvatar } from "./agent-avatar";
 import { StakeModal } from "./stake-modal";
 
@@ -17,10 +17,7 @@ export function DuelCard({ duel }: { duel: Duel }) {
   const [live, setLive] = useState<LiveScore | null>(null);
   const [, setTick] = useState(0);
 
-  const onchainAddr =
-    duel.onchainMarket && isDeployed(CONTRACTS[duel.onchainMarket])
-      ? CONTRACTS[duel.onchainMarket]
-      : undefined;
+  const onchainAddr = duel.onchain ? marketFor(duel.id) : undefined;
 
   // Tick every second so the countdown updates live (not just on load).
   useEffect(() => {

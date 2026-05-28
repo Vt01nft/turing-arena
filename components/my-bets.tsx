@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   useAccount,
+  useReadContract,
   useReadContracts,
   useWriteContract,
   useWaitForTransactionReceipt,
 } from "wagmi";
 import { formatUnits, type Address } from "viem";
-import { CONTRACTS, isDeployed } from "@/lib/contracts";
+import { CONTRACTS, onchainMarkets } from "@/lib/contracts";
 import { DEMO_MARKET_ABI, ERC20_ABI } from "@/lib/abis";
 import { getDuel, getAgent } from "@/lib/mock-data";
 import { fmtUsd } from "@/lib/format";
@@ -17,45 +18,24 @@ import { useToast } from "./toaster";
 import { AgentAvatar } from "./agent-avatar";
 
 const USDC_DECIMALS = 6;
-const DUEL_ID = "duel-001"; // the one with an on-chain market
 
 export function MyBets() {
   const { address, isConnected } = useAccount();
-  const toast = useToast();
-  const market = CONTRACTS.demoMarket001 as Address;
-  const hasMarket = isDeployed(market);
-  const duel = getDuel(DUEL_ID);
+  const markets = onchainMarkets();
 
-  const reads = useReadContracts({
-    contracts:
-      address && hasMarket
-        ? [
-            { address: CONTRACTS.usdc, abi: ERC20_ABI, functionName: "balanceOf", args: [address] },
-            { address: market, abi: DEMO_MARKET_ABI, functionName: "sharesA", args: [address] },
-            { address: market, abi: DEMO_MARKET_ABI, functionName: "sharesB", args: [address] },
-            { address: market, abi: DEMO_MARKET_ABI, functionName: "poolA" },
-            { address: market, abi: DEMO_MARKET_ABI, functionName: "poolB" },
-            { address: market, abi: DEMO_MARKET_ABI, functionName: "resolved" },
-            { address: market, abi: DEMO_MARKET_ABI, functionName: "winningSide" },
-          ]
-        : [],
-    query: { enabled: !!address && hasMarket, refetchInterval: 10_000 },
+  const { data: balanceRaw, refetch: refetchBalance } = useReadContract({
+    address: CONTRACTS.usdc,
+    abi: ERC20_ABI,
+    functionName: "balanceOf",
+    args: address ? [address] : undefined,
+    query: { enabled: !!address, refetchInterval: 10_000 },
   });
+  const balance = (balanceRaw as bigint | undefined) ?? 0n;
 
-  const balance = (reads.data?.[0]?.result as bigint | undefined) ?? 0n;
-  const sharesA = (reads.data?.[1]?.result as bigint | undefined) ?? 0n;
-  const sharesB = (reads.data?.[2]?.result as bigint | undefined) ?? 0n;
-  const poolA = (reads.data?.[3]?.result as bigint | undefined) ?? 0n;
-  const poolB = (reads.data?.[4]?.result as bigint | undefined) ?? 0n;
-  const resolved = (reads.data?.[5]?.result as boolean | undefined) ?? false;
-  const winningSide = (reads.data?.[6]?.result as number | undefined) ?? 0;
-
-  const claimTx = useWriteContract();
-  const claimReceipt = useWaitForTransactionReceipt({ hash: claimTx.data });
-
-  // On-chain bet history (real Stake events for this wallet)
-  type HistoryBet = { side: number; amount: string; txHash: string; timestamp: number };
+  // On-chain bet history across all markets
+  type HistoryBet = { duelId: string; side: number; amount: string; txHash: string; timestamp: number };
   const [history, setHistory] = useState<HistoryBet[]>([]);
+  const [claimedAt, setClaimedAt] = useState(0);
   useEffect(() => {
     if (!address) {
       setHistory([]);
@@ -72,49 +52,15 @@ export function MyBets() {
     return () => {
       cancelled = true;
     };
-  }, [address, claimReceipt.isSuccess]);
-
-  const [prevBalance, setPrevBalance] = useState<bigint | null>(null);
-  useEffect(() => {
-    if (claimReceipt.isSuccess) {
-      toast.push({ kind: "success", title: "Winnings claimed", body: "Your TAUSDC balance just went up." });
-      reads.refetch();
-    }
-  }, [claimReceipt.isSuccess]);
-
-  // Track balance increases for a celebratory toast
-  useEffect(() => {
-    if (prevBalance !== null && balance > prevBalance) {
-      const delta = Number(formatUnits(balance - prevBalance, USDC_DECIMALS));
-      if (delta > 0.01) {
-        toast.push({ kind: "success", title: `+${fmtUsd(delta, 2)} TAUSDC`, body: "Balance increased." });
-      }
-    }
-    setPrevBalance(balance);
-  }, [balance]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  if (!duel) return null;
-  const cA = getAgent(duel.agentA);
-  const cB = getAgent(duel.agentB);
-
-  const hasBetA = sharesA > 0n;
-  const hasBetB = sharesB > 0n;
-  const hasAnyBet = hasBetA || hasBetB;
-
-  const totalPool = poolA + poolB;
-  function payoutFor(side: 1 | 2): bigint {
-    const mine = side === 1 ? sharesA : sharesB;
-    const winnerPool = side === 1 ? poolA : poolB;
-    if (winnerPool === 0n) return 0n;
-    return (mine * totalPool) / winnerPool;
-  }
+  }, [address, claimedAt]);
 
   if (!isConnected) {
     return (
       <div className="surface-paper p-8 text-center">
         <div className="text-ink font-semibold text-[18px] mb-2">Connect your wallet</div>
         <p className="text-ink-2 text-[14px] max-w-md mx-auto">
-          Your bets, positions, and TAUSDC balance show up here once you connect a Mantle Sepolia wallet.
+          Your bets, positions, and Turing Arena USDC balance show up here once you connect a
+          Mantle Sepolia wallet.
         </p>
       </div>
     );
@@ -139,93 +85,24 @@ export function MyBets() {
         </Link>
       </div>
 
-      {/* Active bet */}
+      {/* Open positions across every on-chain market */}
       <div>
-        <div className="eyebrow mb-3">Your bets</div>
-        {!hasAnyBet ? (
-          <div className="surface-paper p-8 text-center">
-            <p className="text-ink-2 text-[14px] max-w-md mx-auto">
-              No open bets yet. Head to a{" "}
-              <Link href="/duels" className="text-ink underline underline-offset-2">
-                live duel
-              </Link>{" "}
-              and stake on a side — it&apos;ll appear here with live win/lose tracking.
-            </p>
-          </div>
-        ) : (
-          <div className="surface-paper p-5">
-            <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-ink text-[15px]">
-                  {cA?.name} vs {cB?.name}
-                </span>
-                <span className="mono text-[10px] text-ink-3">{DUEL_ID}</span>
-              </div>
-              {resolved ? (
-                <span
-                  className="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full"
-                  style={{ color: "var(--vs-ochre-deep)", background: "var(--vs-ochre-soft)" }}
-                >
-                  Settled · {winningSide === 1 ? cA?.name : cB?.name} won
-                </span>
-              ) : (
-                <span
-                  className="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full inline-flex items-center gap-1.5"
-                  style={{ color: "var(--vs-positive)", background: "rgba(74,158,127,0.12)" }}
-                >
-                  <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--vs-positive)", animation: "pulse-soft 2.4s ease-in-out infinite" }} />
-                  Live
-                </span>
-              )}
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-3">
-              {hasBetA && (
-                <BetRow
-                  contestant={cA}
-                  side="A"
-                  staked={Number(formatUnits(sharesA, USDC_DECIMALS))}
-                  resolved={resolved}
-                  won={winningSide === 1}
-                  payout={Number(formatUnits(payoutFor(1), USDC_DECIMALS))}
-                />
-              )}
-              {hasBetB && (
-                <BetRow
-                  contestant={cB}
-                  side="B"
-                  staked={Number(formatUnits(sharesB, USDC_DECIMALS))}
-                  resolved={resolved}
-                  won={winningSide === 2}
-                  payout={Number(formatUnits(payoutFor(2), USDC_DECIMALS))}
-                />
-              )}
-            </div>
-
-            {/* Claim */}
-            {resolved && ((winningSide === 1 && hasBetA) || (winningSide === 2 && hasBetB)) && (
-              <button
-                type="button"
-                disabled={claimTx.isPending || claimReceipt.isLoading || claimReceipt.isSuccess}
-                onClick={() =>
-                  claimTx.writeContract({ address: market, abi: DEMO_MARKET_ABI, functionName: "claim" })
-                }
-                className="mt-4 w-full py-2.5 rounded-full bg-ink text-paper font-semibold text-[14px] disabled:bg-cream disabled:text-ink-3 transition-colors"
-              >
-                {claimReceipt.isSuccess
-                  ? "Claimed ✓ — balance updated"
-                  : claimTx.isPending || claimReceipt.isLoading
-                    ? "Claiming…"
-                    : `Claim ${fmtUsd(Number(formatUnits(payoutFor(winningSide as 1 | 2), USDC_DECIMALS)), 2)} TAUSDC`}
-              </button>
-            )}
-            {resolved && ((winningSide === 1 && !hasBetA && hasBetB) || (winningSide === 2 && !hasBetB && hasBetA)) && (
-              <div className="mt-4 text-center text-[13px] text-ink-2">
-                This duel went the other way — better luck on the next one.
-              </div>
-            )}
-          </div>
-        )}
+        <div className="eyebrow mb-3">Open positions</div>
+        <div className="space-y-3">
+          {markets.map((m) => (
+            <MarketPosition
+              key={m.duelId}
+              duelId={m.duelId}
+              market={m.address}
+              account={address!}
+              onClaimed={() => {
+                refetchBalance();
+                setClaimedAt(Date.now());
+              }}
+            />
+          ))}
+        </div>
+        <EmptyPositionsHint markets={markets.map((m) => m.address)} account={address!} />
       </div>
 
       {/* On-chain bet history */}
@@ -233,12 +110,15 @@ export function MyBets() {
         <div className="eyebrow mb-3">Bet history</div>
         {history.length === 0 ? (
           <div className="surface-paper p-6 text-caption">
-            No past bets on-chain yet. Every stake you place on duel-001 is recorded here
-            with its transaction hash.
+            No past bets on-chain yet. Every stake you place is recorded here with its
+            transaction hash.
           </div>
         ) : (
           <div className="surface-paper divide-y divide-line overflow-hidden">
             {history.map((h) => {
+              const d = getDuel(h.duelId);
+              const cA = d ? getAgent(d.agentA) : undefined;
+              const cB = d ? getAgent(d.agentB) : undefined;
               const sideName = h.side === 1 ? cA?.name : cB?.name;
               const sideColor = h.side === 1 ? "var(--vs-machine-deep)" : "var(--vs-human-deep)";
               const when = h.timestamp ? new Date(h.timestamp * 1000).toLocaleString() : "";
@@ -254,10 +134,11 @@ export function MyBets() {
                     className="mono text-[10px] font-semibold tracking-wider px-2 py-0.5 rounded-md shrink-0"
                     style={{ color: sideColor, background: h.side === 1 ? "var(--vs-machine-wash)" : "var(--vs-human-wash)" }}
                   >
-                    {sideName}
+                    {sideName ?? `Side ${h.side}`}
                   </span>
-                  <span className="text-ink text-[14px] font-medium">{fmtUsd(Number(h.amount), 2)} TAUSDC</span>
-                  <span className="text-ink-3 text-[12px] flex-1 truncate">{when}</span>
+                  <span className="text-ink text-[14px] font-medium">{fmtUsd(Number(h.amount), 2)}</span>
+                  <span className="text-ink-3 text-[12px] hidden sm:inline">{cA?.name} vs {cB?.name}</span>
+                  <span className="text-ink-3 text-[12px] flex-1 truncate text-right sm:text-left">{when}</span>
                   <span className="mono text-[11px] text-ink-3 shrink-0">
                     {h.txHash.slice(0, 6)}…{h.txHash.slice(-4)} ↗
                   </span>
@@ -271,7 +152,148 @@ export function MyBets() {
   );
 }
 
-function BetRow({
+/// One on-chain market. Reads the user's position; renders a card only
+/// if they hold shares. Handles claim on settled markets.
+function MarketPosition({
+  duelId,
+  market,
+  account,
+  onClaimed,
+}: {
+  duelId: string;
+  market: Address;
+  account: Address;
+  onClaimed: () => void;
+}) {
+  const toast = useToast();
+  const duel = getDuel(duelId);
+  const cA = duel ? getAgent(duel.agentA) : undefined;
+  const cB = duel ? getAgent(duel.agentB) : undefined;
+
+  const reads = useReadContracts({
+    contracts: [
+      { address: market, abi: DEMO_MARKET_ABI, functionName: "sharesA", args: [account] },
+      { address: market, abi: DEMO_MARKET_ABI, functionName: "sharesB", args: [account] },
+      { address: market, abi: DEMO_MARKET_ABI, functionName: "poolA" },
+      { address: market, abi: DEMO_MARKET_ABI, functionName: "poolB" },
+      { address: market, abi: DEMO_MARKET_ABI, functionName: "resolved" },
+      { address: market, abi: DEMO_MARKET_ABI, functionName: "winningSide" },
+    ],
+    query: { refetchInterval: 12_000 },
+  });
+
+  const sharesA = (reads.data?.[0]?.result as bigint | undefined) ?? 0n;
+  const sharesB = (reads.data?.[1]?.result as bigint | undefined) ?? 0n;
+  const poolA = (reads.data?.[2]?.result as bigint | undefined) ?? 0n;
+  const poolB = (reads.data?.[3]?.result as bigint | undefined) ?? 0n;
+  const resolved = (reads.data?.[4]?.result as boolean | undefined) ?? false;
+  const winningSide = (reads.data?.[5]?.result as number | undefined) ?? 0;
+
+  const claimTx = useWriteContract();
+  const claimReceipt = useWaitForTransactionReceipt({ hash: claimTx.data });
+  useEffect(() => {
+    if (claimReceipt.isSuccess) {
+      toast.push({ kind: "success", title: "Winnings claimed", body: "Balance updated." });
+      reads.refetch();
+      onClaimed();
+    }
+  }, [claimReceipt.isSuccess]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (!duel || !cA || !cB) return null;
+  const hasBetA = sharesA > 0n;
+  const hasBetB = sharesB > 0n;
+  if (!hasBetA && !hasBetB) return null;
+
+  const total = poolA + poolB;
+  const payoutFor = (side: 1 | 2) => {
+    const mine = side === 1 ? sharesA : sharesB;
+    const wp = side === 1 ? poolA : poolB;
+    return wp > 0n ? (mine * total) / wp : 0n;
+  };
+  const userWon = resolved && ((winningSide === 1 && hasBetA) || (winningSide === 2 && hasBetB));
+  const userLost = resolved && !userWon;
+
+  return (
+    <div className="surface-paper p-5">
+      <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+        <Link href={`/duels/${duelId}`} className="font-semibold text-ink text-[15px] no-underline hover:underline">
+          {cA.name} vs {cB.name}
+        </Link>
+        {resolved ? (
+          <span
+            className="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full"
+            style={{ color: "var(--vs-ochre-deep)", background: "var(--vs-ochre-soft)" }}
+          >
+            Settled · {winningSide === 1 ? cA.name : cB.name} won
+          </span>
+        ) : (
+          <span
+            className="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full inline-flex items-center gap-1.5"
+            style={{ color: "var(--vs-positive)", background: "rgba(74,158,127,0.12)" }}
+          >
+            <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--vs-positive)", animation: "pulse-soft 2.4s ease-in-out infinite" }} />
+            Live
+          </span>
+        )}
+      </div>
+
+      <div className="grid sm:grid-cols-2 gap-3">
+        {hasBetA && (
+          <PositionRow contestant={cA} side="A" staked={Number(formatUnits(sharesA, USDC_DECIMALS))} resolved={resolved} won={winningSide === 1} payout={Number(formatUnits(payoutFor(1), USDC_DECIMALS))} />
+        )}
+        {hasBetB && (
+          <PositionRow contestant={cB} side="B" staked={Number(formatUnits(sharesB, USDC_DECIMALS))} resolved={resolved} won={winningSide === 2} payout={Number(formatUnits(payoutFor(2), USDC_DECIMALS))} />
+        )}
+      </div>
+
+      {userWon && (
+        <button
+          type="button"
+          disabled={claimTx.isPending || claimReceipt.isLoading || claimReceipt.isSuccess}
+          onClick={() => claimTx.writeContract({ address: market, abi: DEMO_MARKET_ABI, functionName: "claim" })}
+          className="mt-4 w-full py-2.5 rounded-full bg-ink text-paper font-semibold text-[14px] disabled:bg-cream disabled:text-ink-3 transition-colors"
+        >
+          {claimReceipt.isSuccess
+            ? "Claimed ✓ — balance updated"
+            : claimTx.isPending || claimReceipt.isLoading
+              ? "Claiming…"
+              : `Claim ${fmtUsd(Number(formatUnits(payoutFor(winningSide as 1 | 2), USDC_DECIMALS)), 2)} TAUSDC`}
+        </button>
+      )}
+      {userLost && (
+        <div className="mt-4 text-center text-[13px] text-ink-2">
+          This duel went the other way — better luck on the next one.
+        </div>
+      )}
+    </div>
+  );
+}
+
+/// Shows a friendly empty-state when the user has no positions in ANY market.
+function EmptyPositionsHint({ markets, account }: { markets: Address[]; account: Address }) {
+  const reads = useReadContracts({
+    contracts: markets.flatMap((m) => [
+      { address: m, abi: DEMO_MARKET_ABI, functionName: "sharesA" as const, args: [account] as const },
+      { address: m, abi: DEMO_MARKET_ABI, functionName: "sharesB" as const, args: [account] as const },
+    ]),
+    query: { refetchInterval: 15_000 },
+  });
+  const anyPosition = (reads.data ?? []).some((r) => ((r.result as bigint | undefined) ?? 0n) > 0n);
+  if (anyPosition) return null;
+  return (
+    <div className="surface-paper p-8 text-center">
+      <p className="text-ink-2 text-[14px] max-w-md mx-auto">
+        No open positions yet. Pick a side on any{" "}
+        <Link href="/duels" className="text-ink underline underline-offset-2">
+          live duel
+        </Link>{" "}
+        — your stake appears here with live win/lose tracking.
+      </p>
+    </div>
+  );
+}
+
+function PositionRow({
   contestant,
   side,
   staked,
@@ -279,14 +301,13 @@ function BetRow({
   won,
   payout,
 }: {
-  contestant: { name: string; avatar: string; kind: "human" | "agent"; strategy: string } | undefined;
+  contestant: { name: string; avatar: string; kind: "human" | "agent"; strategy: string };
   side: "A" | "B";
   staked: number;
   resolved: boolean;
   won: boolean;
   payout: number;
 }) {
-  if (!contestant) return null;
   const profit = payout - staked;
   return (
     <div className="rounded-xl border border-line p-4">
@@ -308,9 +329,7 @@ function BetRow({
           </div>
           <div
             className="num mt-0.5"
-            style={{
-              color: resolved ? (won ? "var(--vs-positive)" : "var(--vs-negative)") : "var(--vs-ink)",
-            }}
+            style={{ color: resolved ? (won ? "var(--vs-positive)" : "var(--vs-negative)") : "var(--vs-ink)" }}
           >
             {resolved ? (won ? `+${fmtUsd(profit, 2)}` : "Lost") : fmtUsd(payout, 2)}
           </div>
@@ -319,4 +338,3 @@ function BetRow({
     </div>
   );
 }
-
