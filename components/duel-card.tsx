@@ -167,7 +167,7 @@ export function DuelCard({ duel }: { duel: Duel }) {
           </div>
         )}
 
-        <div className="mt-5 pt-4 border-t border-line flex items-center justify-between gap-3">
+        <div className="mt-5 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 text-[12px]">
             <span className="mono" style={{ color: "var(--vs-machine-deep)" }}>
               {a.name.slice(0, 4)} {yesPct}¢

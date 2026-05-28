@@ -46,7 +46,7 @@ export function PageShellSkeleton({ title }: { title?: string }) {
               <Skeleton className="h-10 w-full" style={{ borderRadius: 10 }} />
               <Skeleton className="h-10 w-full" style={{ borderRadius: 10 }} />
             </div>
-            <div className="mt-5 pt-4 border-t border-line flex items-center justify-between">
+            <div className="mt-5 flex items-center justify-between">
               <Skeleton className="h-3 w-32" />
               <Skeleton className="h-3 w-12" />
             </div>
