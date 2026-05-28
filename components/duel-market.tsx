@@ -7,6 +7,7 @@ import {
   useWriteContract,
   useWaitForTransactionReceipt,
 } from "wagmi";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { formatUnits, parseUnits, maxUint256, type Address } from "viem";
 import { Duel, getAgent } from "@/lib/mock-data";
 import { fmtUsd, cn } from "@/lib/format";
@@ -36,6 +37,7 @@ function OnchainMarket({ duel, marketAddr }: { duel: Duel; marketAddr: Address }
   const a = getAgent(duel.agentA)!;
   const b = getAgent(duel.agentB)!;
   const { address, isConnected } = useAccount();
+  const { openConnectModal } = useConnectModal();
   const [side, setSide] = useState<"A" | "B">("A");
   const [amount, setAmount] = useState("25");
 
@@ -282,8 +284,8 @@ function OnchainMarket({ duel, marketAddr }: { duel: Duel; marketAddr: Address }
       {!isConnected ? (
         <button
           type="button"
-          disabled
-          className="w-full py-2.5 rounded-md bg-[var(--color-surface)] text-faint font-semibold text-[14px] cursor-not-allowed"
+          onClick={() => openConnectModal?.()}
+          className="w-full py-2.5 rounded-md bg-fg text-bg font-semibold text-[14px] hover:opacity-90 transition-opacity"
         >
           Connect wallet to stake
         </button>
@@ -356,6 +358,7 @@ function MockMarket({ duel }: { duel: Duel }) {
   const [side, setSide] = useState<"A" | "B">("A");
   const [amount, setAmount] = useState("25");
   const { isConnected } = useAccount();
+  const { openConnectModal } = useConnectModal();
 
   const priceA = duel.marketPrice;
   const priceB = 1 - duel.marketPrice;
@@ -365,7 +368,7 @@ function MockMarket({ duel }: { duel: Duel }) {
   const payout = shares;
   const profit = payout - dollar;
 
-  const disabled = duel.status !== "live" || !isConnected || dollar <= 0;
+  const disabled = duel.status !== "live" || (isConnected && dollar <= 0);
   const sideColor = side === "A" ? "var(--color-human)" : "var(--color-ai)";
 
   return (
@@ -437,10 +440,15 @@ function MockMarket({ duel }: { duel: Duel }) {
       <button
         type="button"
         disabled={disabled}
-        style={{ backgroundColor: disabled ? undefined : sideColor }}
+        onClick={!isConnected ? () => openConnectModal?.() : undefined}
+        style={{ backgroundColor: disabled || !isConnected ? undefined : sideColor }}
         className={cn(
           "w-full py-2.5 rounded-md font-semibold text-[14px] transition-all",
-          disabled ? "bg-[var(--color-surface)] text-faint cursor-not-allowed" : "text-bg hover:opacity-90",
+          disabled
+            ? "bg-[var(--color-surface)] text-faint cursor-not-allowed"
+            : !isConnected
+              ? "bg-fg text-bg hover:opacity-90"
+              : "text-bg hover:opacity-90",
         )}
       >
         {!isConnected

@@ -7,6 +7,7 @@ import {
   useWriteContract,
   useWaitForTransactionReceipt,
 } from "wagmi";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { formatUnits, parseUnits, maxUint256, type Address } from "viem";
 import { Duel, getAgent } from "@/lib/mock-data";
 import { fmtUsd, cn } from "@/lib/format";
@@ -35,6 +36,7 @@ export function StakeModal({ duel, marketAddr, open, initialSide, initialAmount,
   const b = getAgent(duel.agentB)!;
   const toast = useToast();
   const { address, isConnected } = useAccount();
+  const { openConnectModal } = useConnectModal();
   const [side, setSide] = useState<"A" | "B">(initialSide);
   const [amount, setAmount] = useState(initialAmount);
 
@@ -246,8 +248,9 @@ export function StakeModal({ duel, marketAddr, open, initialSide, initialAmount,
         {/* CTA */}
         {!isConnected ? (
           <button
-            disabled
-            className="w-full py-3 rounded-full bg-cream text-light text-[14px] font-medium cursor-not-allowed"
+            type="button"
+            onClick={() => openConnectModal?.()}
+            className="rk-cta-primary w-full justify-center"
           >
             Connect wallet to stake
           </button>

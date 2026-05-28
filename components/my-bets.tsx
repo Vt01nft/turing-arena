@@ -53,6 +53,27 @@ export function MyBets() {
   const claimTx = useWriteContract();
   const claimReceipt = useWaitForTransactionReceipt({ hash: claimTx.data });
 
+  // On-chain bet history (real Stake events for this wallet)
+  type HistoryBet = { side: number; amount: string; txHash: string; timestamp: number };
+  const [history, setHistory] = useState<HistoryBet[]>([]);
+  useEffect(() => {
+    if (!address) {
+      setHistory([]);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/bets/history?address=${address}`, { cache: "no-store" });
+        const json = await res.json();
+        if (!cancelled && json.ok) setHistory(json.bets ?? []);
+      } catch {}
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [address, claimReceipt.isSuccess]);
+
   const [prevBalance, setPrevBalance] = useState<bigint | null>(null);
   useEffect(() => {
     if (claimReceipt.isSuccess) {
@@ -203,6 +224,46 @@ export function MyBets() {
                 This duel went the other way — better luck on the next one.
               </div>
             )}
+          </div>
+        )}
+      </div>
+
+      {/* On-chain bet history */}
+      <div>
+        <div className="eyebrow mb-3">Bet history</div>
+        {history.length === 0 ? (
+          <div className="surface-paper p-6 text-caption">
+            No past bets on-chain yet. Every stake you place on duel-001 is recorded here
+            with its transaction hash.
+          </div>
+        ) : (
+          <div className="surface-paper divide-y divide-line overflow-hidden">
+            {history.map((h) => {
+              const sideName = h.side === 1 ? cA?.name : cB?.name;
+              const sideColor = h.side === 1 ? "var(--vs-machine-deep)" : "var(--vs-human-deep)";
+              const when = h.timestamp ? new Date(h.timestamp * 1000).toLocaleString() : "";
+              return (
+                <a
+                  key={h.txHash}
+                  href={`https://explorer.sepolia.mantle.xyz/tx/${h.txHash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 px-5 py-3 hover:bg-[var(--vs-parchment)] transition-colors no-underline"
+                >
+                  <span
+                    className="mono text-[10px] font-semibold tracking-wider px-2 py-0.5 rounded-md shrink-0"
+                    style={{ color: sideColor, background: h.side === 1 ? "var(--vs-machine-wash)" : "var(--vs-human-wash)" }}
+                  >
+                    {sideName}
+                  </span>
+                  <span className="text-ink text-[14px] font-medium">{fmtUsd(Number(h.amount), 2)} TAUSDC</span>
+                  <span className="text-ink-3 text-[12px] flex-1 truncate">{when}</span>
+                  <span className="mono text-[11px] text-ink-3 shrink-0">
+                    {h.txHash.slice(0, 6)}…{h.txHash.slice(-4)} ↗
+                  </span>
+                </a>
+              );
+            })}
           </div>
         )}
       </div>
