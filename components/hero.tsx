@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { AGENTS, DUELS } from "@/lib/mock-data";
+import { AGENTS, getDuels } from "@/lib/mock-data";
 import { fmtUsd } from "@/lib/format";
 
 function BackgroundCoin() {
@@ -42,8 +42,9 @@ function BackgroundCoin() {
 }
 
 export function Hero() {
-  const live = DUELS.filter((d) => d.status === "live").length;
-  const totalVol = DUELS.reduce((s, d) => s + d.volumeUsd, 0);
+  const duels = getDuels();
+  const live = duels.filter((d) => d.status === "live").length;
+  const totalVol = duels.reduce((s, d) => s + d.volumeUsd, 0);
   const totalTvl = AGENTS.reduce((s, a) => s + a.tvl, 0);
 
   const stats = [

@@ -15,11 +15,19 @@ export function DuelCard({ duel }: { duel: Duel }) {
   const b = getAgent(duel.agentB);
   const [stakeOpen, setStakeOpen] = useState(false);
   const [live, setLive] = useState<LiveScore | null>(null);
+  const [, setTick] = useState(0);
 
   const onchainAddr =
     duel.onchainMarket && isDeployed(CONTRACTS[duel.onchainMarket])
       ? CONTRACTS[duel.onchainMarket]
       : undefined;
+
+  // Tick every second so the countdown updates live (not just on load).
+  useEffect(() => {
+    if (duel.status === "settled") return;
+    const t = setInterval(() => setTick((n) => n + 1), 1000);
+    return () => clearInterval(t);
+  }, [duel.status]);
 
   // For live duels involving humans, poll the live-score endpoint so the
   // displayed scores move with real Bybit BTC price.

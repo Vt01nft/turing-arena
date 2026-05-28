@@ -7,12 +7,10 @@ import { DuelCard } from "@/components/duel-card";
 import { CopyTrade } from "@/components/copy-trade";
 import { BybitPanel } from "@/components/bybit-panel";
 import { LiveContestantPanel } from "@/components/live-contestant-panel";
-import { AGENTS, DUELS, getAgent } from "@/lib/mock-data";
+import { getAgent, getDuels } from "@/lib/mock-data";
 import { fmtPct, fmtAddr } from "@/lib/format";
 
-export function generateStaticParams() {
-  return AGENTS.map((a) => ({ id: a.id }));
-}
+export const dynamic = "force-dynamic";
 
 type Params = Promise<{ id: string }>;
 
@@ -27,7 +25,7 @@ export default async function AgentPage({ params }: { params: Params }) {
   const agent = getAgent(id);
   if (!agent) notFound();
 
-  const myDuels = DUELS.filter((d) => d.agentA === agent.id || d.agentB === agent.id);
+  const myDuels = getDuels().filter((d) => d.agentA === agent.id || d.agentB === agent.id);
   const winRate = agent.totalDuels > 0 ? (agent.wins / agent.totalDuels) * 100 : 0;
 
   const kindTint = agent.kind === "human" ? "var(--vs-human-deep)" : "var(--vs-machine-deep)";

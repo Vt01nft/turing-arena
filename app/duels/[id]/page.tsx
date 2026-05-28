@@ -8,12 +8,10 @@ import { ShareButton } from "@/components/share-button";
 import { DecisionFeed } from "@/components/decision-feed";
 import { CopyTrade } from "@/components/copy-trade";
 import { DuelFinale } from "@/components/duel-finale";
-import { DUELS, getDuel, getAgent } from "@/lib/mock-data";
+import { getDuel, getAgent } from "@/lib/mock-data";
 import { fmtCountdown, fmtPct, fmtUsd, fmtDuration } from "@/lib/format";
 
-export function generateStaticParams() {
-  return DUELS.map((d) => ({ id: d.id }));
-}
+export const dynamic = "force-dynamic";
 
 type Params = Promise<{ id: string }>;
 

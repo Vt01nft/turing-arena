@@ -589,8 +589,26 @@ export function getAgent(id: string): Agent | undefined {
   return AGENTS.find((a) => a.id === id);
 }
 
+/// All duel timestamps are baked relative to module-load `now`. On a
+/// prerendered page that means they freeze at build time, so short
+/// minute-scale duels read as "ended" by the time anyone looks. We fix
+/// this by shifting every timestamp forward by the elapsed time since
+/// load (`drift`). Because each duel's offset from `now` is preserved,
+/// a "8 minutes left" duel always reads "8 minutes left", an upcoming
+/// "in 12m" stays "in 12m", etc. Call this (not the raw DUELS array)
+/// anywhere you display countdowns. Pages that use it must be dynamic.
+function withLiveTiming(d: Duel): Duel {
+  const drift = Math.floor(Date.now() / 1000) - now;
+  return { ...d, startsAt: d.startsAt + drift, endsAt: d.endsAt + drift };
+}
+
+export function getDuels(): Duel[] {
+  return DUELS.map(withLiveTiming);
+}
+
 export function getDuel(id: string): Duel | undefined {
-  return DUELS.find((d) => d.id === id);
+  const d = DUELS.find((x) => x.id === id);
+  return d ? withLiveTiming(d) : undefined;
 }
 
 export type Bettor = {

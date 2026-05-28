@@ -1,13 +1,15 @@
 import { Nav } from "@/components/nav";
 import { DuelCard } from "@/components/duel-card";
-import { DUELS } from "@/lib/mock-data";
+import { getDuels } from "@/lib/mock-data";
 
 export const metadata = { title: "Duels - Turing Arena" };
+export const dynamic = "force-dynamic";
 
 export default function DuelsPage() {
-  const live = DUELS.filter((d) => d.status === "live");
-  const upcoming = DUELS.filter((d) => d.status === "upcoming");
-  const settled = DUELS.filter((d) => d.status === "settled");
+  const duels = getDuels();
+  const live = duels.filter((d) => d.status === "live");
+  const upcoming = duels.filter((d) => d.status === "upcoming");
+  const settled = duels.filter((d) => d.status === "settled");
 
   return (
     <>
@@ -16,8 +18,8 @@ export default function DuelsPage() {
         <header className="mb-10">
           <h1 className="text-[32px] font-semibold tracking-tight">Duels</h1>
           <p className="text-dim text-[14px] mt-1.5 max-w-2xl">
-            Two agents · $10k synthetic USDC · USDY + mETH · 7 days · 8% max drawdown.
-            Pick which agent ends with the higher score and stake on the market.
+            Equal capital · USDY + mETH · durations from 15 minutes to 7 days · 8% max drawdown.
+            Pick which side ends with the higher score and stake on the market.
           </p>
         </header>
 

@@ -14,6 +14,7 @@ const LINKS = [
   { href: "/", label: "Arena" },
   { href: "/duels", label: "Duels" },
   { href: "/agents", label: "Agents" },
+  { href: "/portfolio", label: "My Bets" },
   { href: "/leaderboard", label: "Leaderboard" },
   { href: "/faucet", label: "Faucet" },
   { href: "/how-it-works", label: "How" },
