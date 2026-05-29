@@ -273,7 +273,7 @@ function applyToWhale(w: WhaleState, trade: PublicTrade): void {
   // Realised PnL: when we reduce or flip the position, we book PnL on
   // the closed portion against the previous avg entry.
   if (Math.sign(prevNet) !== 0 && Math.sign(prevNet) !== Math.sign(newNet)) {
-    // Position flipped — close out the prior side at trade.price
+    // Position flipped - close out the prior side at trade.price
     const closedSize = Math.abs(prevNet);
     const sign = prevNet > 0 ? 1 : -1;
     w.realisedPnl += closedSize * (trade.price - prevAvg) * sign;
@@ -285,7 +285,7 @@ function applyToWhale(w: WhaleState, trade: PublicTrade): void {
     w.realisedPnl += closedSize * (trade.price - prevAvg) * sign;
     // avgEntry stays the same (just reducing size)
   } else {
-    // Adding to the position — update VWAP
+    // Adding to the position - update VWAP
     const totalAbs = Math.abs(prevNet) + Math.abs(tradedSize);
     if (totalAbs > 0) {
       w.avgEntry = (Math.abs(prevNet) * prevAvg + Math.abs(tradedSize) * trade.price) / totalAbs;

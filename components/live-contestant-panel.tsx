@@ -137,7 +137,7 @@ export function LiveContestantPanel({
 
       <div className="mb-2 eyebrow">Recent attributed orders</div>
       {trades.length === 0 ? (
-        <div className="text-caption">No attributed trades in this window yet — waiting on the next match.</div>
+        <div className="text-caption">No attributed trades in this window yet - waiting on the next match.</div>
       ) : (
         <div className="rounded-xl border border-line divide-y divide-line">
           {trades.slice(0, 8).map((a) => {

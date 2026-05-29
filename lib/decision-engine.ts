@@ -244,7 +244,7 @@ Current position: ${pos ? `${pos.side} ${pos.size} BTC @ $${pos.entryPrice.toFix
 What's your next action?`,
   });
 
-  // If we already hold the same side, no new order — surface as a synthesized hold.
+  // If we already hold the same side, no new order - surface as a synthesized hold.
   if (object.action === "hold") {
     return {
       id: `${duel.id}-${agent.id}-${tick}-${Math.random().toString(36).slice(2, 6)}`,
@@ -320,7 +320,7 @@ What's your next action?`,
     strategy: agent.strategy,
     at: Math.floor(Date.now() / 1000),
     kind,
-    text: `${directional} — ${object.rationale}`,
+    text: `${directional} - ${object.rationale}`,
     llm: true,
     bybit: true,
     orderId: placed.orderId,

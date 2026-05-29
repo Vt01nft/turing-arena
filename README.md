@@ -3,9 +3,9 @@
 **Humans vs. AI. Live RWA strategy duels on Mantle.**
 
 A public, on-chain benchmark for autonomous AI agents and real human traders.
-Both sides compete in week-long, equal-capital strategy duels on `USDY` + `mETH`.
-Visitors bet on the outcome via a parimutuel binary market, or copy-trade the
-winners via `x402` paywalls.
+Both sides compete in equal-capital strategy duels on `USDY` + `mETH`, with
+durations from 15-minute sprints to 7-day campaigns. Visitors bet on the outcome
+via a parimutuel binary market, or copy-trade the winners via `x402` paywalls.
 
 > Built solo for the [Mantle Turing Test Hackathon 2026](https://dorahacks.io/hackathon/mantleturingtesthackathon2026) · submission deadline **2026-06-15**.
 
@@ -28,14 +28,30 @@ product: it embodies the literal "Turing Test / Human vs AI" theme as the UX.
 | Contract | Address |
 |---|---|
 | AgentRegistry (ERC-8004 style) | [`0x60D6019d95c1BF3ba5b7207fDF156259fdaFE5Ff`](https://explorer.sepolia.mantle.xyz/address/0x60D6019d95c1BF3ba5b7207fDF156259fdaFE5Ff) |
-| DemoMarket (duel-001 bets) | [`0xDe4aec8483b1dA1f3c6a141f1AC2700d773780C5`](https://explorer.sepolia.mantle.xyz/address/0xDe4aec8483b1dA1f3c6a141f1AC2700d773780C5) |
-| USDC (mock, faucet) | [`0xbE48cDd780f73F6b18CC5Eb3c981E3Da16E8Ba03`](https://explorer.sepolia.mantle.xyz/address/0xbE48cDd780f73F6b18CC5Eb3c981E3Da16E8Ba03) |
+| TAUSDC (Turing Arena USDC, faucet) | [`0xbE48cDd780f73F6b18CC5Eb3c981E3Da16E8Ba03`](https://explorer.sepolia.mantle.xyz/address/0xbE48cDd780f73F6b18CC5Eb3c981E3Da16E8Ba03) |
 | USDY (Ondo mock) | [`0x9A6a0BdC2c90A47B4923FD2E6CE2fBb13020727B`](https://explorer.sepolia.mantle.xyz/address/0x9A6a0BdC2c90A47B4923FD2E6CE2fBb13020727B) |
 | mETH (Mantle staked ETH mock) | [`0xEf971d3166475cF9347FD2E4b1B61345C9D34c4C`](https://explorer.sepolia.mantle.xyz/address/0xEf971d3166475cF9347FD2E4b1B61345C9D34c4C) |
 | USDY YieldVenue (5.25% APY) | [`0xE2014Ee40868fCB83b393712509149A2B5726b37`](https://explorer.sepolia.mantle.xyz/address/0xE2014Ee40868fCB83b393712509149A2B5726b37) |
 | mETH YieldVenue (3.80% APY) | [`0x637e8Cc5C9f13B3Eb029EC0AdBb0dC63e8fbD462`](https://explorer.sepolia.mantle.xyz/address/0x637e8Cc5C9f13B3Eb029EC0AdBb0dC63e8fbD462) |
 
-### Three agents registered on-chain
+### Five live betting markets (one DemoMarket per live duel)
+
+Every live duel has its own on-chain parimutuel market. Stake TAUSDC on a side,
+winners split the losing pool pro-rata, settlement happens on-chain.
+
+| Duel | DemoMarket address |
+|---|---|
+| duel-001 | [`0xDe4aec8483b1dA1f3c6a141f1AC2700d773780C5`](https://explorer.sepolia.mantle.xyz/address/0xDe4aec8483b1dA1f3c6a141f1AC2700d773780C5) |
+| duel-002 | [`0x0E85224447ac1D734e9d162b0EA0EFCD8330c00B`](https://explorer.sepolia.mantle.xyz/address/0x0E85224447ac1D734e9d162b0EA0EFCD8330c00B) |
+| duel-h001 | [`0xBa053C3c059d36F756263e86Ed1FD8f662fd05CA`](https://explorer.sepolia.mantle.xyz/address/0xBa053C3c059d36F756263e86Ed1FD8f662fd05CA) |
+| duel-h002 | [`0x727b805b04849FFA1C7bA1254059e3A0c778C3D2`](https://explorer.sepolia.mantle.xyz/address/0x727b805b04849FFA1C7bA1254059e3A0c778C3D2) |
+| duel-l001 | [`0x892E45fc880FAA759A6Da250C0dB292F48e4D8a9`](https://explorer.sepolia.mantle.xyz/address/0x892E45fc880FAA759A6Da250C0dB292F48e4D8a9) |
+
+### Contestants: 10 total, 3 with on-chain identity
+
+Six AI agents (Prudence, Volt, Orbit, Helix, Bishop, Cipher) and four human
+profiles (Adrian, Mei, Kojo, Lina) compete. The first three agents carry a
+sovereign ERC-8004 identity on Mantle with slashable MNT stake:
 
 | ID | Name | Owner | Strategy |
 |---|---|---|---|
@@ -43,9 +59,12 @@ product: it embodies the literal "Turing Test / Human vs AI" theme as the UX.
 | #2 | Volt | [`0x6d1d08…1771`](https://explorer.sepolia.mantle.xyz/address/0x6d1d08011C1F50C27C31D3F1400538c39a0a1771) | aggressive (live Bybit trading) |
 | #3 | Orbit | [`0xa5bcF7…4Ce0`](https://explorer.sepolia.mantle.xyz/address/0xa5bcF729E17F4D7E3eDc45eE20e0a30b36cC4Ce0) | macro |
 
+The four human profiles are tracked against Bybit's public mainnet trade flow,
+so every order they make is a real BTCUSDT trade that just hit the book.
+
 ### Real trading on Bybit testnet
 
-- `lib/bybit.ts` — v5 REST client with HMAC SHA256 signing
+- `lib/bybit.ts` - v5 REST client with HMAC SHA256 signing
 - `/api/bybit/health` · `/api/bybit/ticker` · `/api/bybit/positions` · `/api/bybit/trade`
 - Volt's decisions auto-execute as BTCUSDT perp market orders every ~10 min
 - Manual Long $50 / Short $50 buttons on every agent profile
@@ -57,8 +76,9 @@ product: it embodies the literal "Turing Test / Human vs AI" theme as the UX.
 - **Streaming:** Server-Sent Events for the live decision feed + sticky marquee
 - **Contracts:** Hardhat · Solidity 0.8.27 · OpenZeppelin 5
 - **Live trading:** Bybit testnet v5 REST API (USDT-margined linear perps)
-- **Copy-trade:** x402-style HTTP 402 payment authorization (per-action billing stub)
-- **Brand:** Versus design system from [claude.ai/design](https://claude.ai/design) — cool lavender / coral / periwinkle / ochre
+- **Copy-trade:** x402-style HTTP 402 payment authorization (per-action billing)
+- **Betting:** parimutuel DemoMarket per live duel, staked in TAUSDC, on-chain settle
+- **Brand:** custom Versus design system, cool lavender / coral / periwinkle / ochre
 
 ---
 
@@ -116,16 +136,17 @@ npm run build && npm start           # → optimized SSR + static
 
 1. Open http://localhost:3000 → onboarding pops on first visit
 2. Connect MetaMask to **Mantle Sepolia**
-3. Hit `/faucet` → claim 1,000 USDC
-4. Go to `/duels/duel-001` → Approve USDC → Stake $25 on Prudence
-5. Watch the live ribbon under the nav for `🔵 BYBIT` badges
-6. Visit `/agents/agent-volt` → click **Long $50** → see real Bybit testnet order land
+3. Hit `/faucet` → claim TAUSDC
+4. Go to `/duels/duel-001` → Approve TAUSDC → Stake on a side
+5. Open `/portfolio` (My Bets) → see the open position with live win/lose tracking + full stake history
+6. Watch the live ribbon under the nav for `🔵 BYBIT` badges
+7. Visit `/agents/agent-volt` → click **Long $50** → see real Bybit testnet order land
 
 ---
 
 ## Architecture
 
-### High level — data + control flow
+### High level - data + control flow
 
 ```
                  ┌────────────────────────────────────────────────────────┐
@@ -189,6 +210,7 @@ app/
 │   │                                     BybitPanel (agents only) + CopyTrade
 │   ├── leaderboard/page.tsx              all-time rankings
 │   ├── faucet/page.tsx                   claim TAUSDC / USDY / mETH
+│   ├── portfolio/page.tsx                My Bets: balance, open positions, history
 │   └── how-it-works/page.tsx             narrative
 ├── api/
 │   ├── decisions/stream/route.ts         SSE feed for live decision ticker
@@ -213,7 +235,8 @@ components/
 ├── duel-card.tsx      · duel-finale.tsx        · agent-card.tsx
 ├── copy-trade.tsx     · onboarding.tsx         · toaster.tsx
 ├── share-button.tsx   · route-progress.tsx     · dark-toggle.tsx
-└── skeleton.tsx · stat.tsx · agent-avatar.tsx · wallet-buttons.tsx
+├── my-bets.tsx        · wallet-buttons.tsx     · agent-avatar.tsx
+└── skeleton.tsx · stat.tsx
 
 lib/
 ├── bybit.ts                              v5 testnet REST client (HMAC SHA256)
@@ -241,6 +264,7 @@ contracts/
     ├── deploy.ts                         core deployment
     ├── register-agents.ts                fund + register 3 agents
     ├── seed-market.ts                    deploy DemoMarket for duel-001
+    ├── seed-markets.ts                   deploy a DemoMarket per live duel
     └── seed-bets.ts                      drip + approve + stake seed bets
 ```
 

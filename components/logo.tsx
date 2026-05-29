@@ -1,6 +1,6 @@
 import { cn } from "@/lib/format";
 
-/// Versus capsule mark — vertical pill split horizontally into two halves:
+/// Versus capsule mark - vertical pill split horizontally into two halves:
 /// periwinkle/machine on top, coral/human on the bottom, with an ochre stake
 /// dot at the meeting line. One bold silhouette that rhymes with the
 /// duality colors of the palette. Subtle bounce when `animated`.

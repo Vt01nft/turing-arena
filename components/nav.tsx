@@ -73,7 +73,7 @@ export function Nav() {
             <LockUp markSize={36} animated />
           </Link>
 
-          {/* Center pill — desktop only */}
+          {/* Center pill - desktop only */}
           <div className="hidden md:flex items-center gap-1 p-1 rounded-full border border-line bg-paper">
             {LINKS.map((l) => {
               const active = l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);

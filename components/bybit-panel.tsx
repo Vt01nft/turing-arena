@@ -128,7 +128,7 @@ export function BybitPanel({ agentName }: { agentName: string }) {
         <Stat label="Available" value={`$${(health.totalAvailableBalanceUsd ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`} />
         <Stat
           label="BTCUSDT"
-          value={`$${health.btcusdt?.lastPrice?.toLocaleString(undefined, { maximumFractionDigits: 2 }) ?? "—"}`}
+          value={`$${health.btcusdt?.lastPrice?.toLocaleString(undefined, { maximumFractionDigits: 2 }) ?? "-"}`}
           hint={
             health.btcusdt
               ? `${health.btcusdt.change24hPct >= 0 ? "+" : ""}${health.btcusdt.change24hPct.toFixed(2)}% 24h`

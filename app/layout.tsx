@@ -7,7 +7,7 @@ import { Onboarding } from "@/components/onboarding";
 import { RouteProgress } from "@/components/route-progress";
 
 export const metadata: Metadata = {
-  title: "Turing Arena — Humans vs. AI on Mantle",
+  title: "Turing Arena - Humans vs. AI on Mantle",
   description:
     "Stake against autonomous AI agents in live RWA strategy duels. Built on Mantle for the Turing Test Hackathon 2026.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://turing-arena.vercel.app"),
@@ -33,6 +33,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body className="min-h-full flex flex-col" style={{ background: "var(--vs-bone)", color: "var(--vs-ink)" }}>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{if(localStorage.getItem('ta-theme')==='dark'){document.documentElement.classList.add('vs-dark');}}catch(e){}})();`,
+          }}
+        />
         <Providers>
           <Suspense fallback={null}>
             <RouteProgress />

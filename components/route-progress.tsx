@@ -19,7 +19,7 @@ export function RouteProgress() {
       const href = a.getAttribute("href");
       if (!href || href.startsWith("http") || href.startsWith("#") || href.startsWith("mailto:")) return;
       if (a.target === "_blank") return;
-      // intra-app link — kick the progress bar
+      // intra-app link - kick the progress bar
       setPhase("loading");
     }
     window.addEventListener("click", start, true);

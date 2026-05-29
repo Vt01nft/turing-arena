@@ -4,7 +4,7 @@
 /// other users' private accounts (which Bybit blocks for privacy).
 ///
 /// Every trade returned by getRecentTrades() is a REAL Bybit user's order
-/// — we just don't know which user. We attribute clusters of trades to
+/// - we just don't know which user. We attribute clusters of trades to
 /// "tracked profile" personas inside our app.
 
 const REST = "https://api.bybit.com";

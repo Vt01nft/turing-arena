@@ -1,5 +1,5 @@
 /* ============================================================
-   turing arena — design tokens (Versus design system)
+   turing arena - design tokens (Versus design system)
    Cool lavender surfaces, deep navy ink, coral/periwinkle duality.
    Sans-led typography with serif italic as editorial accent.
    ============================================================ */
@@ -153,7 +153,7 @@ em, .vs-em {
   font-weight: 400;
 }
 
-/* Capsule mark — gentle vertical bounce. */
+/* Capsule mark - gentle vertical bounce. */
 .ta-mark { display: inline-block; position: relative; line-height: 0; }
 .ta-mark-disc { display: block; }
 .ta-mark.spinning .ta-mark-disc {
@@ -363,7 +363,7 @@ html.vs-dark .vs-pg-blob.b2 { background: #B45647; opacity: 0.10; }
 .ta-wallet-pill:hover { transform: translateY(-1px); }
 .ta-wallet-pill:active { transform: translateY(0); }
 
-/* Chain selector — soft paper pill */
+/* Chain selector - soft paper pill */
 .ta-wallet-pill-chain {
   background: var(--vs-paper);
   color: var(--vs-ink);
@@ -372,7 +372,7 @@ html.vs-dark .vs-pg-blob.b2 { background: #B45647; opacity: 0.10; }
 }
 .ta-wallet-pill-chain:hover { background: var(--vs-cream); }
 
-/* Account chip — confident ink pill, no inner halo */
+/* Account chip - confident ink pill, no inner halo */
 .ta-wallet-pill-account {
   background: var(--vs-ink);
   color: var(--vs-paper);
@@ -382,7 +382,7 @@ html.vs-dark .vs-pg-blob.b2 { background: #B45647; opacity: 0.10; }
 }
 .ta-wallet-pill-account:hover { background: var(--vs-ink-2); }
 
-/* Connect (disconnected) — ink pill that begs to be clicked */
+/* Connect (disconnected) - ink pill that begs to be clicked */
 .ta-wallet-pill-connect {
   background: var(--vs-ink);
   color: var(--vs-paper);

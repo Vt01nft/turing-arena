@@ -7,7 +7,7 @@
 import { refreshWhaleEngine, readWhaleSnapshot, type WhaleState } from "./whale-engine";
 import { getAgent, type Agent } from "./mock-data";
 
-/// Every contestant in our static roster now maps to a whale persona —
+/// Every contestant in our static roster now maps to a whale persona -
 /// agents and humans alike. The two pools share the same engine but
 /// keep distinct kind metadata so the UI can label/color them.
 const CONTESTANT_TO_WHALE: Record<string, string> = {

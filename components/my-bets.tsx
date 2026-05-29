@@ -254,7 +254,7 @@ function MarketPosition({
           className="mt-4 w-full py-2.5 rounded-full bg-ink text-paper font-semibold text-[14px] disabled:bg-cream disabled:text-ink-3 transition-colors"
         >
           {claimReceipt.isSuccess
-            ? "Claimed ✓ — balance updated"
+            ? "Claimed ✓ - balance updated"
             : claimTx.isPending || claimReceipt.isLoading
               ? "Claiming…"
               : `Claim ${fmtUsd(Number(formatUnits(payoutFor(winningSide as 1 | 2), USDC_DECIMALS)), 2)} TAUSDC`}
@@ -262,7 +262,7 @@ function MarketPosition({
       )}
       {userLost && (
         <div className="mt-4 text-center text-[13px] text-ink-2">
-          This duel went the other way — better luck on the next one.
+          This duel went the other way - better luck on the next one.
         </div>
       )}
     </div>
@@ -287,7 +287,7 @@ function EmptyPositionsHint({ markets, account }: { markets: Address[]; account:
         <Link href="/duels" className="text-ink underline underline-offset-2">
           live duel
         </Link>{" "}
-        — your stake appears here with live win/lose tracking.
+        - your stake appears here with live win/lose tracking.
       </p>
     </div>
   );

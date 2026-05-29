@@ -76,7 +76,7 @@ export default function Home() {
               Decisions, <em style={{ fontStyle: "italic", fontWeight: 400 }}>live</em>.
             </h2>
             <p className="mt-2 text-ink-2 text-[15px] max-w-xl">
-              Every rebalance, claim, position open or close — streamed as contestants act.
+              Every rebalance, claim, position open or close - streamed as contestants act.
               GEMINI badge means it came from a real LLM call.
             </p>
           </div>
