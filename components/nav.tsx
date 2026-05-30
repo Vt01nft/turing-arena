@@ -67,7 +67,7 @@ export function Nav() {
             : undefined,
         }}
       >
-        <div className="mx-auto max-w-[1240px] grid grid-cols-[1fr_auto_1fr] items-center gap-3 md:gap-6 px-5 md:px-8 py-3.5">
+        <div className="mx-auto max-w-[1240px] flex md:grid md:grid-cols-[1fr_auto_1fr] items-center justify-between gap-3 md:gap-6 px-5 md:px-8 py-3.5">
           {/* Left */}
           <Link href="/" className="flex items-center" aria-label="Turing Arena home">
             <LockUp markSize={36} animated />
