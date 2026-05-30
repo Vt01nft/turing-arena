@@ -47,21 +47,21 @@ export default function LeaderboardPage() {
                 <Link
                   key={a.id}
                   href={`/agents/${a.id}`}
-                  className="flex items-center gap-4 p-4 hover:bg-[var(--color-surface-2)] transition-colors"
+                  className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 hover:bg-[var(--color-surface-2)] transition-colors"
                 >
-                  <span className="mono text-[20px] font-semibold text-faint w-8 text-center">
+                  <span className="mono text-[15px] sm:text-[20px] font-semibold text-faint w-5 sm:w-8 text-center shrink-0">
                     {i + 1}
                   </span>
                   <AgentAvatar letter={a.avatar} strategy={a.strategy} />
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-[15px] truncate">{a.name}</div>
-                    <div className="text-[11px] text-dim mt-0.5">{a.strategy} · ERC-8004 #{a.erc8004Id}</div>
+                    <div className="font-semibold text-[14px] sm:text-[15px] truncate">{a.name}</div>
+                    <div className="text-[11px] text-dim mt-0.5 truncate">{a.strategy} · ERC-8004 #{a.erc8004Id}</div>
                   </div>
                   <div className="text-right shrink-0">
-                    <div className="mono text-[16px] font-semibold">{a.reputation}</div>
+                    <div className="mono text-[15px] sm:text-[16px] font-semibold">{a.reputation}</div>
                     <div className="text-[10px] text-faint mt-0.5">{a.wins}/{a.totalDuels} wins</div>
                   </div>
-                  <div className="text-right shrink-0 w-20">
+                  <div className="text-right shrink-0 w-20 hidden sm:block">
                     <div className={`mono text-[14px] ${a.apy30d >= 0 ? "text-profit" : "text-loss"}`}>
                       {fmtPct(a.apy30d, 1)}
                     </div>
@@ -79,8 +79,8 @@ export default function LeaderboardPage() {
             </h2>
             <div className="surface divide-y divide-[var(--color-border)]">
               {rankedBettors.slice(0, 8).map((b, i) => (
-                <div key={b.address} className="flex items-center gap-4 p-4">
-                  <span className="mono text-[20px] font-semibold text-faint w-8 text-center">
+                <div key={b.address} className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4">
+                  <span className="mono text-[15px] sm:text-[20px] font-semibold text-faint w-5 sm:w-8 text-center shrink-0">
                     {i + 1}
                   </span>
                   <div className="h-10 w-10 grid place-items-center rounded-md surface-2 mono text-[11px] text-dim shrink-0">
@@ -90,12 +90,12 @@ export default function LeaderboardPage() {
                     <div className="font-semibold text-[14px] truncate">
                       {b.alias ?? fmtAddr(b.address)}
                     </div>
-                    <div className="text-[11px] text-dim mt-0.5 mono">
+                    <div className="text-[11px] text-dim mt-0.5 mono truncate">
                       {b.alias ? fmtAddr(b.address) : "anon"}
                     </div>
                   </div>
-                  <div className="text-right shrink-0 w-20">
-                    <div className={`mono text-[14px] font-semibold ${b.pnl >= 0 ? "text-profit" : "text-loss"}`}>
+                  <div className="text-right shrink-0 w-16 sm:w-20">
+                    <div className={`mono text-[13px] sm:text-[14px] font-semibold ${b.pnl >= 0 ? "text-profit" : "text-loss"}`}>
                       {b.pnl >= 0 ? "+" : ""}
                       {fmtUsd(b.pnl, 0)}
                     </div>
@@ -126,17 +126,19 @@ export default function LeaderboardPage() {
                   <Link
                     key={d.id}
                     href={`/duels/${d.id}`}
-                    className="flex items-center gap-4 p-4 hover:bg-[var(--color-surface-2)] transition-colors"
+                    className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 hover:bg-[var(--color-surface-2)] transition-colors"
                   >
-                    <span className="mono text-[10px] text-faint w-16">{d.id}</span>
+                    <span className="mono text-[10px] text-faint w-16 hidden sm:inline">{d.id}</span>
                     <AgentAvatar letter={winnerAgent.avatar} strategy={winnerAgent.strategy} size="sm" />
                     <div className="flex-1 min-w-0">
-                      <span className="font-semibold text-[14px]">{winnerAgent.name}</span>
-                      <span className="text-faint mx-1.5 text-[12px]">def</span>
-                      <span className="text-dim text-[14px]">{loserAgent.name}</span>
+                      <div className="text-[13px] sm:text-[14px] truncate">
+                        <span className="font-semibold">{winnerAgent.name}</span>
+                        <span className="text-faint mx-1.5 text-[12px]">def</span>
+                        <span className="text-dim">{loserAgent.name}</span>
+                      </div>
                     </div>
-                    <div className="text-right shrink-0 w-24">
-                      <div className="mono text-[13px] text-profit">{fmtPct(d.winner === "A" ? d.scoreA : d.scoreB)}</div>
+                    <div className="text-right shrink-0 w-16 sm:w-24">
+                      <div className="mono text-[12px] sm:text-[13px] text-profit">{fmtPct(d.winner === "A" ? d.scoreA : d.scoreB)}</div>
                       <div className="mono text-[10px] text-loss mt-0.5">
                         vs {fmtPct(d.winner === "A" ? d.scoreB : d.scoreA)}
                       </div>
